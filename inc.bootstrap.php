@@ -15,50 +15,11 @@ require 'inc.functions.php';
 
 db_generic_model::$_db = $db;
 
-class Model extends db_generic_model {
+require 'inc.models.php';
 
-	static public function _updates( array $datas ) {
-		foreach ( $datas as $id => $data ) {
-			if ( static::validate($data) ) {
-				if ( $id ) {
-					static::find($id)->update($data);
-				}
-				else {
-					static::$_db->insert(static::$_table, $data);
-				}
-			}
-			else {
-				if ( $id ) {
-					static::find($id)->delete($data);
-				}
-			}
-		}
-	}
+require 'inc.importers.php';
 
-	static public function validate( array $data ) {
-		return true;
-	}
-
-}
-
-class Type extends Model {
-	public static $_table = 'types';
-
-	static public function validate( array $data ) {
-		self::presave($data);
-		return !empty($data['type']);
-	}
-
-	public function __toString() {
-		return (string) $this->type;
-	}
-}
-
-class Trigger extends Model {
-	public static $_table = 'triggers';
-
-	static public function validate( array $data ) {
-		self::presave($data);
-		return !empty($data['trigger']) && !empty($data['regex']);
-	}
-}
+$importers = array(
+	new FileImporterCollector(__DIR__ . '/input'),
+	// new EmailImporterCollector(CRONLOG_MAIL_SERVER, CRONLOG_MAIL_USER, CRONLOG_MAIL_PASS),
+);

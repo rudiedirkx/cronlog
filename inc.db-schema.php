@@ -1,13 +1,14 @@
 <?php
 
 return array(
-	'version' => 6,
+	'version' => 9,
 	'tables' => array(
 		'types' => array(
 			'columns' => array(
 				'id' => array('pk' => true),
 				'type',
 				'description',
+				'to_regex',
 			),
 			'indexes' => array(
 				'type' => array(
@@ -32,10 +33,21 @@ return array(
 				),
 			),
 		),
+		'servers' => array(
+			'columns' => array(
+				'id' => array('pk' => true),
+				'name',
+				'from_regex',
+			),
+		),
 		'results' => array(
 			'columns' => array(
 				'id' => array('pk' => true),
-				'origin',
+				'from',
+				'server_id' => array('type' => 'int'),
+				'to',
+				'type_id' => array('type' => 'int'),
+				'subject',
 				'output',
 			),
 		),
