@@ -1,0 +1,52 @@
+{
+    "_readme": [
+        "This file locks the dependencies of your project to a known state",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
+        "This file is @generated automatically"
+    ],
+    "hash": "ff39632935201daeda6f6d826df58e3d",
+    "content-hash": "8cce2acce786f2cbe4a51ae9da06e6d8",
+    "packages": [
+        {
+            "name": "rdx/imap",
+            "version": "2.0.3",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/rudiedirkx/IMAP-reader.git",
+                "reference": "8ca8f6808db6f9409e74b94dc9a0fbdcf5645786"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/rudiedirkx/IMAP-reader/zipball/8ca8f6808db6f9409e74b94dc9a0fbdcf5645786",
+                "reference": "8ca8f6808db6f9409e74b94dc9a0fbdcf5645786",
+                "shasum": ""
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "rdx\\imap\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Rudie Dirkx",
+                    "email": "github@hotblocks.nl"
+                }
+            ],
+            "description": "Reads and parses e-mail from an IMAP/POP3 source",
+            "time": "2016-04-03 12:35:55"
+        }
+    ],
+    "packages-dev": [],
+    "aliases": [],
+    "minimum-stability": "dev",
+    "stability-flags": [],
+    "prefer-stable": false,
+    "prefer-lowest": false,
+    "platform": [],
+    "platform-dev": []
+}

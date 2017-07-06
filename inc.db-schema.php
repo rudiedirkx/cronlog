@@ -1,7 +1,7 @@
 <?php
 
 return array(
-	'version' => 9,
+	'version' => 14,
 	'tables' => array(
 		'types' => array(
 			'columns' => array(
@@ -9,6 +9,7 @@ return array(
 				'type',
 				'description',
 				'to_regex',
+				'subject_regex',
 			),
 			'indexes' => array(
 				'type' => array(
@@ -43,6 +44,7 @@ return array(
 		'results' => array(
 			'columns' => array(
 				'id' => array('pk' => true),
+				'sent' => array('type' => 'datetime'),
 				'from',
 				'server_id' => array('type' => 'int'),
 				'to',
@@ -51,15 +53,16 @@ return array(
 				'output',
 			),
 		),
-		'results_types' => array(
+		'results_triggers' => array(
 			'columns' => array(
-				'type_id' => array('type' => 'int'),
+				'trigger_id' => array('type' => 'int'),
 				'result_id' => array('type' => 'int'),
+				'amount' => array('type' => 'int'),
 			),
 			'indexes' => array(
-				'type_result' => array(
+				'trigger_result' => array(
 					'unique' => true,
-					'columns' => array('type_id', 'result_id'),
+					'columns' => array('trigger_id', 'result_id'),
 				),
 			),
 		),

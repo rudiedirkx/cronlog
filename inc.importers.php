@@ -1,5 +1,9 @@
 <?php
 
+namespace rdx\cronlog\import;
+
+use Exception;
+
 interface ImporterReader {
 	public function read( Importer $importer );
 }
@@ -29,11 +33,16 @@ class FileImporterCollector implements ImporterCollector {
 }
 
 interface Importer {
+	public function delete();
+
 	public function getFrom();
 	public function getTo();
 	public function getSubject();
+	public function getSentUtc();
 	public function getOutput();
 }
+
+// @todo EMAIL IMPORTER
 
 class FileImporter implements Importer {
 	public $file;
@@ -49,12 +58,22 @@ class FileImporter implements Importer {
 		}
 	}
 
-	public function getFrom() {
+	protected function getHeader( $name ) {
 		$this->read();
 
-		if ( preg_match('#(?:^|\s)From: (.+)#', $this->content, $match) ) {
-			$value = trim($match[1]);
+		if ( preg_match("#(?:^|\s){$name}:(.+)#i", $this->content, $match) ) {
+			return trim($match[1]);
+		}
+	}
 
+	public function delete() {
+		if ( !@unlink($this->file) ) {
+			throw new Exception("`FileImporter` can't delete `{$this->file}`");
+		}
+	}
+
+	public function getFrom() {
+		if ( $value = $this->getHeader('From') ) {
 			if ( preg_match('#([^ ]+@[^ ]+)#', $value, $match) ) {
 				return $match[1];
 			}
@@ -62,11 +81,7 @@ class FileImporter implements Importer {
 	}
 
 	public function getTo() {
-		$this->read();
-
-		if ( preg_match('#(?:^|\s)To: (.+)#', $this->content, $match) ) {
-			$value = trim($match[1]);
-
+		if ( $value = $this->getHeader('To') ) {
 			if ( preg_match('#([^ ]+@[^ ]+)#', $value, $match) ) {
 				return $match[1];
 			}
@@ -74,10 +89,14 @@ class FileImporter implements Importer {
 	}
 
 	public function getSubject() {
-		$this->read();
+		if ( $value = $this->getHeader('Subject') ) {
+			return $value;
+		}
+	}
 
-		if ( preg_match('#Subject:(.+)#', $this->content, $match) ) {
-			return trim($match[1]);
+	public function getSentUtc() {
+		if ( $value = $this->getHeader('Date') ) {
+			return strtotime($value);
 		}
 	}
 

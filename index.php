@@ -1,5 +1,9 @@
 <?php
 
+use rdx\cronlog\data\Server;
+use rdx\cronlog\data\Trigger;
+use rdx\cronlog\data\Type;
+
 require 'inc.bootstrap.php';
 
 if ( isset($_POST['type']) ) {
@@ -30,18 +34,22 @@ $triggers[0] = new Trigger;
 
 ?>
 
-<p><a href="cron.php">Execute</a></p>
+<p>
+	<a href="cron.php">Execute</a> |
+	<a href="results.php">All results</a>
+</p>
 
 <h2>Types</h2>
 
 <form method="post" action>
-	<table border="1">
+	<table>
 		<thead>
 			<tr>
 				<th>#</th>
 				<th>Type</th>
 				<th>Description</th>
 				<th><code>To</code> regex</th>
+				<th><code>Subject</code> regex</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -56,6 +64,9 @@ $triggers[0] = new Trigger;
 					</td>
 					<td>
 						<input name="type[<?= $id ?>][to_regex]" value="<?= html($type->to_regex) ?>" />
+					</td>
+					<td>
+						<input name="type[<?= $id ?>][subject_regex]" value="<?= html($type->subject_regex) ?>" />
 					</td>
 					<td>
 						<? if ($id): ?>
@@ -73,7 +84,7 @@ $triggers[0] = new Trigger;
 <h2>Servers</h2>
 
 <form method="post" action>
-	<table border="1">
+	<table>
 		<thead>
 			<tr>
 				<th>#</th>
@@ -102,7 +113,7 @@ $triggers[0] = new Trigger;
 <h2>Triggers</h2>
 
 <form method="post" action>
-	<table border="1">
+	<table>
 		<thead>
 			<tr>
 				<th>#</th>
@@ -110,6 +121,7 @@ $triggers[0] = new Trigger;
 				<th>Trigger</th>
 				<th>Description</th>
 				<th>Regex</th>
+				<th>Color</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -129,6 +141,9 @@ $triggers[0] = new Trigger;
 					</td>
 					<td>
 						<input name="trigger[<?= $id ?>][regex]" value="<?= html($trigger->regex) ?>" style="font-family: monospace" />
+					</td>
+					<td>
+						<input name="trigger[<?= $id ?>][color]" value="<?= html($trigger->color) ?>" />
 					</td>
 				</tr>
 			<? endforeach ?>

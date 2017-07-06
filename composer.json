@@ -1,0 +1,21 @@
+{
+    "name": "rdx/cronlog",
+    "description": "Statistics from cron logs",
+    "type": "project",
+    "require": {
+        "rdx/imap": "^2.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "rdx\\cronlog\\": "src/"
+        }
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Rudie Dirkx",
+            "email": "github@hotblocks.nl"
+        }
+    ],
+    "minimum-stability": "dev"
+}
