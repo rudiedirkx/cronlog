@@ -3,6 +3,8 @@
 namespace rdx\cronlog\import;
 
 use Exception;
+use rdx\imap\IMAPMailbox;
+use rdx\imap\IMAPMessage;
 
 interface ImporterReader {
 	public function read( Importer $importer );
@@ -13,15 +15,47 @@ interface ImporterCollector {
 	public function createImporter( $data );
 }
 
-class FileImporterCollector implements ImporterCollector {
-	public $dir;
+class EmailImporterCollector implements ImporterCollector {
+	public $creds;
+	public $mbox;
 
-	public function __construct( $dir ) {
-		$this->dir = rtrim($dir, '/\\');
+	public function __construct( $server, $user, $pass ) {
+		$this->creds = [$server, $user, $pass];
+	}
+
+	protected function connect() {
+		if ( !$this->mbox ) {
+			$this->mbox = new IMAPMailbox($this->creds[0], $this->creds[1], $this->creds[2]);
+		}
+
+		return $this->mbox;
 	}
 
 	public function collect( ImporterReader $reader ) {
-		foreach ( glob("{$this->dir}/*.eml") as $file ) {
+		$messages = $this->connect()->messages(array('seen' => false));
+		foreach ( $messages as $message ) {
+			$importer = $this->createImporter($message);
+			$reader->read($importer);
+		}
+	}
+
+	public function createImporter( $message ) {
+		return new EmailImporter($message);
+	}
+}
+
+class FileImporterCollector implements ImporterCollector {
+	public $dir;
+	public $mask;
+
+	public function __construct( $dir, $mask = null ) {
+		$this->dir = rtrim($dir, '/\\');
+		$this->mask = $mask ?: '*.eml';
+	}
+
+	public function collect( ImporterReader $reader ) {
+		$files = glob("{$this->dir}/{$this->mask}");
+		foreach ( $files as $file ) {
 			$importer = $this->createImporter($file);
 			$reader->read($importer);
 		}
@@ -42,7 +76,41 @@ interface Importer {
 	public function getOutput();
 }
 
-// @todo EMAIL IMPORTER
+class EmailImporter implements Importer {
+	public $message;
+
+	public function __construct( IMAPMessage $message ) {
+		$this->message = $message;
+	}
+
+	public function delete() {
+		$this->message->flag('seen');
+	}
+
+	public function getFrom() {
+		if ( $header = $this->message->header('From') ) {
+			return $header[0]->mailbox . '@' . $header[0]->host;
+		}
+	}
+
+	public function getTo() {
+		if ( $header = $this->message->header('To') ) {
+			return $header[0]->mailbox . '@' . $header[0]->host;
+		}
+	}
+
+	public function getSubject() {
+		return $this->message->header('Subject');
+	}
+
+	public function getSentUtc() {
+		return strtotime($this->message->header('Date'));
+	}
+
+	public function getOutput() {
+		return trim($this->message->content());
+	}
+}
 
 class FileImporter implements Importer {
 	public $file;

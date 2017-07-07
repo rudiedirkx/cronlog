@@ -70,7 +70,7 @@ class Type extends Model {
 	}
 
 	protected function get_triggers() {
-		return Trigger::all('type_id = ? ORDER BY trigger ASC', array($this->id));
+		return Trigger::all('type_id = ? ORDER BY o, trigger', array($this->id));
 	}
 
 	public function __toString() {
@@ -83,7 +83,12 @@ class Trigger extends Model {
 
 	static public function validate( array $data ) {
 		self::presave($data);
-		return !empty($data['trigger']);
+		return !empty($data['trigger']) && !empty($data['type_id']);
+	}
+
+	public function delete() {
+		self::$_db->delete(Result::TRIGGERS_TABLE, array('trigger_id' => $this->id));
+		return parent::delete();
 	}
 }
 
@@ -133,6 +138,11 @@ class Result extends Model {
 
 	protected function get_triggers() {
 		return self::$_db->select_by_field(self::TRIGGERS_TABLE, 'trigger_id', array('result_id' => $this->id))->all();
+	}
+
+	public function delete() {
+		self::$_db->delete(Result::TRIGGERS_TABLE, array('result_id' => $this->id));
+		return parent::delete();
 	}
 
 	public function collate() {

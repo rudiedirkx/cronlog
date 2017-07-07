@@ -1,5 +1,6 @@
 <?php
 
+use rdx\cronlog\import\EmailImporterCollector;
 use rdx\cronlog\import\FileImporterCollector;
 
 require 'env.php';
@@ -22,6 +23,6 @@ require 'inc.models.php';
 require 'inc.importers.php';
 
 $importers = array(
-	new FileImporterCollector(__DIR__ . '/input'),
-	// new EmailImporterCollector(CRONLOG_MAIL_SERVER, CRONLOG_MAIL_USER, CRONLOG_MAIL_PASS),
+	// new FileImporterCollector(__DIR__ . '/input', 'y-*.eml'),
+	new EmailImporterCollector(CRONLOG_MAIL_SERVER, CRONLOG_MAIL_USER, CRONLOG_MAIL_PASS),
 );

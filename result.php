@@ -27,7 +27,7 @@ include 'tpl.header.php';
 	<tbody>
 		<tr>
 			<th>Type</th>
-			<td colspan="2"><?= html($result->type->description) ?></td>
+			<td colspan="2"><a href="results.php?type=<?= $result->type_id ?>"><?= html($result->type->description) ?></a></td>
 		</tr>
 		<tr>
 			<th>Origin</th>

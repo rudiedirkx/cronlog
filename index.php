@@ -26,11 +26,11 @@ include 'tpl.header.php';
 $types = Type::all('1 ORDER BY type');
 $types[0] = new Type;
 
+$triggers = Trigger::all('1 ORDER BY type_id, o, trigger');
+$triggers[0] = new Trigger;
+
 $servers = Server::all('1 ORDER BY name');
 $servers[0] = new Server;
-
-$triggers = Trigger::all('1 ORDER BY trigger');
-$triggers[0] = new Trigger;
 
 ?>
 
@@ -81,6 +81,53 @@ $triggers[0] = new Trigger;
 	<p><button>Save</button></p>
 </form>
 
+<h2>Triggers</h2>
+
+<form method="post" action>
+	<table>
+		<thead>
+			<tr>
+				<th>#</th>
+				<th>Type</th>
+				<th>O</th>
+				<th>Trigger</th>
+				<th>Description</th>
+				<th>Regex</th>
+				<th>Color</th>
+			</tr>
+		</thead>
+		<tbody>
+			<? foreach ($triggers as $id => $trigger): ?>
+				<tr>
+					<th><?= $id ?: '' ?></th>
+					<td>
+						<select name="trigger[<?= $id ?>][type_id]">
+							<?= html_options(array_diff_key($types, [0]), $trigger->type_id, '--') ?>
+						</select>
+					</td>
+					<td>
+						<input name="trigger[<?= $id ?>][o]" value="<?= html($trigger->o) ?>" style="width: 1.5em" />
+					</td>
+					<td>
+						<input name="trigger[<?= $id ?>][trigger]" value="<?= html($trigger->trigger) ?>" />
+					</td>
+					<td>
+						<input name="trigger[<?= $id ?>][description]" value="<?= html($trigger->description) ?>" />
+					</td>
+					<td>
+						<input name="trigger[<?= $id ?>][regex]" value="<?= html($trigger->regex) ?>" style="font-family: monospace" />
+					</td>
+					<td>
+						<input name="trigger[<?= $id ?>][color]" value="<?= html($trigger->color) ?>" />
+					</td>
+				</tr>
+			<? endforeach ?>
+		</tbody>
+	</table>
+
+	<p><button>Save</button></p>
+</form>
+
 <h2>Servers</h2>
 
 <form method="post" action>
@@ -101,49 +148,6 @@ $triggers[0] = new Trigger;
 					</td>
 					<td>
 						<input name="server[<?= $id ?>][from_regex]" value="<?= html($server->from_regex) ?>" />
-					</td>
-				</tr>
-			<? endforeach ?>
-		</tbody>
-	</table>
-
-	<p><button>Save</button></p>
-</form>
-
-<h2>Triggers</h2>
-
-<form method="post" action>
-	<table>
-		<thead>
-			<tr>
-				<th>#</th>
-				<th>Type</th>
-				<th>Trigger</th>
-				<th>Description</th>
-				<th>Regex</th>
-				<th>Color</th>
-			</tr>
-		</thead>
-		<tbody>
-			<? foreach ($triggers as $id => $trigger): ?>
-				<tr>
-					<th><?= $id ?: '' ?></th>
-					<td>
-						<select name="trigger[<?= $id ?>][type_id]">
-							<?= html_options(array_diff_key($types, [0]), $trigger->type_id, '--') ?>
-						</select>
-					</td>
-					<td>
-						<input name="trigger[<?= $id ?>][trigger]" value="<?= html($trigger->trigger) ?>" />
-					</td>
-					<td>
-						<input name="trigger[<?= $id ?>][description]" value="<?= html($trigger->description) ?>" />
-					</td>
-					<td>
-						<input name="trigger[<?= $id ?>][regex]" value="<?= html($trigger->regex) ?>" style="font-family: monospace" />
-					</td>
-					<td>
-						<input name="trigger[<?= $id ?>][color]" value="<?= html($trigger->color) ?>" />
 					</td>
 				</tr>
 			<? endforeach ?>

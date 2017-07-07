@@ -28,6 +28,7 @@ $results = $type ? $type->results : Result::all('1 ORDER BY sent DESC');
 <table>
 	<thead>
 		<tr>
+			<th>#</th>
 			<th>Type</th>
 			<th>Origin</th>
 			<th>Date/time</th>
@@ -43,7 +44,8 @@ $results = $type ? $type->results : Result::all('1 ORDER BY sent DESC');
 	<tbody>
 		<? foreach ($results as $result): ?>
 			<tr>
-				<td><?= html($result->type->description) ?></td>
+				<th><?= $result->id ?></th>
+				<td><a href="?type=<?= $result->type_id ?>"><?= html($result->type->description) ?></a></td>
 				<td><?= html($result->server ?: '?') ?></td>
 				<td><a href="result.php?id=<?= $result->id ?>"><?= html($result->sent) ?></a></td>
 				<td><?= number_format(strlen($result->output), 0) ?></td>

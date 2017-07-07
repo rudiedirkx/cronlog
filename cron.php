@@ -18,22 +18,31 @@ class DbImporterReader implements ImporterReader {
 
 		$insert = compact('from', 'to', 'subject', 'sent', 'output');
 
+		$type = Type::findByToAndSubject($to, $subject);
+		if ( !$type ) {
+			return false;
+		}
+		$insert['type_id'] = $type->id;
+
 		if ( $server = Server::findByFrom($from) ) {
 			$insert['server_id'] = $server->id;
 		}
 
-		if ( $type = Type::findByToAndSubject($to, $subject) ) {
-			$insert['type_id'] = $type->id;
-		}
-
 		if ( CRONLOG_DELETE_IMPORTS ) {
-			$importer->delete();
+			try {
+				$importer->delete();
+			}
+			catch ( Exception $ex ) {
+				return false;
+			}
 		}
 
 		$id = Result::insert($insert);
 		$result = Result::find($id);
 
 		$result->collate();
+
+		return true;
 	}
 }
 
