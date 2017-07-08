@@ -7,15 +7,20 @@ require 'inc.bootstrap.php';
 
 $type = Type::find(@$_GET['type']);
 
-include 'tpl.header.php';
-
 $results = $type ? $type->results : Result::all('1 ORDER BY sent DESC');
 
-?>
+if ( isset($_GET['recollate']) ) {
+	foreach ( $results as $result ) {
+		$result->collate();
+	}
 
-<p>
-	<a href="index.php">Index</a>
-</p>
+	$query = $type ? "?type={$type->id}" : '';
+	return do_redirect('results.php' . $query);
+}
+
+include 'tpl.header.php';
+
+?>
 
 <h2>
 	Results
@@ -29,25 +34,29 @@ $results = $type ? $type->results : Result::all('1 ORDER BY sent DESC');
 	<thead>
 		<tr>
 			<th>#</th>
-			<th>Type</th>
+			<? if (!$type): ?>
+				<th>Type</th>
+			<? endif ?>
 			<th>Origin</th>
 			<th>Date/time</th>
 			<th>Size</th>
 			<? if ($type): ?>
 				<? foreach ($type->triggers as $trigger): ?>
-					<th style="color: <?= html($trigger->color) ?>"><?= html($trigger->description) ?></th>
+					<th style="color: <?= html($trigger->color) ?>" title="<?= html($trigger->regex) ?>"><?= html($trigger->description) ?></th>
 				<? endforeach ?>
-				<td></td>
 			<? endif ?>
+			<th><a href="?type=<?= @$type->id ?>&recollate">recollate</a></th>
 		</tr>
 	</thead>
 	<tbody>
 		<? foreach ($results as $result): ?>
 			<tr>
 				<th><?= $result->id ?></th>
-				<td><a href="?type=<?= $result->type_id ?>"><?= html($result->type->description) ?></a></td>
+				<? if (!$type): ?>
+					<td><a href="?type=<?= $result->type_id ?>"><?= html($result->type->description) ?></a></td>
+				<? endif ?>
 				<td><?= html($result->server ?: '?') ?></td>
-				<td><a href="result.php?id=<?= $result->id ?>"><?= html($result->sent) ?></a></td>
+				<td><a href="result.php?id=<?= $result->id ?>"><?= get_datetime($result->sent) ?></a></td>
 				<td><?= number_format(strlen($result->output), 0) ?></td>
 				<? if ($type): ?>
 					<? foreach ($type->triggers as $trigger):
@@ -57,8 +66,8 @@ $results = $type ? $type->results : Result::all('1 ORDER BY sent DESC');
 							<?= $amount ?>
 						</td>
 					<? endforeach ?>
-					<td><a href="result.php?id=<?= $result->id ?>&recollate&goto=results.php?type=<?= $type->id ?>">recollate</a></td>
 				<? endif ?>
+				<td><a href="result.php?id=<?= $result->id ?>&recollate&goto=results.php?type=<?= $type->id ?>">recollate</a></td>
 			</tr>
 		<? endforeach ?>
 	</tbody>

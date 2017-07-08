@@ -1,7 +1,7 @@
 <?php
 
 return array(
-	'version' => 15,
+	'version' => 16,
 	'tables' => array(
 		'types' => array(
 			'columns' => array(
@@ -32,6 +32,18 @@ return array(
 				'trigger' => array(
 					'unique' => true,
 					'columns' => array('trigger'),
+				),
+			),
+		),
+		'triggers_types' => array(
+			'columns' => array(
+				'trigger_id' => array('type' => 'int'),
+				'type_id' => array('type' => 'int'),
+			),
+			'indexes' => array(
+				'trigger_type' => array(
+					'unique' => true,
+					'columns' => array('trigger_id', 'type_id'),
 				),
 			),
 		),

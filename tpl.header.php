@@ -13,16 +13,33 @@ table {
 	border-collapse: collapse;
 }
 th, td {
-	padding: 6px  9px;
+	padding: 6px 9px;
 	border: solid 1px #ddd;
 }
 th {
 	text-align: left;
 }
-tbody  tr:nth-child(odd) {
+tbody tr:nth-child(odd) {
 	background-color: #eee;
+}
+input.o {
+	width: 2em;
+	text-align: center;
+}
+input.regex {
+	font-family: monospace;
+	width: 20em;
+}
+input.color {
+	width: 4em;
 }
 </style>
 </head>
 
 <body>
+
+<p class="main-menu">
+	<a href="index.php">Index</a> |
+	<a href="cron.php">Execute</a> |
+	<a href="results.php">All results</a>
+</p>

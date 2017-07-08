@@ -26,7 +26,7 @@ include 'tpl.header.php';
 $types = Type::all('1 ORDER BY type');
 $types[0] = new Type;
 
-$triggers = Trigger::all('1 ORDER BY type_id, o, trigger');
+$triggers = Trigger::all('1 ORDER BY o, trigger');
 $triggers[0] = new Trigger;
 
 $servers = Server::all('1 ORDER BY name');
@@ -34,14 +34,9 @@ $servers[0] = new Server;
 
 ?>
 
-<p>
-	<a href="cron.php">Execute</a> |
-	<a href="results.php">All results</a>
-</p>
+<h2 id="types">Types</h2>
 
-<h2>Types</h2>
-
-<form method="post" action>
+<form method="post" action="#types">
 	<table>
 		<thead>
 			<tr>
@@ -50,6 +45,7 @@ $servers[0] = new Server;
 				<th>Description</th>
 				<th><code>To</code> regex</th>
 				<th><code>Subject</code> regex</th>
+				<th></th>
 			</tr>
 		</thead>
 		<tbody>
@@ -63,10 +59,10 @@ $servers[0] = new Server;
 						<input name="type[<?= $id ?>][description]" value="<?= html($type->description) ?>" />
 					</td>
 					<td>
-						<input name="type[<?= $id ?>][to_regex]" value="<?= html($type->to_regex) ?>" />
+						<input name="type[<?= $id ?>][to_regex]" value="<?= html($type->to_regex) ?>" class="regex" />
 					</td>
 					<td>
-						<input name="type[<?= $id ?>][subject_regex]" value="<?= html($type->subject_regex) ?>" />
+						<input name="type[<?= $id ?>][subject_regex]" value="<?= html($type->subject_regex) ?>" class="regex" />
 					</td>
 					<td>
 						<? if ($id): ?>
@@ -81,14 +77,14 @@ $servers[0] = new Server;
 	<p><button>Save</button></p>
 </form>
 
-<h2>Triggers</h2>
+<h2 id="triggers">Triggers</h2>
 
-<form method="post" action>
+<form method="post" action="#triggers">
 	<table>
 		<thead>
 			<tr>
 				<th>#</th>
-				<th>Type</th>
+				<th>Types</th>
 				<th>O</th>
 				<th>Trigger</th>
 				<th>Description</th>
@@ -101,12 +97,15 @@ $servers[0] = new Server;
 				<tr>
 					<th><?= $id ?: '' ?></th>
 					<td>
-						<select name="trigger[<?= $id ?>][type_id]">
-							<?= html_options(array_diff_key($types, [0]), $trigger->type_id, '--') ?>
+						<select multiple size="1" name="trigger[<?= $id ?>][type_ids][]">
+							<?= html_options(array_diff_key($types, [0]), $trigger->type_ids) ?>
 						</select>
+						<? if ($id): ?>
+							(<?= count($trigger->type_ids) ?>)
+						<? endif ?>
 					</td>
 					<td>
-						<input name="trigger[<?= $id ?>][o]" value="<?= html($trigger->o) ?>" style="width: 1.5em" />
+						<input name="trigger[<?= $id ?>][o]" value="<?= html($trigger->o) ?>" class="o" />
 					</td>
 					<td>
 						<input name="trigger[<?= $id ?>][trigger]" value="<?= html($trigger->trigger) ?>" />
@@ -115,10 +114,10 @@ $servers[0] = new Server;
 						<input name="trigger[<?= $id ?>][description]" value="<?= html($trigger->description) ?>" />
 					</td>
 					<td>
-						<input name="trigger[<?= $id ?>][regex]" value="<?= html($trigger->regex) ?>" style="font-family: monospace" />
+						<input name="trigger[<?= $id ?>][regex]" value="<?= html($trigger->regex) ?>" class="regex" />
 					</td>
 					<td>
-						<input name="trigger[<?= $id ?>][color]" value="<?= html($trigger->color) ?>" />
+						<input name="trigger[<?= $id ?>][color]" value="<?= html($trigger->color) ?>" class="color" />
 					</td>
 				</tr>
 			<? endforeach ?>
@@ -128,9 +127,9 @@ $servers[0] = new Server;
 	<p><button>Save</button></p>
 </form>
 
-<h2>Servers</h2>
+<h2 id="servers">Servers</h2>
 
-<form method="post" action>
+<form method="post" action="#servers">
 	<table>
 		<thead>
 			<tr>
@@ -147,7 +146,7 @@ $servers[0] = new Server;
 						<input name="server[<?= $id ?>][name]" value="<?= html($server->name) ?>" />
 					</td>
 					<td>
-						<input name="server[<?= $id ?>][from_regex]" value="<?= html($server->from_regex) ?>" />
+						<input name="server[<?= $id ?>][from_regex]" value="<?= html($server->from_regex) ?>" class="regex" />
 					</td>
 				</tr>
 			<? endforeach ?>
@@ -156,3 +155,19 @@ $servers[0] = new Server;
 
 	<p><button>Save</button></p>
 </form>
+
+<script>
+(function() {
+	var onFocus = function(e) {
+		setTimeout(() => this.size = this.options.length, 111);
+	};
+	var onBlur = function(e) {
+		setTimeout(() => this.size = 1, 111);
+	};
+
+	document.querySelectorAll('select[multiple][size="1"]').forEach(function(el) {
+		el.addEventListener('focus', onFocus);
+		el.addEventListener('blur', onBlur);
+	});
+})();
+</script>
