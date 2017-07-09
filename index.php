@@ -45,6 +45,8 @@ $servers[0] = new Server;
 				<th>Description</th>
 				<th><code>To</code> regex</th>
 				<th><code>Subject</code> regex</th>
+				<th title="Delete output for nominal results">D</th>
+				<th title="Notify admin for anominal results">N</th>
 				<th></th>
 			</tr>
 		</thead>
@@ -63,6 +65,12 @@ $servers[0] = new Server;
 					</td>
 					<td>
 						<input name="type[<?= $id ?>][subject_regex]" value="<?= html($type->subject_regex) ?>" class="regex" />
+					</td>
+					<td title="Delete output for nominal results">
+						<input type="checkbox" name="type[<?= $id ?>][handling_delete]" <? if ($type->handling_delete): ?>checked<? endif ?> />
+					</td>
+					<td title="Notify admin for anominal results">
+						<input type="checkbox" name="type[<?= $id ?>][handling_notify]" <? if ($type->handling_notify): ?>checked<? endif ?> />
 					</td>
 					<td>
 						<? if ($id): ?>
@@ -89,6 +97,7 @@ $servers[0] = new Server;
 				<th>Trigger</th>
 				<th>Description</th>
 				<th>Regex</th>
+				<th>Nominal</th>
 				<th>Color</th>
 			</tr>
 		</thead>
@@ -101,7 +110,7 @@ $servers[0] = new Server;
 							<?= html_options(array_diff_key($types, [0]), $trigger->type_ids) ?>
 						</select>
 						<? if ($id): ?>
-							(<?= count($trigger->type_ids) ?>)
+							(<span><?= count($trigger->type_ids) ?></span>)
 						<? endif ?>
 					</td>
 					<td>
@@ -115,6 +124,9 @@ $servers[0] = new Server;
 					</td>
 					<td>
 						<input name="trigger[<?= $id ?>][regex]" value="<?= html($trigger->regex) ?>" class="regex" />
+					</td>
+					<td>
+						<input name="trigger[<?= $id ?>][expect]" value="<?= html($trigger->expect) ?>" class="expect" pattern="[<>]?-?\d+" title=">0, 2, <9999 etc" />
 					</td>
 					<td>
 						<input name="trigger[<?= $id ?>][color]" value="<?= html($trigger->color) ?>" class="color" />
@@ -164,10 +176,14 @@ $servers[0] = new Server;
 	var onBlur = function(e) {
 		setTimeout(() => this.size = 1, 111);
 	};
+	var onChange = function(e) {
+		this.nextElementSibling.textContent = this.selectedOptions.length;
+	};
 
 	document.querySelectorAll('select[multiple][size="1"]').forEach(function(el) {
 		el.addEventListener('focus', onFocus);
 		el.addEventListener('blur', onBlur);
+		el.addEventListener('change', onChange);
 	});
 })();
 </script>

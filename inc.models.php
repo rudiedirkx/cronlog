@@ -38,6 +38,16 @@ class Type extends Model {
 		return !empty($data['type']);
 	}
 
+	static public function presave( &$data ) {
+		parent::presave($data);
+
+		$handling = 0;
+		empty($data['handling_delete']) or $handling += 1;
+		empty($data['handling_notify']) or $handling += 2;
+		$data['handling'] = $handling;
+		unset($data['handling_delete'], $data['handling_notify']);
+	}
+
 	static public function findByToAndSubject( $address, $subject ) {
 		if ( self::$_all === null ) {
 			self::$_all = self::all('1');
@@ -59,6 +69,14 @@ class Type extends Model {
 		$subject = !$this->subject_regex || preg_match($this->subject_regex, $subject);
 
 		return $to &&  $subject;
+	}
+
+	protected function get_handling_delete() {
+		return ($this->handling & 1) > 0;
+	}
+
+	protected function get_handling_notify() {
+		return ($this->handling & 2) > 0;
 	}
 
 	protected function get_trigger_ids() {
@@ -89,6 +107,10 @@ class Trigger extends Model {
 
 	protected function get_type_ids() {
 		return self::$_db->select_fields(Trigger::TYPES_TABLE, 'type_id', array('trigger_id' => $this->id));
+	}
+
+	static public function presave( &$data ) {
+		parent::presave($data);
 	}
 
 	static public function validate( array $data ) {
@@ -190,8 +212,8 @@ class Result extends Model {
 
 	public function collate() {
 		if ( !$this->type ) return;
-
 		if ( !$this->type->triggers ) return;
+		if ( !$this->output ) return;
 
 		self::$_db->delete(self::TRIGGERS_TABLE, array('result_id' => $this->id));
 

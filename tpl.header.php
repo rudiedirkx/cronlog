@@ -30,6 +30,10 @@ input.regex {
 	font-family: monospace;
 	width: 20em;
 }
+input.expect {
+	width: 2em;
+	text-align: center;
+}
 input.color {
 	width: 4em;
 }
