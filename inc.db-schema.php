@@ -22,7 +22,6 @@ return array(
 		'triggers' => array(
 			'columns' => array(
 				'id' => array('pk' => true),
-				'type_id' => array('type' => 'int'),
 				'trigger',
 				'description',
 				'regex',
@@ -39,8 +38,8 @@ return array(
 		),
 		'triggers_types' => array(
 			'columns' => array(
-				'trigger_id' => array('type' => 'int'),
-				'type_id' => array('type' => 'int'),
+				'trigger_id' => array('type' => 'int', 'references' => array('triggers', 'id', 'cascade')),
+				'type_id' => array('type' => 'int', 'references' => array('types', 'id', 'cascade')),
 			),
 			'indexes' => array(
 				'trigger_type' => array(
@@ -59,19 +58,19 @@ return array(
 		'results' => array(
 			'columns' => array(
 				'id' => array('pk' => true),
+				'type_id' => array('type' => 'int', 'references' => array('types', 'id', 'cascade')),
+				'server_id' => array('type' => 'int', 'references' => array('servers', 'id', 'cascade')),
 				'sent' => array('type' => 'datetime'),
 				'from',
-				'server_id' => array('type' => 'int'),
 				'to',
-				'type_id' => array('type' => 'int'),
 				'subject',
 				'output',
 			),
 		),
 		'results_triggers' => array(
 			'columns' => array(
-				'trigger_id' => array('type' => 'int'),
-				'result_id' => array('type' => 'int'),
+				'trigger_id' => array('type' => 'int', 'references' => array('triggers', 'id', 'cascade')),
+				'result_id' => array('type' => 'int', 'references' => array('results', 'id', 'cascade')),
 				'amount' => array('type' => 'int'),
 			),
 			'indexes' => array(

@@ -150,11 +150,6 @@ class Trigger extends Model {
 
 		return $id;
 	}
-
-	public function delete() {
-		self::$_db->delete(Result::TRIGGERS_TABLE, array('trigger_id' => $this->id));
-		return parent::delete();
-	}
 }
 
 class Server extends Model {

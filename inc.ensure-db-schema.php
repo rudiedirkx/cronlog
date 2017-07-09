@@ -1,5 +1,7 @@
 <?php
 
+$db->execute('PRAGMA foreign_keys = ON');
+
 if ( $db->needsSchemaUpdate($schema) ) {
 	try {
 		$db->schema($schema);
