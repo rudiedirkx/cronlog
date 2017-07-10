@@ -39,6 +39,7 @@ include 'tpl.header.php';
 			<? endif ?>
 			<th>Origin</th>
 			<th>Date/time</th>
+			<th>Subject</th>
 			<th>Size</th>
 			<? if ($type): ?>
 				<? foreach ($type->triggers as $trigger): ?>
@@ -57,6 +58,7 @@ include 'tpl.header.php';
 				<? endif ?>
 				<td><?= html($result->server ?: '?') ?></td>
 				<td><a href="result.php?id=<?= $result->id ?>"><?= get_datetime($result->sent) ?></a></td>
+				<td><?= html($result->relevant_subject) ?></td>
 				<td><?= number_format(strlen($result->output), 0) ?></td>
 				<? if ($type): ?>
 					<? foreach ($type->triggers as $trigger):

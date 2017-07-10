@@ -184,10 +184,26 @@ class Result extends Model {
 
 	public static $_table = 'results';
 
-	protected function get_type() {
-		if ( $this->type_id ) {
-			return Type::find($this->type_id);
+	protected function get_relevant_subject() {
+		return $this->type->subject_regex ? $this->subject_subject : $this->generic_subject;
+	}
+
+	protected function get_subject_subject() {
+		if ( preg_match($this->type->subject_regex, $this->subject, $match) ) {
+			if ( isset($match[1]) ) {
+				return $match[1];
+			}
 		}
+
+		return $this->generic_subject;
+	}
+
+	protected function get_generic_subject() {
+		return trim(preg_replace('#^Cron\s+<.+?>\s+#i', '', $this->subject));
+	}
+
+	protected function get_type() {
+		return Type::find($this->type_id);
 	}
 
 	protected function get_server() {

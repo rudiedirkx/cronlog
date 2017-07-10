@@ -37,6 +37,8 @@ class DbImporterReader implements ImporterReader {
 			}
 		}
 
+		// @todo Keep track of import/batch #: YmdHis
+
 		$id = Result::insert($insert);
 		$result = Result::find($id);
 
