@@ -37,6 +37,15 @@ input.expect {
 input.color {
 	width: 4em;
 }
+
+.output {
+	font-family: monospace;
+	white-space: pre-wrap;
+}
+.output strong {
+	color: #c00;
+	background: #eee;
+}
 </style>
 </head>
 

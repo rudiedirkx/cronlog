@@ -105,6 +105,10 @@ class Trigger extends Model {
 
 	public static $_table = 'triggers';
 
+	protected function get_js_regex() {
+		return $this->regex[0] === '/';
+	}
+
 	protected function get_type_ids() {
 		return self::$_db->select_fields(Trigger::TYPES_TABLE, 'type_id', array('trigger_id' => $this->id));
 	}

@@ -46,7 +46,10 @@ include 'tpl.header.php';
 					<th valign="top" rowspan="<?= count($result->type->triggers) ?>">Triggers</th>
 				<? endif ?>
 				<td style="color: <?= html($trigger->color) ?>" title="<?= html($trigger->regex) ?>">
-					<?= html($trigger->description) ?>
+					<label>
+						<input type="checkbox" name="hilite" value="<?= html($trigger->regex) ?>" <?= $trigger->js_regex ? 'checked' : 'disabled' ?> />
+						<?= html($trigger->description) ?>
+					</label>
 				</td>
 				<td <? if ($amount > 0): ?>style="font-weight: bold; color: <?= html($trigger->color) ?>"<? endif ?>>
 					<?= $amount ?>
@@ -55,7 +58,41 @@ include 'tpl.header.php';
 		<? endforeach ?>
 		<tr>
 			<th valign="top">Output</th>
-			<td colspan="2" style="font-family: monospace; white-space: pre-line"><?= html($result->output) ?></td>
+			<td class="output" colspan="2"><?= html($result->output) ?></td>
 		</tr>
 	</tbody>
 </table>
+
+<script>
+(function() {
+	var $output = document.querySelector('.output');
+	var output = $output.innerHTML;
+
+	var hilite = function() {
+		var regexes = [].map.call(document.querySelectorAll('[name="hilite"]:checked'), (el) => el.value);
+		regexes = regexes.map(function(regex) {
+			var m = regex.match(/\/(.+)\/(i?)/);
+			return new RegExp(m[1], 'g' + m[2]);
+		});
+		console.log(regexes);
+
+		var hilitedOutput = output;
+		regexes.forEach(function(regex) {
+			hilitedOutput = hilitedOutput.replace(regex, function(m) {
+				return `<strong>${m}</strong>`;
+			});
+		});
+		$output.innerHTML = hilitedOutput;
+	};
+
+	var onChange = function(e) {
+		hilite();
+	};
+
+	document.querySelectorAll('[name="hilite"]').forEach(function(el) {
+		el.addEventListener('change', onChange);
+	});
+
+	hilite();
+})();
+</script>
