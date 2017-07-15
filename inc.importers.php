@@ -32,7 +32,7 @@ class EmailImporterCollector implements ImporterCollector {
 	}
 
 	public function collect( ImporterReader $reader ) {
-		$messages = $this->connect()->messages(array('seen' => false));
+		$messages = $this->connect()->messages(array('seen' => false, 'limit' => 50));
 		foreach ( $messages as $message ) {
 			$importer = $this->createImporter($message);
 			$reader->read($importer);
