@@ -50,8 +50,12 @@ include 'tpl.header.php';
 		</tr>
 	</thead>
 	<tbody>
-		<? foreach ($results as $result): ?>
-			<tr>
+		<? $prevDate = null;
+		foreach ($results as $result):
+			$newSection = $prevDate && substr($result->sent, 0, 10) != $prevDate;
+			$prevDate = substr($result->sent, 0, 10);
+			?>
+			<tr class="<?= $newSection ? 'next-section' : '' ?>">
 				<th><?= $result->id ?></th>
 				<? if (!$type): ?>
 					<td><a href="?type=<?= $result->type_id ?>"><?= html($result->type->description) ?></a></td>

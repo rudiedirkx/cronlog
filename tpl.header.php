@@ -22,6 +22,9 @@ th {
 tbody tr:nth-child(odd) {
 	background-color: #eee;
 }
+tr.next-section > * {
+	border-top: solid 3px black;
+}
 input.o {
 	width: 2em;
 	text-align: center;
