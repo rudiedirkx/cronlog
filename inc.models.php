@@ -224,9 +224,9 @@ class Result extends Model {
 	}
 
 	public function collate() {
-		if ( !$this->type ) return;
-		if ( !$this->type->triggers ) return;
-		if ( !$this->output ) return;
+		if ( !$this->type ) return 0;
+		if ( !$this->type->triggers ) return 0;
+		if ( !$this->output ) return 0;
 
 		self::$_db->delete(self::TRIGGERS_TABLE, array('result_id' => $this->id));
 
@@ -240,6 +240,8 @@ class Result extends Model {
 			);
 		}
 		self::$_db->inserts(self::TRIGGERS_TABLE, $inserts);
+
+		return count($inserts);
 	}
 
 	public function triggeredAmount( $triggerId ) {

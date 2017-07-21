@@ -50,12 +50,16 @@ include 'tpl.header.php';
 		</tr>
 	</thead>
 	<tbody>
-		<? $prevDate = null;
+		<? $prevDate = $prevBatch = null;
+		$batch = 1;
 		foreach ($results as $result):
 			$newSection = $prevDate && substr($result->sent, 0, 10) != $prevDate;
 			$prevDate = substr($result->sent, 0, 10);
+			$newBatch = $prevBatch && $result->batch != $prevBatch;
+			$prevBatch = $result->batch;
+			$batch += $newBatch;
 			?>
-			<tr class="<?= $newSection ? 'next-section' : '' ?>">
+			<tr class="<?= $newSection ? 'next-section' : '' ?> <?= $batch % 2 == 0 ? 'even-section' : 'odd-section' ?>">
 				<th><?= $result->id ?></th>
 				<? if (!$type): ?>
 					<td><a href="?type=<?= $result->type_id ?>"><?= html($result->type->description) ?></a></td>

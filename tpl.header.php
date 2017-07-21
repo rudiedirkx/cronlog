@@ -22,6 +22,12 @@ th {
 tbody tr:nth-child(odd) {
 	background-color: #eee;
 }
+tbody tr.even-section:nth-child(odd) {
+	background-color: hsl(39, 100%, 80%);
+}
+tbody tr.even-section:nth-child(even) {
+	background-color: hsl(60, 100%, 80%);
+}
 tr.next-section > * {
 	border-top: solid 3px black;
 }

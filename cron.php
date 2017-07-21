@@ -9,6 +9,15 @@ use rdx\cronlog\import\ImporterReader;
 require 'inc.bootstrap.php';
 
 class DbImporterReader implements ImporterReader {
+	protected $batch;
+
+	public $results = 0;
+	public $triggers = 0;
+
+	public function __construct() {
+		$this->batch = time();
+	}
+
 	public function read( Importer $importer ) {
 		$from = $importer->getFrom();
 		$to = $importer->getTo();
@@ -37,12 +46,12 @@ class DbImporterReader implements ImporterReader {
 			}
 		}
 
-		// @todo Keep track of import/batch #: YmdHis
-
+		$insert['batch'] = $this->batch;
 		$id = Result::insert($insert);
 		$result = Result::find($id);
 
-		$result->collate();
+		$this->results++;
+		$this->triggers += $result->collate();
 
 		return true;
 	}
@@ -56,5 +65,9 @@ $reader = new DbImporterReader;
 foreach ( $importers as $importer ) {
 	$importer->collect($reader);
 }
+
+echo "{$reader->results} results\n";
+echo "{$reader->triggers} triggers\n";
+echo "\n";
 
 print_r($db);
