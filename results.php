@@ -20,7 +20,7 @@ if ( isset($_GET['recollate']) ) {
 
 include 'tpl.header.php';
 
-$total = Result::count('1');
+$ids = array_flip(array_values($db->select_fields(Result::$_table, 'id', '1 ORDER BY sent DESC')));
 
 ?>
 
@@ -55,7 +55,6 @@ $total = Result::count('1');
 	<tbody>
 		<? $prevDate = $prevBatch = null;
 		$batch = 1;
-		$index = 0;
 		foreach ($results as $result):
 			$newSection = $prevDate && substr($result->sent, 0, 10) != $prevDate;
 			$prevDate = substr($result->sent, 0, 10);
@@ -64,13 +63,13 @@ $total = Result::count('1');
 			$batch += $newBatch;
 			?>
 			<tr class="<?= $newSection ? 'next-section' : '' ?> <?= $batch % 2 == 0 ? 'even-section' : 'odd-section' ?>">
-				<th align="right"><?= $total - ($index++) ?></th>
+				<th align="right"><?= $ids[$result->id]+1 ?></th>
 				<? if (!$type): ?>
 					<td><a href="?type=<?= $result->type_id ?>"><?= html($result->type->description) ?></a></td>
 				<? endif ?>
 				<td><?= html($result->relevant_subject) ?></td>
 				<td><?= html($result->server ?: '?') ?></td>
-				<td><a href="result.php?id=<?= $result->id ?>"><?= get_datetime($result->sent) ?></a></td>
+				<td><a title="Batch: <?= date('Y-m-d H:i:s', $result->batch) ?>" href="result.php?id=<?= $result->id ?>"><?= get_datetime($result->sent) ?></a></td>
 				<td><?= number_format(strlen($result->output), 0) ?></td>
 				<? if ($type): ?>
 					<? foreach ($type->triggers as $trigger):

@@ -23,10 +23,10 @@ tbody tr:nth-child(odd) {
 	background-color: #eee;
 }
 tbody tr.even-section:nth-child(odd) {
-	background-color: hsl(39, 100%, 80%);
+	background-color: hsl(39, 100%, 90%);
 }
 tbody tr.even-section:nth-child(even) {
-	background-color: hsl(60, 100%, 80%);
+	background-color: hsl(60, 100%, 90%);
 }
 tr.next-section > * {
 	border-top: solid 3px black;
