@@ -20,6 +20,8 @@ if ( isset($_GET['recollate']) ) {
 
 include 'tpl.header.php';
 
+$total = Result::count('1');
+
 ?>
 
 <h2>
@@ -33,7 +35,7 @@ include 'tpl.header.php';
 <table>
 	<thead>
 		<tr>
-			<th>#</th>
+			<th align="right">#</th>
 			<? if (!$type): ?>
 				<th>Type</th>
 			<? endif ?>
@@ -46,12 +48,14 @@ include 'tpl.header.php';
 					<th style="color: <?= html($trigger->color) ?>" title="<?= html($trigger->regex) ?>"><?= html($trigger->description) ?></th>
 				<? endforeach ?>
 			<? endif ?>
-			<th><a href="?type=<?= @$type->id ?>&recollate">recollate</a></th>
+			<th><a href="?type=<?= @$type->id ?>&recollate">Recollate</a></th>
+			<th>/day</th>
 		</tr>
 	</thead>
 	<tbody>
 		<? $prevDate = $prevBatch = null;
 		$batch = 1;
+		$index = 0;
 		foreach ($results as $result):
 			$newSection = $prevDate && substr($result->sent, 0, 10) != $prevDate;
 			$prevDate = substr($result->sent, 0, 10);
@@ -60,7 +64,7 @@ include 'tpl.header.php';
 			$batch += $newBatch;
 			?>
 			<tr class="<?= $newSection ? 'next-section' : '' ?> <?= $batch % 2 == 0 ? 'even-section' : 'odd-section' ?>">
-				<th><?= $result->id ?></th>
+				<th align="right"><?= $total - ($index++) ?></th>
 				<? if (!$type): ?>
 					<td><a href="?type=<?= $result->type_id ?>"><?= html($result->type->description) ?></a></td>
 				<? endif ?>
@@ -82,3 +86,29 @@ include 'tpl.header.php';
 		<? endforeach ?>
 	</tbody>
 </table>
+
+<script>
+(function() {
+	var sectionFirst = null;
+	var prev = null;
+	var sectionSize = 0;
+	var cell;
+	[].forEach.call(document.querySelectorAll('tbody tr'), function(tr) {
+		if (!sectionFirst) sectionFirst = tr;
+
+		if (tr.classList.contains('next-section')) {
+			cell = sectionFirst.insertCell(sectionFirst.cells.length);
+			cell.textContent = sectionSize;
+			if (prev != sectionFirst) {
+				cell = prev.insertCell(prev.cells.length);
+				cell.textContent = sectionSize;
+			}
+			sectionSize = 0;
+			sectionFirst = tr;
+		}
+
+		sectionSize++;
+		prev = tr;
+	});
+})();
+</script>

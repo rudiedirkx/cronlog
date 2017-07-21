@@ -16,7 +16,7 @@ th, td {
 	padding: 6px 9px;
 	border: solid 1px #ddd;
 }
-th {
+th:not([align]) {
 	text-align: left;
 }
 tbody tr:nth-child(odd) {
