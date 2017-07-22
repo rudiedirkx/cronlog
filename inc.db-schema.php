@@ -1,7 +1,7 @@
 <?php
 
 return array(
-	'version' => 19,
+	'version' => 21,
 	'tables' => array(
 		'types' => array(
 			'columns' => array(
@@ -65,6 +65,8 @@ return array(
 				'to',
 				'subject',
 				'output',
+				'output_size' => array('type' => 'int'),
+				'nominal' => array('type' => 'int', 'default' => null),
 				'batch' => array('type' => 'int'),
 			),
 		),
@@ -73,6 +75,7 @@ return array(
 				'trigger_id' => array('type' => 'int', 'references' => array('triggers', 'id', 'cascade')),
 				'result_id' => array('type' => 'int', 'references' => array('results', 'id', 'cascade')),
 				'amount' => array('type' => 'int'),
+				'nominal' => array('type' => 'int', 'default' => null),
 			),
 			'indexes' => array(
 				'trigger_result' => array(

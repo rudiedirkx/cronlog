@@ -47,11 +47,15 @@ class DbImporterReader implements ImporterReader {
 		}
 
 		$insert['batch'] = $this->batch;
+		$insert['output_size'] = strlen($output);
+
 		$id = Result::insert($insert);
 		$result = Result::find($id);
 
+		list($triggers, $nominals, $anominals) = $result->collate();
+
 		$this->results++;
-		$this->triggers += $result->collate();
+		$this->triggers += $triggers;
 
 		return true;
 	}

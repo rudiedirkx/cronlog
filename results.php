@@ -42,6 +42,7 @@ $ids = array_flip(array_values($db->select_fields(Result::$_table, 'id', '1 ORDE
 			<th>Subject</th>
 			<th>Origin</th>
 			<th>Date/time</th>
+			<th align="center">?</th>
 			<th>Size</th>
 			<? if ($type): ?>
 				<? foreach ($type->triggers as $trigger): ?>
@@ -70,7 +71,12 @@ $ids = array_flip(array_values($db->select_fields(Result::$_table, 'id', '1 ORDE
 				<td><?= html($result->relevant_subject) ?></td>
 				<td><?= html($result->server ?: '?') ?></td>
 				<td><a title="Batch: <?= date('Y-m-d H:i:s', $result->batch) ?>" href="result.php?id=<?= $result->id ?>"><?= get_datetime($result->sent) ?></a></td>
-				<td><?= number_format(strlen($result->output), 0) ?></td>
+				<td align="center">
+					<? if ($result->nominal !== null): ?>
+						<img src="<?= $result->nominal ? 'yes' : 'no' ?>.gif" />
+					<? endif ?>
+				</td>
+				<td><?= number_format($result->output_size, 0) ?></td>
 				<? if ($type): ?>
 					<? foreach ($type->triggers as $trigger):
 						$amount = $result->triggeredAmount($trigger->id);

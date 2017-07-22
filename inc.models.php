@@ -132,6 +132,22 @@ class Trigger extends Model {
 		}
 	}
 
+	public function evalNominality( $matches ) {
+		if ( trim($this->expect) === '' ) return null;
+
+		$expect = $this->expect;
+		$num = trim($expect, '<>');
+
+		if ( $expect[0] === '<' ) {
+			return $matches < $num;
+		}
+		elseif ( $expect[0] === '>' ) {
+			return $matches > $num;
+		}
+
+		return $matches == $num;
+	}
+
 	public function update( $data ) {
 		$types = null;
 		if ( is_array($data) ) {
@@ -224,24 +240,37 @@ class Result extends Model {
 	}
 
 	public function collate() {
-		if ( !$this->type ) return 0;
-		if ( !$this->type->triggers ) return 0;
-		if ( !$this->output ) return 0;
+		if ( !$this->type ) return [0, 0, 0];
+		if ( !$this->type->triggers ) return [0, 0, 0];
+		if ( !$this->output ) return [0, 0, 0];
 
 		self::$_db->delete(self::TRIGGERS_TABLE, array('result_id' => $this->id));
 
 		$inserts = array();
+		$nominals = [0, 0];
 		foreach ( $this->type->triggers as $trigger ) {
 			$matches = preg_match_all($trigger->regex, $this->output);
+			$nominal = $trigger->evalNominality($matches);
+			if ( $nominal !== null ) {
+				$nominals[(int) $nominal]++;
+			}
+
 			$inserts[] = array(
 				'trigger_id' => $trigger->id,
 				'result_id' => $this->id,
 				'amount' => $matches,
+				'nominal' => $nominal === null ? null : (int) $nominal,
 			);
 		}
 		self::$_db->inserts(self::TRIGGERS_TABLE, $inserts);
 
-		return count($inserts);
+		$nominal = !$nominals[0] && !$nominals[1] ? null : (int) ($nominals[0] == 0);
+
+		$update = array('nominal' => $nominal);
+		// @todo Remove output?
+		$this->update($update);
+
+		return [count($inserts), $nominals[1], $nominals[0]];
 	}
 
 	public function triggeredAmount( $triggerId ) {
