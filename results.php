@@ -72,14 +72,16 @@ $ids = array_flip(array_values($db->select_fields(Result::$_table, 'id', '1 ORDE
 				<td><?= html($result->server ?: '?') ?></td>
 				<td><a title="Batch: <?= date('Y-m-d H:i:s', $result->batch) ?>" href="result.php?id=<?= $result->id ?>"><?= get_datetime($result->sent) ?></a></td>
 				<td align="center">
-					<? if ($result->nominal !== null): ?>
-						<img src="<?= $result->nominal ? 'yes' : 'no' ?>.gif" />
+					<? if ($result->is_nominal === true): ?>
+						<img src="yes.gif" title="Meets all the expected values" />
+					<? elseif ($result->is_nominal === false): ?>
+						<img src="warning.png" title="Does NOT meet all the expected values!" />
 					<? endif ?>
 				</td>
 				<td><?= number_format($result->output_size, 0) ?></td>
 				<? if ($type): ?>
 					<? foreach ($type->triggers as $trigger):
-						$amount = $result->triggeredAmount($trigger->id);
+						list($amount, $nominal) = $result->triggered($trigger->id);
 						?>
 						<td <? if ($amount > 0): ?>style="font-weight: bold; color: <?= html($trigger->color) ?>"<? endif ?>>
 							<?= $amount ?>
@@ -117,3 +119,7 @@ $ids = array_flip(array_values($db->select_fields(Result::$_table, 'id', '1 ORDE
 	});
 })();
 </script>
+
+<?php
+
+include 'tpl.footer.php';

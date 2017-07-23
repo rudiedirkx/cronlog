@@ -35,11 +35,16 @@ include 'tpl.header.php';
 		</tr>
 		<tr>
 			<th>Date/time</th>
-			<td colspan="2"><?= html($result->sent) ?></td>
+			<td colspan="2">
+				<? if ($result->is_nominal === false): ?>
+					<img src="warning.png" title="Does not meet the expected values" />
+				<? endif ?>
+				<?= html($result->sent) ?>
+			</td>
 		</tr>
 		<? $first = 1;
 		foreach ($result->type->triggers as $trigger):
-			$amount = $result->triggeredAmount($trigger->id);
+			list($amount, $nominal) = $result->triggered($trigger->id);
 			?>
 			<tr>
 				<? if ($first-- > 0): ?>
@@ -51,7 +56,10 @@ include 'tpl.header.php';
 						<?= html($trigger->description) ?>
 					</label>
 				</td>
-				<td <? if ($amount > 0): ?>style="font-weight: bold; color: <?= html($trigger->color) ?>"<? endif ?>>
+				<td <? if ($amount > 0): ?>style="font-weight: bold; color: <?= html($trigger->color) ?>"<? endif ?> width="100%">
+					<? if ($nominal === false): ?>
+						<img src="warning.png" title="Does not meet the expected value `<?= $trigger->expect ?>`" />
+					<? endif ?>
 					<?= $amount ?>
 				</td>
 			</tr>
@@ -99,3 +107,7 @@ include 'tpl.header.php';
 	hilite();
 })();
 </script>
+
+<?php
+
+include 'tpl.footer.php';

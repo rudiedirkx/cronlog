@@ -230,8 +230,17 @@ class Result extends Model {
 		}
 	}
 
+	protected function get_is_nominal() {
+		return $this->nominal === null ? null : (bool) $this->nominal;
+	}
+
 	protected function get_triggers() {
-		return self::$_db->select_by_field(self::TRIGGERS_TABLE, 'trigger_id', array('result_id' => $this->id))->all();
+		return self::$_db->select_by_field(self::TRIGGERS_TABLE, 'trigger_id', array('result_id' => $this->id))
+			->map(function($record) {
+				$record->is_nominal = $record->nominal === null ? null : (bool) $record->nominal;
+				return $record;
+			})
+			->all();
 	}
 
 	public function delete() {
@@ -273,12 +282,13 @@ class Result extends Model {
 		return [count($inserts), $nominals[1], $nominals[0]];
 	}
 
-	public function triggeredAmount( $triggerId ) {
+	public function triggered( $triggerId ) {
 		$triggers = $this->triggers;
 		if ( isset($triggers[$triggerId]) )  {
-			return $triggers[$triggerId]->amount;
+			$trigger = $triggers[$triggerId];
+			return [$trigger->amount, $trigger->is_nominal];
 		}
 
-		return '?';
+		return ['?', false];
 	}
 }

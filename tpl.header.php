@@ -52,7 +52,6 @@ input.color {
 	white-space: pre-wrap;
 }
 .output strong {
-	color: #c00;
 	background: #eee;
 }
 </style>

@@ -187,3 +187,7 @@ $servers[0] = new Server;
 	});
 })();
 </script>
+
+<?php
+
+include 'tpl.footer.php';
