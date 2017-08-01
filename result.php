@@ -30,6 +30,10 @@ include 'tpl.header.php';
 			<td colspan="2"><a href="results.php?type=<?= $result->type_id ?>"><?= html($result->type->description) ?></a></td>
 		</tr>
 		<tr>
+			<th>Subject</th>
+			<td colspan="2"><?= html($result->relevant_subject) ?></td>
+		</tr>
+		<tr>
 			<th>Origin</th>
 			<td colspan="2"><?= html($result->server ?: '?') ?></td>
 		</tr>
