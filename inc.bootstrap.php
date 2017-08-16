@@ -9,7 +9,6 @@ require WHERE_DB_GENERIC_AT . '/db_sqlite.php';
 
 $db = db_sqlite::open(array('database' => CRONLOG_DB_DIR . '/cronlog.sqlite3'));
 
-$schema = require 'inc.db-schema.php';
 require 'inc.ensure-db-schema.php';
 
 require 'vendor/autoload.php';

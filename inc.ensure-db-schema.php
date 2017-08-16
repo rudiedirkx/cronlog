@@ -2,6 +2,7 @@
 
 $db->execute('PRAGMA foreign_keys = ON');
 
+$schema = require 'inc.db-schema.php';
 if ( $db->needsSchemaUpdate($schema) ) {
 	try {
 		$db->schema($schema);
