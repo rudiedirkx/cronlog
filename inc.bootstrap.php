@@ -3,6 +3,8 @@
 use rdx\cronlog\import\EmailImporterCollector;
 use rdx\cronlog\import\FileImporterCollector;
 
+chdir(__DIR__);
+
 require 'env.php';
 
 require WHERE_DB_GENERIC_AT . '/db_sqlite.php';
