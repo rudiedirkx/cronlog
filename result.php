@@ -31,11 +31,11 @@ include 'tpl.header.php';
 		</tr>
 		<tr>
 			<th>Subject</th>
-			<td colspan="2"><?= html($result->relevant_subject) ?></td>
+			<td colspan="2"><code><?= html($result->relevant_subject) ?></code></td>
 		</tr>
 		<tr>
-			<th>Origin</th>
-			<td colspan="2"><?= html($result->server ?: '?') ?></td>
+			<th>Server</th>
+			<td colspan="2"><?= html($result->server ?: '?') ?> (<?= html($result->from) ?>)</td>
 		</tr>
 		<tr>
 			<th>Date/time</th>

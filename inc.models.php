@@ -275,8 +275,16 @@ class Result extends Model {
 
 		$nominal = !$nominals[0] && !$nominals[1] ? null : (int) ($nominals[0] == 0);
 
-		$update = array('nominal' => $nominal);
+		$update = [
+			'nominal' => $nominal,
+		];
+
+		if ( $server = Server::findByFrom($this->from) ) {
+			$update['server_id'] = $server->id;
+		}
+
 		// @todo Remove output?
+
 		$this->update($update);
 
 		return [count($inserts), $nominals[1], $nominals[0]];

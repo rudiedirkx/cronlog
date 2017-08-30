@@ -40,7 +40,7 @@ $ids = array_flip(array_values($db->select_fields(Result::$_table, 'id', '1 ORDE
 				<th>Type</th>
 			<? endif ?>
 			<th>Subject</th>
-			<th>Origin</th>
+			<th>Server</th>
 			<th>Date/time</th>
 			<th align="center">?</th>
 			<th>Size</th>
@@ -68,7 +68,7 @@ $ids = array_flip(array_values($db->select_fields(Result::$_table, 'id', '1 ORDE
 				<? if (!$type): ?>
 					<td><a href="?type=<?= $result->type_id ?>"><?= html($result->type->description) ?></a></td>
 				<? endif ?>
-				<td><?= html($result->relevant_subject) ?></td>
+				<td><code><?= html($result->relevant_subject) ?></code></td>
 				<td><?= html($result->server ?: '?') ?></td>
 				<td><a title="Batch: <?= date('Y-m-d H:i:s', $result->batch) ?>" href="result.php?id=<?= $result->id ?>"><?= get_datetime($result->sent) ?></a></td>
 				<td align="center">
@@ -88,7 +88,7 @@ $ids = array_flip(array_values($db->select_fields(Result::$_table, 'id', '1 ORDE
 						</td>
 					<? endforeach ?>
 				<? endif ?>
-				<td><a href="result.php?id=<?= $result->id ?>&recollate&goto=results.php?type=<?= $type->id ?>">recollate</a></td>
+				<td><a href="result.php?id=<?= $result->id ?>&recollate&goto=results.php?type=<?= $result->type->id ?>">recollate</a></td>
 			</tr>
 		<? endforeach ?>
 	</tbody>

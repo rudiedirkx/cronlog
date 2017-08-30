@@ -33,10 +33,6 @@ class DbImporterReader implements ImporterReader {
 		}
 		$insert['type_id'] = $type->id;
 
-		if ( $server = Server::findByFrom($from) ) {
-			$insert['server_id'] = $server->id;
-		}
-
 		if ( CRONLOG_DELETE_IMPORTS ) {
 			try {
 				$importer->delete();
