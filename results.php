@@ -7,7 +7,7 @@ require 'inc.bootstrap.php';
 
 $type = Type::find(@$_GET['type']);
 
-$results = $type ? $type->results : Result::all('1 ORDER BY sent DESC');
+$results = $type ? $type->results : Result::all('1 ORDER BY sent DESC LIMIT 1000');
 
 if ( isset($_GET['recollate']) ) {
 	foreach ( $results as $result ) {
