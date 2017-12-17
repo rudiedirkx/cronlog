@@ -3,7 +3,8 @@
     "description": "Statistics from cron logs",
     "type": "project",
     "require": {
-        "rdx/imap": "^2.0"
+        "rdx/db": "^1.2",
+        "rdx/imap": "^2.3"
     },
     "autoload": {
         "psr-4": {
@@ -17,5 +18,7 @@
             "email": "github@hotblocks.nl"
         }
     ],
-    "minimum-stability": "dev"
+    "config": {
+        "sort-packages": true
+    }
 }

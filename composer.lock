@@ -4,22 +4,59 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "ff39632935201daeda6f6d826df58e3d",
-    "content-hash": "8cce2acce786f2cbe4a51ae9da06e6d8",
+    "content-hash": "087b0cb12cfcd066eaa7f1c55f3b9eba",
     "packages": [
         {
-            "name": "rdx/imap",
-            "version": "2.0.3",
+            "name": "rdx/db",
+            "version": "1.2",
             "source": {
                 "type": "git",
-                "url": "https://github.com/rudiedirkx/IMAP-reader.git",
-                "reference": "8ca8f6808db6f9409e74b94dc9a0fbdcf5645786"
+                "url": "https://github.com/rudiedirkx/db_generic.git",
+                "reference": "30d881dbd7e2f0d7969c7821ce214522ff658657"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/rudiedirkx/IMAP-reader/zipball/8ca8f6808db6f9409e74b94dc9a0fbdcf5645786",
-                "reference": "8ca8f6808db6f9409e74b94dc9a0fbdcf5645786",
+                "url": "https://api.github.com/repos/rudiedirkx/db_generic/zipball/30d881dbd7e2f0d7969c7821ce214522ff658657",
+                "reference": "30d881dbd7e2f0d7969c7821ce214522ff658657",
                 "shasum": ""
+            },
+            "type": "library",
+            "autoload": {
+                "classmap": [
+                    "db_generic.php",
+                    "db_mysql.php",
+                    "db_sqlite.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Rudie Dirkx",
+                    "email": "github@hotblocks.nl"
+                }
+            ],
+            "description": "Simple MySQL/SQLite wrapper",
+            "time": "2017-11-20T11:08:45+00:00"
+        },
+        {
+            "name": "rdx/imap",
+            "version": "2.3",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/rudiedirkx/IMAP-reader.git",
+                "reference": "bc99362e14c8472acec689869cee3f20402d9dba"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/rudiedirkx/IMAP-reader/zipball/bc99362e14c8472acec689869cee3f20402d9dba",
+                "reference": "bc99362e14c8472acec689869cee3f20402d9dba",
+                "shasum": ""
+            },
+            "require": {
+                "ext-imap": "*"
             },
             "type": "library",
             "autoload": {
@@ -38,12 +75,12 @@
                 }
             ],
             "description": "Reads and parses e-mail from an IMAP/POP3 source",
-            "time": "2016-04-03 12:35:55"
+            "time": "2017-11-20T11:16:59+00:00"
         }
     ],
     "packages-dev": [],
     "aliases": [],
-    "minimum-stability": "dev",
+    "minimum-stability": "stable",
     "stability-flags": [],
     "prefer-stable": false,
     "prefer-lowest": false,
