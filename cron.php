@@ -12,6 +12,7 @@ class DbImporterReader implements ImporterReader {
 	protected $batch;
 
 	public $results = 0;
+	public $anominals = 0;
 	public $triggers = 0;
 
 	public function __construct() {
@@ -51,6 +52,9 @@ class DbImporterReader implements ImporterReader {
 		list($triggers, $nominals, $anominals) = $result->collate();
 
 		$this->results++;
+		if ( $anominals > 0 ) {
+			$this->anominals++;
+		}
 		$this->triggers += $triggers;
 
 		return true;
@@ -66,8 +70,15 @@ foreach ( $importers as $importer ) {
 	$importer->collect($reader);
 }
 
-echo "{$reader->results} results\n";
-echo "{$reader->triggers} triggers\n";
-echo "\n";
+$log  = "";
+$log .= "{$reader->results} results\n";
+$log .= "{$reader->anominals} of which are anominal\n";
+$log .= "{$reader->triggers} triggers\n";
+$log .= count($db->queries) . " queries\n";
 
-print_r($db);
+if ( CRONLOG_EMAIL_RESULTS ) {
+	$subject = "{$reader->results} cron results imported, {$reader->anominals} anominal";
+	mail(CRONLOG_EMAIL_RESULTS, $subject, $log, "From: Devver <devver@hotblocks.nl>");
+}
+
+echo "$log\n\n";
