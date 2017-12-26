@@ -41,10 +41,9 @@ class Type extends Model {
 	static public function presave( &$data ) {
 		parent::presave($data);
 
-		$handling = 0;
-		empty($data['handling_delete']) or $handling += 1;
-		empty($data['handling_notify']) or $handling += 2;
-		$data['handling'] = $handling;
+		$data['handling'] = 0;
+		empty($data['handling_delete']) or $data['handling'] += 1;
+		empty($data['handling_notify']) or $data['handling'] += 2;
 		unset($data['handling_delete'], $data['handling_notify']);
 	}
 
@@ -283,7 +282,9 @@ class Result extends Model {
 			$update['server_id'] = $server->id;
 		}
 
-		// @todo Remove output?
+		if ( $nominal === 1 && $this->type->handling_delete ) {
+			$update['output'] = '';
+		}
 
 		$this->update($update);
 

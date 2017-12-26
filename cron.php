@@ -72,7 +72,7 @@ foreach ( $importers as $importer ) {
 
 $log  = "";
 $log .= "{$reader->results} results\n";
-$log .= "{$reader->anominals} of which are anominal\n";
+$log .= "{$reader->anominals} of which are anominal\n\n";
 $log .= "{$reader->triggers} triggers\n";
 $log .= count($db->queries) . " queries\n";
 

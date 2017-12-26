@@ -78,7 +78,9 @@ $ids = array_flip(array_values($db->select_fields(Result::$_table, 'id', '1 ORDE
 						<img src="warning.png" title="Does NOT meet all the expected values!" />
 					<? endif ?>
 				</td>
-				<td><?= number_format($result->output_size, 0) ?></td>
+				<td style="<?= strlen($result->output) == 0 ? 'text-decoration: line-through' : '' ?>">
+					<?= number_format($result->output_size, 0) ?>
+				</td>
 				<? if ($type): ?>
 					<? foreach ($type->triggers as $trigger):
 						list($amount, $nominal) = $result->triggered($trigger->id);
