@@ -81,7 +81,9 @@ include 'tpl.header.php';
 	var output = $output.innerHTML;
 
 	var hilite = function() {
-		var regexes = [].map.call(document.querySelectorAll('[name="hilite"]:checked'), (el) => el.value);
+		var regexes = [].map.call(document.querySelectorAll('[name="hilite"]:checked'), function(el) {
+			return el.value;
+		});
 		regexes = regexes.map(function(attr) {
 			var x = attr.split(',');
 			var color = x.shift();
@@ -89,12 +91,11 @@ include 'tpl.header.php';
 			var m = regex.match(/\/(.+)\/(i?)/);
 			return [color, new RegExp(m[1], 'g' + m[2])];
 		});
-		console.log(regexes);
 
 		var hilitedOutput = output;
-		regexes.forEach(function([color, regex]) {
-			hilitedOutput = hilitedOutput.replace(regex, function(m) {
-				return `<strong style="color: ${color}">${m}</strong>`;
+		regexes.forEach(function(trigger) {
+			hilitedOutput = hilitedOutput.replace(trigger[1], function(m) {
+				return '<strong style="color: ' + trigger[0] + '">' + m + '</strong>';
 			});
 		});
 		$output.innerHTML = hilitedOutput;
@@ -104,7 +105,7 @@ include 'tpl.header.php';
 		hilite();
 	};
 
-	document.querySelectorAll('[name="hilite"]').forEach(function(el) {
+	[].forEach.call(document.querySelectorAll('[name="hilite"]'), function(el) {
 		el.addEventListener('change', onChange);
 	});
 
