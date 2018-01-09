@@ -71,6 +71,7 @@ foreach ( $importers as $importer ) {
 }
 
 $log  = "";
+$log .= CRONLOG_URI . "results.php\n\n";
 $log .= "{$reader->results} results\n";
 $log .= "{$reader->anominals} of which are anominal\n\n";
 $log .= "{$reader->triggers} triggers\n";

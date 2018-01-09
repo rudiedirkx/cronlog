@@ -2,6 +2,8 @@
 
 define('CRONLOG_DB_DIR', __DIR__ . '/db');
 
+define('CRONLOG_URI', 'https://cronlog.example.com/');
+
 define('CRONLOG_DELETE_IMPORTS', true);
 define('CRONLOG_EMAIL_RESULTS', null);
 
