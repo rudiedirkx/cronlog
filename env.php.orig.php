@@ -1,12 +1,12 @@
 <?php
 
-define('CRONLOG_DB_DIR', __DIR__ . '/db');
+const CRONLOG_DB_DIR = __DIR__ . '/db';
 
-define('CRONLOG_URI', 'https://cronlog.example.com/');
+const CRONLOG_URI = 'https://cronlog.example.com/';
 
-define('CRONLOG_DELETE_IMPORTS', true);
-define('CRONLOG_EMAIL_RESULTS', null);
+const CRONLOG_DELETE_IMPORTS = true;
+const CRONLOG_EMAIL_RESULTS = null;
 
-define('CRONLOG_MAIL_SERVER', '');
-define('CRONLOG_MAIL_USER', '');
-define('CRONLOG_MAIL_PASS', '');
+const CRONLOG_MAIL_SERVER = '';
+const CRONLOG_MAIL_USER = '';
+const CRONLOG_MAIL_PASS = '';
