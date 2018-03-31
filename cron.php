@@ -11,6 +11,7 @@ require 'inc.bootstrap.php';
 class DbImporterReader implements ImporterReader {
 	protected $batch;
 
+	public $skipped = 0;
 	public $results = 0;
 	public $anominals = 0;
 	public $triggers = 0;
@@ -30,6 +31,7 @@ class DbImporterReader implements ImporterReader {
 
 		$type = Type::findByToAndSubject($to, $subject);
 		if ( !$type ) {
+			$this->skipped++;
 			return false;
 		}
 		$insert['type_id'] = $type->id;
@@ -70,8 +72,10 @@ foreach ( $importers as $importer ) {
 	$importer->collect($reader);
 }
 
+$skipped = $reader->skipped ? " ({$reader->skipped} skipped)" : '';
+
 $log  = "";
-$log .= "{$reader->results} results\n";
+$log .= "{$reader->results} results{$skipped}\n";
 $log .= "{$reader->anominals} of which are anominal\n\n";
 $log .= CRONLOG_URI . "results.php\n\n";
 $log .= "{$reader->triggers} triggers\n";
