@@ -1,5 +1,6 @@
 <?php
 
+use rdx\cronlog\Type;
 use rdx\cronlog\import\Importer;
 use rdx\cronlog\import\ImporterReader;
 
@@ -20,10 +21,12 @@ class PreviewImporterReader implements ImporterReader {
 			return;
 		}
 
-		$this->results[] = [$sent, $from, $to, $subject, $type];
+		$this->results[] = [$type->description, $sent, $from, $to, $subject];
 	}
 
 }
+
+header('Content-type: text/plain; charset=utf-8');
 
 $reader = new PreviewImporterReader;
 foreach ( $importers as $importer ) {

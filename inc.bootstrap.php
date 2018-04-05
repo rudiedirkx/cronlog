@@ -12,13 +12,7 @@ $db = db_sqlite::open(array('database' => CRONLOG_DB_DIR . '/cronlog.sqlite3'));
 
 require 'inc.ensure-db-schema.php';
 
-require 'inc.functions.php';
-
 db_generic_model::$_db = $db;
-
-require 'inc.models.php';
-
-require 'inc.importers.php';
 
 $importers = array(
 	// new FileImporterCollector(__DIR__ . '/input', 'y-*.eml'),

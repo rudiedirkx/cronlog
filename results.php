@@ -1,7 +1,7 @@
 <?php
 
-use rdx\cronlog\data\Result;
-use rdx\cronlog\data\Type;
+use rdx\cronlog\Result;
+use rdx\cronlog\Type;
 
 require 'inc.bootstrap.php';
 
@@ -107,10 +107,10 @@ $ids = array_flip(array_values($db->select_fields(Result::$_table, 'id', '1 ORDE
 
 		if (tr.classList.contains('next-section')) {
 			cell = sectionFirst.insertCell(sectionFirst.cells.length);
-			cell.textContent = sectionSize;
+			cell.innerHTML = `<a href="results-compare.php">${sectionSize}</a>`;
 			if (prev != sectionFirst) {
 				cell = prev.insertCell(prev.cells.length);
-				cell.textContent = sectionSize;
+				cell.innerHTML = `<a href="results-compare.php">${sectionSize}</a>`;
 			}
 			sectionSize = 0;
 			sectionFirst = tr;

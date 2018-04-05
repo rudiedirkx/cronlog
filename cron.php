@@ -1,8 +1,8 @@
 <?php
 
-use rdx\cronlog\data\Result;
-use rdx\cronlog\data\Server;
-use rdx\cronlog\data\Type;
+use rdx\cronlog\Result;
+use rdx\cronlog\Server;
+use rdx\cronlog\Type;
 use rdx\cronlog\import\Importer;
 use rdx\cronlog\import\ImporterReader;
 

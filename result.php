@@ -1,6 +1,6 @@
 <?php
 
-use rdx\cronlog\data\Result;
+use rdx\cronlog\Result;
 
 require 'inc.bootstrap.php';
 

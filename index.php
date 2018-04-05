@@ -1,8 +1,8 @@
 <?php
 
-use rdx\cronlog\data\Server;
-use rdx\cronlog\data\Trigger;
-use rdx\cronlog\data\Type;
+use rdx\cronlog\Server;
+use rdx\cronlog\Trigger;
+use rdx\cronlog\Type;
 
 require 'inc.bootstrap.php';
 
