@@ -64,6 +64,17 @@ class Result extends Model {
 		return parent::delete();
 	}
 
+	public function retype() {
+		$type = Type::findByToAndSubject($this->to, $this->subject);
+		if ( $type ) {
+			$this->update(['type_id' => $type->id]);
+			$this->type = $type;
+			return true;
+		}
+
+		return false;
+	}
+
 	public function collate() {
 		if ( !$this->type ) return [0, 0, 0];
 		if ( !$this->type->triggers ) return [0, 0, 0];

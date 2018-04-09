@@ -5,7 +5,7 @@ namespace rdx\cronlog;
 class Type extends Model {
 	public static $_table = 'types';
 
-	public static $_all;
+	protected static $_all;
 
 	static public function validate( array $data ) {
 		self::presave($data);
@@ -19,11 +19,13 @@ class Type extends Model {
 		empty($data['handling_delete']) or $data['handling'] += 1;
 		empty($data['handling_notify']) or $data['handling'] += 2;
 		unset($data['handling_delete'], $data['handling_notify']);
+
+		$data['enabled'] = (int) !empty($data['enabled']);
 	}
 
 	static public function findByToAndSubject( $address, $subject ) {
 		if ( self::$_all === null ) {
-			self::$_all = self::all('1');
+			self::$_all = self::all(['enabled' => 1]);
 		}
 
 		foreach ( self::$_all as $type ) {

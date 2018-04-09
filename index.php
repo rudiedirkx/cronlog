@@ -24,7 +24,7 @@ if ( isset($_POST['trigger']) ) {
 include 'tpl.header.php';
 
 $types = Type::all('1 ORDER BY type');
-$types[0] = new Type;
+$types[0] = new Type(['enabled' => 1]);
 
 $triggers = Trigger::all('1 ORDER BY o, trigger');
 $triggers[0] = new Trigger;
@@ -41,6 +41,7 @@ $servers[0] = new Server;
 		<thead>
 			<tr>
 				<th>#</th>
+				<th></th>
 				<th>Type</th>
 				<th>Description</th>
 				<th><code>To</code> regex</th>
@@ -54,6 +55,9 @@ $servers[0] = new Server;
 			<? foreach ($types as $id => $type): ?>
 				<tr>
 					<th><?= $id ?: '' ?></th>
+					<td>
+						<input type="checkbox" name="type[<?= $id ?>][enabled]" <?= $type->enabled ? 'checked' : '' ?> />
+					</td>
 					<td>
 						<input name="type[<?= $id ?>][type]" value="<?= html($type->type) ?>" />
 					</td>
@@ -107,6 +111,7 @@ $servers[0] = new Server;
 					<th><?= $id ?: '' ?></th>
 					<td>
 						<select multiple size="1" name="trigger[<?= $id ?>][type_ids][]">
+							<option value="">--</option>
 							<?= html_options(array_diff_key($types, [0]), $trigger->type_ids) ?>
 						</select>
 						<? if ($id): ?>

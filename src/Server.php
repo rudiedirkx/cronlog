@@ -5,7 +5,7 @@ namespace rdx\cronlog;
 class Server extends Model {
 	public static $_table = 'servers';
 
-	public static $_all;
+	protected static $_all;
 
 	static public function validate( array $data ) {
 		self::presave($data);

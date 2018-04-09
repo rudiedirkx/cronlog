@@ -1,7 +1,7 @@
 <?php
 
 return array(
-	'version' => 21,
+	'version' => 22,
 	'tables' => array(
 		'types' => array(
 			'columns' => array(
@@ -11,6 +11,7 @@ return array(
 				'to_regex',
 				'subject_regex',
 				'handling' => array('type' => 'int', 'default' => 0),
+				'enabled' => array('type' => 'int', 'default' => 1),
 			),
 			'indexes' => array(
 				'type' => array(

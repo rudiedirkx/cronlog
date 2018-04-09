@@ -11,7 +11,7 @@ if ( !($result = Result::find(@$_GET['id'])) ) {
 }
 
 if ( isset($_GET['recollate']) ) {
-	$result->collate();
+	$result->retype() && $result->collate();
 
 	$goto = @$_GET['goto'] ?: 'result.php?id=' . $result->id;
 	return do_redirect($goto);

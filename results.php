@@ -11,7 +11,7 @@ $results = $type ? $type->results : Result::all('1 ORDER BY sent DESC LIMIT 1000
 
 if ( isset($_GET['recollate']) ) {
 	foreach ( $results as $result ) {
-		$result->collate();
+		$result->retype() && $result->collate();
 	}
 
 	$query = $type ? "?type={$type->id}" : '';
