@@ -4,20 +4,20 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "087b0cb12cfcd066eaa7f1c55f3b9eba",
+    "content-hash": "d765ea1d7785f6dc998bb2354229089f",
     "packages": [
         {
             "name": "rdx/db",
-            "version": "1.2",
+            "version": "1.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/rudiedirkx/db_generic.git",
-                "reference": "30d881dbd7e2f0d7969c7821ce214522ff658657"
+                "reference": "abc8ed35cfa2529e111d3f134b09ce66652fe170"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/rudiedirkx/db_generic/zipball/30d881dbd7e2f0d7969c7821ce214522ff658657",
-                "reference": "30d881dbd7e2f0d7969c7821ce214522ff658657",
+                "url": "https://api.github.com/repos/rudiedirkx/db_generic/zipball/abc8ed35cfa2529e111d3f134b09ce66652fe170",
+                "reference": "abc8ed35cfa2529e111d3f134b09ce66652fe170",
                 "shasum": ""
             },
             "type": "library",
@@ -39,19 +39,19 @@
                 }
             ],
             "description": "Simple MySQL/SQLite wrapper",
-            "time": "2017-11-20T11:08:45+00:00"
+            "time": "2018-04-08T20:57:55+00:00"
         },
         {
             "name": "rdx/imap",
             "version": "2.3",
             "source": {
                 "type": "git",
-                "url": "https://github.com/rudiedirkx/IMAP-reader.git",
+                "url": "https://github.com/rudiedirkx/imap-reader.git",
                 "reference": "bc99362e14c8472acec689869cee3f20402d9dba"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/rudiedirkx/IMAP-reader/zipball/bc99362e14c8472acec689869cee3f20402d9dba",
+                "url": "https://api.github.com/repos/rudiedirkx/imap-reader/zipball/bc99362e14c8472acec689869cee3f20402d9dba",
                 "reference": "bc99362e14c8472acec689869cee3f20402d9dba",
                 "shasum": ""
             },

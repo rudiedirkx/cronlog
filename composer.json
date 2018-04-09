@@ -3,7 +3,7 @@
     "description": "Statistics from cron logs",
     "type": "project",
     "require": {
-        "rdx/db": "^1.2",
+        "rdx/db": "^1.6",
         "rdx/imap": "^2.3"
     },
     "autoload": {
