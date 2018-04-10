@@ -6,6 +6,11 @@ use rdx\cronlog\Type;
 use rdx\cronlog\import\Importer;
 use rdx\cronlog\import\ImporterReader;
 
+if ( php_sapi_name() !== 'cli' ) {
+	echo "Must be run on CLI.\n";
+	exit(1);
+}
+
 require 'inc.bootstrap.php';
 
 class DbImporterReader implements ImporterReader {

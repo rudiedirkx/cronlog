@@ -9,6 +9,7 @@ require 'inc.bootstrap.php';
 class PreviewImporterReader implements ImporterReader {
 
 	public $results = [];
+	public $ignored = [];
 
 	public function read( Importer $importer ) {
 		$from = $importer->getFrom();
@@ -18,10 +19,20 @@ class PreviewImporterReader implements ImporterReader {
 
 		$type = Type::findByToAndSubject($to, $subject);
 		if ( !$type ) {
+			$this->ignored[] = [
+				'to' => $to,
+				'subject' => $subject,
+			];
 			return;
 		}
 
-		$this->results[] = [$type->description, $sent, $from, $to, $subject];
+		$this->results[] = [
+			'type' => $type->description,
+			'when' => $sent,
+			'from' => $from,
+			'to' => $to,
+			'subject' => $subject,
+		];
 	}
 
 }
@@ -34,3 +45,4 @@ foreach ( $importers as $importer ) {
 }
 
 print_r($reader->results);
+print_r($reader->ignored);
