@@ -3,8 +3,6 @@
 namespace rdx\cronlog;
 
 class Result extends Model {
-	const TRIGGERS_TABLE = 'results_triggers';
-
 	public static $_table = 'results';
 
 	public function init() {

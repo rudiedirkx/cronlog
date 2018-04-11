@@ -24,6 +24,10 @@ class Server extends Model {
 		}
 	}
 
+	protected function get_num_results() {
+		return self::$_db->count(Result::$_table, array('server_id' => $this->id));
+	}
+
 	protected function get_results() {
 		return Result::all('server_id = ? ORDER BY sent DESC', array($this->id));
 	}

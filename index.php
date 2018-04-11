@@ -114,9 +114,7 @@ $servers[0] = new Server;
 							<option value="">--</option>
 							<?= html_options(array_diff_key($types, [0]), $trigger->type_ids) ?>
 						</select>
-						<? if ($id): ?>
-							(<span><?= count($trigger->type_ids) ?></span>)
-						<? endif ?>
+						(<span><?= !$id ? 0 : count($trigger->type_ids) ?></span>)
 					</td>
 					<td>
 						<input name="trigger[<?= $id ?>][o]" value="<?= html($trigger->o) ?>" class="o" />
@@ -153,6 +151,7 @@ $servers[0] = new Server;
 				<th>#</th>
 				<th>Name</th>
 				<th><code>From</code> regex</th>
+				<th></th>
 			</tr>
 		</thead>
 		<tbody>
@@ -165,6 +164,11 @@ $servers[0] = new Server;
 					<td>
 						<input name="server[<?= $id ?>][from_regex]" value="<?= html($server->from_regex) ?>" class="regex" />
 					</td>
+					<td>
+						<? if ($id): ?>
+							<a href="results.php?server=<?= $id ?>"><?= $server->num_results ?> results</a>
+						<? endif ?>
+					</td>
 				</tr>
 			<? endforeach ?>
 		</tbody>
@@ -176,13 +180,13 @@ $servers[0] = new Server;
 <script>
 (function() {
 	var onFocus = function(e) {
-		setTimeout(() => this.size = this.options.length, 111);
+		setTimeout(() => this.size = this.options.length, 50);
 	};
 	var onBlur = function(e) {
-		setTimeout(() => this.size = 1, 111);
+		setTimeout(() => this.size = 1, 150);
 	};
 	var onChange = function(e) {
-		this.nextElementSibling.textContent = this.selectedOptions.length;
+		this.nextElementSibling.textContent = [].filter.call(this.selectedOptions, (option) => option.value != '').length;
 	};
 
 	document.querySelectorAll('select[multiple][size="1"]').forEach(function(el) {
