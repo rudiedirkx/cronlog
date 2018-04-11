@@ -34,17 +34,20 @@ class Trigger extends Model {
 		}
 	}
 
-	public function evalNominality( $matches ) {
+	public function evalNominality( $matches, Result $result ) {
 		if ( trim($this->expect) === '' ) return null;
 
 		$expect = $this->expect;
-		$num = trim($expect, '<>');
+		$num = trim($expect, ':<>');
 
 		if ( $expect[0] === '<' ) {
 			return $matches < $num;
 		}
 		elseif ( $expect[0] === '>' ) {
 			return $matches > $num;
+		}
+		elseif ( $expect[0] === ':' ) {
+			return isset($result->triggers[$num]) && $result->triggers[$num]->amount == $num;
 		}
 
 		return $matches == $num;

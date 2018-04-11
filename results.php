@@ -1,20 +1,22 @@
 <?php
 
 use rdx\cronlog\Result;
+use rdx\cronlog\Server;
 use rdx\cronlog\Type;
 
 require 'inc.bootstrap.php';
 
 $type = Type::find(@$_GET['type']);
+$server = Server::find(@$_GET['server']);
 
-$results = $type ? $type->results : Result::all('1 ORDER BY sent DESC LIMIT 1000');
+$results = $type ? $type->results : ($server ? $server->results : Result::all('1 ORDER BY sent DESC LIMIT 1000'));
 
 if ( isset($_GET['recollate']) ) {
 	foreach ( $results as $result ) {
 		$result->retype() && $result->collate();
 	}
 
-	$query = $type ? "?type={$type->id}" : '';
+	$query = $type ? "?type={$type->id}" : ($server ? "?server={$server->id}" : '');
 	return do_redirect('results.php' . $query);
 }
 
@@ -27,9 +29,14 @@ $ids = array_flip(array_values($db->select_fields(Result::$_table, 'id', '1 ORDE
 <h2>
 	Results
 	<? if ($type): ?>
-		for <em><?= html($type->description) ?></em>
+		for <em><?= html($type) ?></em>
+		(<?= count($results) ?>)
+	<? elseif ($server): ?>
+		for <em><?= html($server) ?></em>
+		(<?= count($results) ?>)
+	<? else: ?>
+		(<?= count($results) ?> / <?= count($ids) ?>)
 	<? endif ?>
-	(<?= count($results) ?>)
 </h2>
 
 <table>
@@ -40,7 +47,9 @@ $ids = array_flip(array_values($db->select_fields(Result::$_table, 'id', '1 ORDE
 				<th>Type</th>
 			<? endif ?>
 			<th>Subject</th>
-			<th>Server</th>
+			<? if (!$server): ?>
+				<th>Server</th>
+			<? endif ?>
 			<th>Date/time</th>
 			<th align="center">?</th>
 			<th>Size</th>
@@ -49,7 +58,7 @@ $ids = array_flip(array_values($db->select_fields(Result::$_table, 'id', '1 ORDE
 					<th style="color: <?= html($trigger->color) ?>" title="<?= html($trigger->regex) ?>"><?= html($trigger->description) ?></th>
 				<? endforeach ?>
 			<? endif ?>
-			<th><a href="?type=<?= @$type->id ?>&recollate">Recollate</a></th>
+			<th><a href="?type=<?= @$type->id ?>&server=<?= @$server->id ?>&recollate">Recollate</a></th>
 			<th>/day</th>
 		</tr>
 	</thead>
@@ -69,12 +78,14 @@ $ids = array_flip(array_values($db->select_fields(Result::$_table, 'id', '1 ORDE
 					<td><a href="?type=<?= $result->type_id ?>"><?= html($result->type->description) ?></a></td>
 				<? endif ?>
 				<td><code><?= html($result->relevant_subject) ?></code></td>
-				<td><?= html($result->server ?: '?') ?></td>
+				<? if (!$server): ?>
+					<td><a href="?server=<?= $result->server_id ?>"><?= html($result->server ?: '?') ?></a></td>
+				<? endif ?>
 				<td><a title="Batch: <?= date('Y-m-d H:i:s', $result->batch) ?>" href="result.php?id=<?= $result->id ?>"><?= get_datetime($result->sent) ?></a></td>
 				<td align="center">
-					<? if ($result->is_nominal === true): ?>
+					<? if ($result->nominal === true): ?>
 						<img src="yes.gif" title="Meets all the expected values" />
-					<? elseif ($result->is_nominal === false): ?>
+					<? elseif ($result->nominal === false): ?>
 						<img src="warning.png" title="Does NOT meet all the expected values!" />
 					<? endif ?>
 				</td>
@@ -90,7 +101,7 @@ $ids = array_flip(array_values($db->select_fields(Result::$_table, 'id', '1 ORDE
 						</td>
 					<? endforeach ?>
 				<? endif ?>
-				<td><a href="result.php?id=<?= $result->id ?>&recollate&goto=results.php?type=<?= $result->type->id ?>">recollate</a></td>
+				<td><a href="result.php?id=<?= $result->id ?>&recollate&goto=results.php%3Ftype=<?= @$type->id ?>%26server=<?= @$server->id ?>">recollate</a></td>
 			</tr>
 		<? endforeach ?>
 	</tbody>

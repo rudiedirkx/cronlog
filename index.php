@@ -23,7 +23,7 @@ if ( isset($_POST['trigger']) ) {
 
 include 'tpl.header.php';
 
-$types = Type::all('1 ORDER BY type');
+$types = Type::all('1 ORDER BY enabled DESC, type');
 $types[0] = new Type(['enabled' => 1]);
 
 $triggers = Trigger::all('1 ORDER BY o, trigger');
@@ -131,7 +131,7 @@ $servers[0] = new Server;
 						<input name="trigger[<?= $id ?>][regex]" value="<?= html($trigger->regex) ?>" class="regex" />
 					</td>
 					<td>
-						<input name="trigger[<?= $id ?>][expect]" value="<?= html($trigger->expect) ?>" class="expect" pattern="[<>]?-?\d+" title=">0, 2, <9999 etc" />
+						<input name="trigger[<?= $id ?>][expect]" value="<?= html($trigger->expect) ?>" class="expect" pattern="[:<>]?-?\d+" title=">0, 2, <9999 etc, or :ID for Trigger comparison" />
 					</td>
 					<td>
 						<input name="trigger[<?= $id ?>][color]" value="<?= html($trigger->color) ?>" class="color" />

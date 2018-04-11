@@ -71,6 +71,6 @@ class Type extends Model {
 	}
 
 	public function __toString() {
-		return (string) $this->type;
+		return (string) $this->description;
 	}
 }

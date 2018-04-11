@@ -40,10 +40,11 @@ include 'tpl.header.php';
 		<tr>
 			<th>Date/time</th>
 			<td colspan="2">
-				<? if ($result->is_nominal === false): ?>
+				<? if ($result->nominal === false): ?>
 					<img src="warning.png" title="Does not meet the expected values" />
 				<? endif ?>
 				<?= html($result->sent) ?>
+				<a href="?id=<?= $result->id ?>&recollate">recollate</a>
 			</td>
 		</tr>
 		<? $first = 1;

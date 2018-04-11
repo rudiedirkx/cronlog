@@ -7,6 +7,12 @@ class Result extends Model {
 
 	public static $_table = 'results';
 
+	public function init() {
+		if ( $this->nominal !== null ) {
+			$this->nominal = (bool) $this->nominal;
+		}
+	}
+
 	protected function get_compare_info() {
 		$subject = $this->relevant_subject ? " ({$this->relevant_subject})" : '';
 		return "{$this->sent_time}{$subject}";
@@ -46,21 +52,12 @@ class Result extends Model {
 		}
 	}
 
-	protected function get_is_nominal() {
-		return $this->nominal === null ? null : (bool) $this->nominal;
-	}
-
 	protected function get_triggers() {
-		return self::$_db->select_by_field(self::TRIGGERS_TABLE, 'trigger_id', array('result_id' => $this->id))
-			->map(function($record) {
-				$record->is_nominal = $record->nominal === null ? null : (bool) $record->nominal;
-				return $record;
-			})
-			->all();
+		return ResultTrigger::all(['result_id' => $this->id], [], ['id' => 'trigger_id']);
 	}
 
 	public function delete() {
-		self::$_db->delete(Result::TRIGGERS_TABLE, array('result_id' => $this->id));
+		ResultTrigger::deleteAll(array('result_id' => $this->id));
 		return parent::delete();
 	}
 
@@ -76,17 +73,19 @@ class Result extends Model {
 	}
 
 	public function collate() {
-		if ( !$this->type ) return [0, 0, 0];
-		if ( !$this->type->triggers ) return [0, 0, 0];
-		if ( !$this->output ) return [0, 0, 0];
+		$none = [0, 0, 0];
+		if ( !$this->type ) return $none;
+		if ( !$this->type->triggers ) return $none;
+		if ( !$this->output ) return $none;
 
-		self::$_db->delete(self::TRIGGERS_TABLE, array('result_id' => $this->id));
+		ResultTrigger::deleteAll(array('result_id' => $this->id));
+		$this->triggers = [];
 
 		$inserts = array();
 		$nominals = [0, 0];
 		foreach ( $this->type->triggers as $trigger ) {
 			$matches = preg_match_all($trigger->regex, $this->output);
-			$nominal = $trigger->evalNominality($matches);
+			$nominal = $trigger->evalNominality($matches, $this);
 			if ( $nominal !== null ) {
 				$nominals[(int) $nominal]++;
 			}
@@ -97,8 +96,9 @@ class Result extends Model {
 				'amount' => $matches,
 				'nominal' => $nominal === null ? null : (int) $nominal,
 			);
+			$this->triggers[$trigger->id] = (object) end($inserts);
 		}
-		self::$_db->inserts(self::TRIGGERS_TABLE, $inserts);
+		ResultTrigger::insertAll($inserts);
 
 		$nominal = !$nominals[0] && !$nominals[1] ? null : (int) ($nominals[0] == 0);
 
@@ -123,7 +123,7 @@ class Result extends Model {
 		$triggers = $this->triggers;
 		if ( isset($triggers[$triggerId]) )  {
 			$trigger = $triggers[$triggerId];
-			return [$trigger->amount, $trigger->is_nominal];
+			return [$trigger->amount, $trigger->nominal];
 		}
 
 		return ['?', false];

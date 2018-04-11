@@ -24,6 +24,10 @@ class Server extends Model {
 		}
 	}
 
+	protected function get_results() {
+		return Result::all('server_id = ? ORDER BY sent DESC', array($this->id));
+	}
+
 	public function __toString() {
 		return $this->name;
 	}
