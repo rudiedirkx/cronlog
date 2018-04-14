@@ -23,10 +23,10 @@ if ( isset($_POST['trigger']) ) {
 
 include 'tpl.header.php';
 
-$types = Type::all('1 ORDER BY enabled DESC, type');
+$types = Type::all('1 ORDER BY enabled DESC, description');
 $types[0] = new Type(['enabled' => 1]);
 
-$triggers = Trigger::all('1 ORDER BY o, trigger');
+$triggers = Trigger::all('1 ORDER BY o, description');
 $triggers[0] = new Trigger;
 
 $servers = Server::all('1 ORDER BY name');
