@@ -1,7 +1,6 @@
 <?php
 
 use rdx\cronlog\Result;
-use rdx\cronlog\Server;
 use rdx\cronlog\Type;
 use rdx\cronlog\import\Importer;
 use rdx\cronlog\import\ImporterReader;
@@ -56,7 +55,7 @@ class DbImporterReader implements ImporterReader {
 		$id = Result::insert($insert);
 		$result = Result::find($id);
 
-		list($triggers, $nominals, $anominals) = $result->collate();
+		list($triggers, , $anominals) = $result->collate();
 
 		$this->results++;
 		if ( $anominals > 0 ) {
