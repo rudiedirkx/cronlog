@@ -76,6 +76,8 @@ class Result extends Model {
 		if ( !$this->type->triggers ) return $none;
 		if ( !$this->output ) return $none;
 
+		self::$_db->begin();
+
 		ResultTrigger::deleteAll(array('result_id' => $this->id));
 		$this->triggers = [];
 
@@ -113,6 +115,8 @@ class Result extends Model {
 		}
 
 		$this->update($update);
+
+		self::$_db->commit();
 
 		return [count($inserts), $nominals[1], $nominals[0]];
 	}

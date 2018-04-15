@@ -15,6 +15,24 @@ class Trigger extends Model {
 		return self::$_db->select_fields(Trigger::TYPES_TABLE, 'type_id', array('trigger_id' => $this->id));
 	}
 
+	protected function get_pretty_expect() {
+		$expect = $this->expect;
+		$num = trim($expect, ':<>');
+
+		if ( $expect[0] === '<' ) {
+			return "Must be less than $num";
+		}
+		elseif ( $expect[0] === '>' ) {
+			return "Must be greater than $num";
+		}
+		elseif ( $expect[0] === ':' ) {
+			$other = Trigger::find($num);
+			return "Must equal '{$other->description}'";
+		}
+
+		return "Must equal $num";
+	}
+
 	static public function presave( &$data ) {
 		parent::presave($data);
 	}
@@ -47,7 +65,7 @@ class Trigger extends Model {
 			return $matches > $num;
 		}
 		elseif ( $expect[0] === ':' ) {
-			return isset($result->triggers[$num]) && $result->triggers[$num]->amount == $num;
+			return isset($result->triggers[$num]) && $result->triggers[$num]->amount == $matches;
 		}
 
 		return $matches == $num;

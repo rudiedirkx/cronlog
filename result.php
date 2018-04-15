@@ -55,17 +55,17 @@ include 'tpl.header.php';
 				<? if ($first-- > 0): ?>
 					<th valign="top" rowspan="<?= count($result->type->triggers) ?>">Triggers</th>
 				<? endif ?>
-				<td style="color: <?= html($trigger->color) ?>" title="<?= html($trigger->regex) ?>">
+				<td style="color: <?= html($trigger->color) ?>" title="<?= html($trigger->regex) ?>" nowrap width="10%">
 					<label>
 						<input type="checkbox" name="hilite" value="<?= html("{$trigger->color},{$trigger->regex}") ?>" <?= $trigger->js_regex ? 'checked' : 'disabled' ?> />
 						<?= html($trigger->description) ?>
 					</label>
 				</td>
-				<td <? if ($amount > 0): ?>style="font-weight: bold; color: <?= html($trigger->color) ?>"<? endif ?> width="100%">
+				<td <? if ($amount > 0): ?>style="font-weight: bold; color: <?= html($trigger->color) ?>"<? endif ?> width="90%">
 					<? if ($nominal === false): ?>
 						<img src="warning.png" title="Does not meet the expected value `<?= $trigger->expect ?>`" />
 					<? endif ?>
-					<?= $amount ?>
+					<span title="<?= $trigger->pretty_expect ?>"><?= $amount ?></span>
 				</td>
 			</tr>
 		<? endforeach ?>
