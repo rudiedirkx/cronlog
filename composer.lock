@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "6362a852f4c126fb4fccdf8c9a66574a",
+    "content-hash": "f7d59049832357f2e1302ed44abb2700",
     "packages": [
         {
             "name": "rdx/db",
@@ -43,16 +43,16 @@
         },
         {
             "name": "rdx/imap",
-            "version": "2.3",
+            "version": "2.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/rudiedirkx/imap-reader.git",
-                "reference": "bc99362e14c8472acec689869cee3f20402d9dba"
+                "reference": "e8c2d6a5f5e9b52148b550518f35f297856c9a34"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/rudiedirkx/imap-reader/zipball/bc99362e14c8472acec689869cee3f20402d9dba",
-                "reference": "bc99362e14c8472acec689869cee3f20402d9dba",
+                "url": "https://api.github.com/repos/rudiedirkx/imap-reader/zipball/e8c2d6a5f5e9b52148b550518f35f297856c9a34",
+                "reference": "e8c2d6a5f5e9b52148b550518f35f297856c9a34",
                 "shasum": ""
             },
             "require": {
@@ -75,7 +75,7 @@
                 }
             ],
             "description": "Reads and parses e-mail from an IMAP/POP3 source",
-            "time": "2017-11-20T11:16:59+00:00"
+            "time": "2018-01-18T21:57:52+00:00"
         }
     ],
     "packages-dev": [],
@@ -84,6 +84,8 @@
     "stability-flags": [],
     "prefer-stable": false,
     "prefer-lowest": false,
-    "platform": [],
+    "platform": {
+        "php": ">=7.1.4"
+    },
     "platform-dev": []
 }
