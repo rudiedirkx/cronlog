@@ -9,7 +9,11 @@ require 'inc.bootstrap.php';
 $type = Type::find(@$_GET['type']);
 $server = Server::find(@$_GET['server']);
 
-$results = $type ? $type->results : ($server ? $server->results : Result::all('1 ORDER BY sent DESC LIMIT 1000'));
+$anominal = !empty($_GET['anominal']);
+$resultsProp = $anominal ? 'anominal_results' : 'results';
+$resultsSql = $anominal ? "nominal = '0'" : '1';
+
+$results = $type ? $type->$resultsProp : ($server ? $server->$resultsProp : Result::all("$resultsSql ORDER BY sent DESC LIMIT 1000"));
 
 if ( isset($_GET['recollate']) ) {
 	foreach ( $results as $result ) {
@@ -27,7 +31,7 @@ $ids = array_flip(array_values($db->select_fields(Result::$_table, 'id', '1 ORDE
 ?>
 
 <h2>
-	Results
+	<?= $anominal ? 'Anominal results' : 'Results' ?>
 	<? if ($type): ?>
 		for <em><?= html($type) ?></em>
 		(<?= count($results) ?>)
@@ -38,6 +42,10 @@ $ids = array_flip(array_values($db->select_fields(Result::$_table, 'id', '1 ORDE
 		(<?= count($results) ?> / <?= count($ids) ?>)
 	<? endif ?>
 </h2>
+
+<p>
+	<a href="?type=<?= @$type->id ?>&server=<?= @$server->id ?>&anominal=<?= (int) !$anominal ?>"><?= $anominal ? 'All' : 'Only anominal' ?></a>
+</p>
 
 <table>
 	<thead>

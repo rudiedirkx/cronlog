@@ -63,7 +63,11 @@ class Type extends Model {
 	}
 
 	protected function get_results() {
-		return Result::all('type_id = ? ORDER BY sent DESC', array($this->id));
+		return Result::all('type_id = ? ORDER BY sent DESC', [$this->id]);
+	}
+
+	protected function get_anominal_results() {
+		return Result::all("nominal = '0' AND type_id = ? ORDER BY sent DESC", [$this->id]);
 	}
 
 	protected function get_triggers() {
