@@ -62,6 +62,10 @@ $allGroupsIdentical = function(array $groups) use ($typeGroupIdentical) {
 
 ?>
 <style>
+thead a {
+	color: inherit;
+}
+
 table.identical > thead,
 tbody.identical > tr:first-child,
 tbody tr.identical {
@@ -91,8 +95,14 @@ tbody tr.different {
 	<table border="1" class="<?= $allGroupsIdentical($groups) ? 'identical' : 'different' ?>">
 		<thead>
 			<tr>
-				<th><?= html($_GET['date1']) ?> (<?= count($date1) ?>)</th>
-				<th><?= html($_GET['date2']) ?> (<?= count($date2) ?>)</th>
+				<th>
+					<a href="results.php?date=<?= html($_GET['date1']) ?>"><?= html($_GET['date1']) ?></a>
+					(<?= count($date1) ?>)
+				</th>
+				<th>
+					<a href="results.php?date=<?= html($_GET['date2']) ?>"><?= html($_GET['date2']) ?></a>
+					(<?= count($date2) ?>)
+				</th>
 			</tr>
 		</thead>
 		<? foreach ($groups as $typeId => $typeGroup): ?>
