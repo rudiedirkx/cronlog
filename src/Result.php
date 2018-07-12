@@ -54,6 +54,14 @@ class Result extends Model {
 		return ResultTrigger::all(['result_id' => $this->id], [], ['id' => 'trigger_id']);
 	}
 
+	public function sentTimeAlmostMatches( self $result ) {
+		return in_array($result->sent_time, [
+			date('H:i', strtotime('-1 minute', $this->sent_utc)),
+			$this->sent_time,
+			date('H:i', strtotime('+1 minute', $this->sent_utc)),
+		]);
+	}
+
 	public function delete() {
 		ResultTrigger::deleteAll(array('result_id' => $this->id));
 		return parent::delete();

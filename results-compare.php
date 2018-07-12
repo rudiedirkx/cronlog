@@ -17,24 +17,47 @@ if ( @$_GET['date1'] && @$_GET['date2'] ) {
 	$types = Type::all('id IN (?) ORDER BY description', [$typeIds]);
 }
 
-$typeFilter = function(array $list, $type) {
-	return array_values(array_filter($list, function(Result $result) use ($type) {
-		return $result->type_id == $type;
-	}));
-};
-
-$typeClass = function(array $list1, array $list2) {
-	if ( array_column($list1, 'compare_info') == array_column($list2, 'compare_info') ) {
-		return 'identical';
+$groups = [];
+foreach ( $date1 as $result ) {
+	$groups[$result->type_id][$result->relevant_subject][] = [$result];
+}
+foreach ( $date2 as $result ) {
+	foreach ( $groups[$result->type_id][$result->relevant_subject] ?? [] as $n => $group ) {
+		if ( count($group) == 1 && $result->sentTimeAlmostMatches($group[0]) ) {
+			$groups[$result->type_id][$result->relevant_subject][$n][1] = $result;
+			continue 2;
+		}
 	}
 
-	return 'different';
+	$groups[$result->type_id][$result->relevant_subject][] = [1 => $result];
+}
+
+uksort($groups, function($a, $b) use ($types) {
+	return array_search($a, array_keys($types)) - array_search($b, array_keys($types));
+});
+foreach ( $groups as $typeId => $typeGroup ) {
+	$regroup = [];
+	foreach ( $typeGroup as $subject => $subjectGroup ) {
+		$regroup = array_merge($regroup, array_values($subjectGroup));
+	}
+	usort($regroup, function($a, $b) {
+		$a = reset($a);
+		$b = reset($b);
+		return strcmp($a->sent_time, $b->sent_time) ?: strcasecmp($a->relevant_subject, $b->relevant_subject);
+	});
+	$groups[$typeId] = $regroup;
+}
+
+$timeGroupIdentical = function(array $timeGroup) {
+	return count($timeGroup) == 2;
 };
 
-$keyByUnique = function(array $list) {
-	return array_reduce($list, function($list, Result $result) {
-		return $list + [$result->compare_info => $result];
-	}, []);
+$typeGroupIdentical = function(array $typeGroup) use ($timeGroupIdentical) {
+	return count($typeGroup) == count(array_filter($typeGroup, $timeGroupIdentical));
+};
+
+$allGroupsIdentical = function(array $groups) use ($typeGroupIdentical) {
+	return count($groups) == count(array_filter($groups, $typeGroupIdentical));
 };
 
 ?>
@@ -64,43 +87,29 @@ tbody tr.different {
 </form>
 
 <? if ($date1 || $date2 ):
-	$keyByUnique($date1);
-	$keyByUnique($date2);
-	$totalClass = in_array('different', array_map(function(Type $type) use ($typeFilter, $typeClass, $date1, $date2) {
-		$type1 = $typeFilter($date1, $type->id);
-		$type2 = $typeFilter($date2, $type->id);
-		return $typeClass($type1, $type2);
-	}, $types)) ? 'different' : 'identical';
 	?>
-	<table border="1" class="<?= $totalClass ?>">
+	<table border="1" class="<?= $allGroupsIdentical($groups) ? 'identical' : 'different' ?>">
 		<thead>
 			<tr>
 				<th><?= html($_GET['date1']) ?> (<?= count($date1) ?>)</th>
 				<th><?= html($_GET['date2']) ?> (<?= count($date2) ?>)</th>
 			</tr>
 		</thead>
-		<? foreach ($types as $type):
-			$type1 = $typeFilter($date1, $type->id);
-			$type2 = $typeFilter($date2, $type->id);
-			$keyed1 = $keyByUnique($type1);
-			$keyed2 = $keyByUnique($type2);
-			$keys = array_keys($keyed1 + $keyed2);
-			natcasesort($keys);
-			?>
-			<tbody class="<?= $typeClass($type1, $type2) ?>">
+		<? foreach ($groups as $typeId => $typeGroup): ?>
+			<tbody class="<?= $typeGroupIdentical($typeGroup) ? 'identical' : 'different' ?>">
 				<tr>
-					<th colspan="2" style="text-align: center"><?= html(($type1[0] ?? $type2[0])->type->description) ?></th>
+					<th colspan="2" style="text-align: center"><?= html($types[$typeId]->description) ?></th>
 				</tr>
-				<? foreach ($keys as $key): ?>
-					<tr class="<?= isset($keyed1[$key], $keyed2[$key]) ? 'identical' : 'different' ?>">
+				<? foreach ($typeGroup as $subject => $timeGroup): ?>
+					<tr class="<?= $timeGroupIdentical($timeGroup) ? 'identical' : 'different' ?>">
 						<td>
-							<? if (isset($keyed1[$key])): ?>
-								<?= $keyed1[$key]->compare_info ?>
+							<? if (isset($timeGroup[0])): ?>
+								<?= $timeGroup[0]->compare_info ?>
 							<? endif ?>
 						</td>
 						<td>
-							<? if (isset($keyed2[$key])): ?>
-								<?= $keyed2[$key]->compare_info ?>
+							<? if (isset($timeGroup[1])): ?>
+								<?= $timeGroup[1]->compare_info ?>
 							<? endif ?>
 						</td>
 					</tr>
