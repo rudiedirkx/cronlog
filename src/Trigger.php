@@ -33,7 +33,7 @@ class Trigger extends Model {
 		return "Must equal $num";
 	}
 
-	static public function presave( &$data ) {
+	static public function presave( array &$data ) {
 		parent::presave($data);
 	}
 

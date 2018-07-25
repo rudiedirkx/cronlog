@@ -9,13 +9,13 @@ include 'tpl.header.php';
 
 $dates = $db->select_fields('results', "date(sent) day, concat(date(sent), ' (', count(1), ')') num", '1 GROUP BY day ORDER BY day DESC');
 
-$date1 = $date2 = null;
+$date1 = $date2 = [];
 if ( @$_GET['date1'] && @$_GET['date2'] ) {
 	$date1 = Result::all('date(sent) = ? ORDER BY type_id, server_id', [$_GET['date1']]);
 	$date2 = Result::all('date(sent) = ? ORDER BY type_id, server_id', [$_GET['date2']]);
-	$typeIds = array_unique(array_column(array_merge($date1, $date2), 'type_id'));
-	$types = Type::all('id IN (?) ORDER BY description', [$typeIds]);
 }
+
+$types = Type::all('1 ORDER BY description');
 
 $groups = [];
 foreach ( $date1 as $result ) {

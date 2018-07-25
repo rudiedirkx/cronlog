@@ -12,7 +12,7 @@ class Type extends Model {
 		return !empty($data['type']);
 	}
 
-	static public function presave( &$data ) {
+	static public function presave( array &$data ) {
 		parent::presave($data);
 
 		$data['handling'] = 0;
