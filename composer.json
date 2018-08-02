@@ -4,7 +4,7 @@
     "type": "project",
     "require": {
         "php": ">=7.1.4",
-        "rdx/db": "^1.7",
+        "rdx/db": "^1.11",
         "rdx/imap": "^2.3"
     },
     "autoload": {
