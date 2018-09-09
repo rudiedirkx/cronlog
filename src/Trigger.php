@@ -11,8 +11,8 @@ class Trigger extends Model {
 		return $this->regex[0] === '/';
 	}
 
-	protected function get_type_ids() {
-		return self::$_db->select_fields(Trigger::TYPES_TABLE, 'type_id', array('trigger_id' => $this->id));
+	protected function relate_type_ids() {
+		return $this->to_many_scalar('type_id', Trigger::TYPES_TABLE, 'trigger_id');
 	}
 
 	protected function get_pretty_expect() {

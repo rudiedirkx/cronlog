@@ -27,6 +27,10 @@ if ( isset($_GET['recollate']) ) {
 
 include 'tpl.header.php';
 
+Result::eager('type', $results);
+Result::eager('server', $results);
+Result::eager('triggers', $results);
+
 $ids = array_flip(array_values($db->select_fields(Result::$_table, 'id', '1 ORDER BY sent DESC')));
 
 ?>

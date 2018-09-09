@@ -24,8 +24,8 @@ class Server extends Model {
 		}
 	}
 
-	protected function get_num_results() {
-		return self::$_db->count(Result::$_table, array('server_id' => $this->id));
+	protected function relate_num_results() {
+		return $this->to_count(Result::$_table, 'server_id');
 	}
 
 	protected function get_results() {

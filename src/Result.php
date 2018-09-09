@@ -40,18 +40,16 @@ class Result extends Model {
 		return trim(preg_replace('#^Cron\s+<.+?>\s+#i', '', $this->subject));
 	}
 
-	protected function get_type() {
-		return Type::find($this->type_id);
+	protected function relate_type() {
+		return $this->to_one(Type::class, 'type_id');
 	}
 
-	protected function get_server() {
-		if ( $this->server_id ) {
-			return Server::find($this->server_id);
-		}
+	protected function relate_server() {
+		return $this->to_one(Server::class, 'server_id');
 	}
 
-	protected function get_triggers() {
-		return ResultTrigger::all(['result_id' => $this->id], [], ['id' => 'trigger_id']);
+	protected function relate_triggers() {
+		return $this->to_many(ResultTrigger::class, 'result_id')->key('trigger_id');
 	}
 
 	public function sentTimeAlmostMatches( self $result ) {

@@ -25,12 +25,15 @@ include 'tpl.header.php';
 
 $types = Type::all('1 ORDER BY enabled DESC, description');
 $types[0] = new Type(['enabled' => 1]);
+Type::eager('num_results', $types);
 
 $triggers = Trigger::all('1 ORDER BY o, description');
 $triggers[0] = new Trigger;
+Trigger::eager('type_ids', $triggers);
 
 $servers = Server::all('1 ORDER BY name');
 $servers[0] = new Server;
+Server::eager('num_results', $servers);
 
 ?>
 

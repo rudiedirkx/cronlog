@@ -54,12 +54,8 @@ class Type extends Model {
 		return ($this->handling & 2) > 0;
 	}
 
-	protected function get_trigger_ids() {
-		return self::$_db->select_fields(Trigger::TYPES_TABLE, 'trigger_id', array('type_id' => $this->id));
-	}
-
-	protected function get_num_results() {
-		return self::$_db->count(Result::$_table, array('type_id' => $this->id));
+	protected function relate_num_results() {
+		return $this->to_count(Result::$_table, 'type_id');
 	}
 
 	protected function get_results() {
@@ -70,8 +66,8 @@ class Type extends Model {
 		return Result::all("nominal = '0' AND type_id = ? ORDER BY sent DESC", [$this->id]);
 	}
 
-	protected function get_triggers() {
-		return $this->trigger_ids ? Trigger::all('id IN (?) ORDER BY o, trigger', array($this->trigger_ids)) : array();
+	protected function relate_triggers() {
+		return $this->to_many_through(Trigger::class, Trigger::TYPES_TABLE, 'type_id', 'trigger_id')->order('o, trigger');
 	}
 
 	public function __toString() {
