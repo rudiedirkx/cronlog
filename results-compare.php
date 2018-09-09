@@ -62,8 +62,9 @@ $allGroupsIdentical = function(array $groups) use ($typeGroupIdentical) {
 
 ?>
 <style>
-thead a {
+table a {
 	color: inherit;
+	text-decoration: none;
 }
 
 table.identical > thead,
@@ -114,12 +115,12 @@ tbody tr.different {
 					<tr class="<?= $timeGroupIdentical($timeGroup) ? 'identical' : 'different' ?>">
 						<td>
 							<? if (isset($timeGroup[0])): ?>
-								<?= $timeGroup[0]->compare_info ?>
+								<a href="result.php?id=<?= $timeGroup[0]->id ?>"><?= $timeGroup[0]->compare_info ?></a>
 							<? endif ?>
 						</td>
 						<td>
 							<? if (isset($timeGroup[1])): ?>
-								<?= $timeGroup[1]->compare_info ?>
+								<a href="result.php?id=<?= $timeGroup[1]->id ?>"><?= $timeGroup[1]->compare_info ?></a>
 							<? endif ?>
 						</td>
 					</tr>
