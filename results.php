@@ -84,7 +84,7 @@ $ids = array_flip(array_values($db->select_fields(Result::$_table, 'id', '1 ORDE
 			$prevBatch = $result->batch;
 			$batch += $newBatch;
 			?>
-			<tr class="<?= $newSection ? 'next-section' : '' ?> <?= $batch % 2 == 0 ? 'even-section' : 'odd-section' ?>">
+			<tr class="<?= $newSection ? 'next-section' : '' ?> <?= $batch % 2 == 0 ? 'even-section' : 'odd-section' ?>" data-date="<?= $prevDate ?>">
 				<th align="right"><?= $ids[$result->id]+1 ?></th>
 				<? if (!$type): ?>
 					<td><a href="?type=<?= $result->type_id ?>"><?= html($result->type->description) ?></a></td>
@@ -121,27 +121,21 @@ $ids = array_flip(array_values($db->select_fields(Result::$_table, 'id', '1 ORDE
 
 <script>
 (function() {
-	var sectionFirst = null;
-	var prev = null;
-	var sectionSize = 0;
-	var cell;
-	[].forEach.call(document.querySelectorAll('tbody tr'), function(tr) {
-		if (!sectionFirst) sectionFirst = tr;
+	function markSection(firstRow, i, arr) {
+		var lastRow = arr[i+1] && arr[i+1].previousElementSibling || firstRow.parentNode.lastElementChild;
+		var size = lastRow.rowIndex - firstRow.rowIndex + 1;
+		makeCell(firstRow, size);
+		size > 1 && makeCell(lastRow, size);
+	}
 
-		if (tr.classList.contains('next-section')) {
-			cell = sectionFirst.insertCell(sectionFirst.cells.length);
-			cell.innerHTML = `<a href="results-compare.php">${sectionSize}</a>`;
-			if (prev != sectionFirst) {
-				cell = prev.insertCell(prev.cells.length);
-				cell.innerHTML = `<a href="results-compare.php">${sectionSize}</a>`;
-			}
-			sectionSize = 0;
-			sectionFirst = tr;
-		}
+	function makeCell(row, size) {
+		var date = row.dataset.date;
+		var cell = row.insertCell();
+		cell.innerHTML = `<a href="results-compare.php?date1=${date}">${size}</a>`;
+	}
 
-		sectionSize++;
-		prev = tr;
-	});
+	var firstRows = document.querySelectorAll('thead + tbody > tr:first-child, tr.next-section');
+	[].forEach.call(firstRows, markSection);
 })();
 </script>
 

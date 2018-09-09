@@ -81,7 +81,7 @@ $skipped = $reader->skipped ? " ({$reader->skipped} skipped)" : '';
 $log  = "";
 $log .= "{$reader->results} results{$skipped}\n";
 $log .= "{$reader->anominals} of which are anominal\n\n";
-$log .= CRONLOG_URI . "results.php\n\n";
+$log .= CRONLOG_URI . "results.php?date=" . date('Y-m-d') . "\n\n";
 $log .= "{$reader->triggers} triggers\n";
 $log .= count($db->queries) . " queries\n";
 
