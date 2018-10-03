@@ -9,10 +9,11 @@ require 'inc.bootstrap.php';
 $type = Type::find(@$_GET['type']);
 $server = Server::find(@$_GET['server']);
 $date = @$_GET['date'];
+$batch = @$_GET['batch'];
 
 $anominal = !empty($_GET['anominal']);
 $resultsProp = $anominal ? 'anominal_results' : 'results';
-$resultsSql = ($anominal ? "nominal = '0'" : '1') . ' AND ' . ($date ? $db->replaceholders("date(sent) = ?", [$date]) : '1');
+$resultsSql = ($batch ? $db->replaceholders("batch = ?", [$batch]) : '1') . ' AND ' . ($anominal ? "nominal = '0'" : '1') . ' AND ' . ($date ? $db->replaceholders("date(sent) = ?", [$date]) : '1');
 
 $results = $type ? $type->$resultsProp : ($server ? $server->$resultsProp : Result::all("$resultsSql ORDER BY sent DESC LIMIT 1000"));
 
@@ -42,6 +43,9 @@ $ids = array_flip(array_values($db->select_fields(Result::$_table, 'id', '1 ORDE
 		(<?= count($results) ?>)
 	<? elseif ($server): ?>
 		for <em><?= html($server) ?></em>
+		(<?= count($results) ?>)
+	<? elseif ($batch): ?>
+		on <em><?= date('Y-m-d H:i', $batch) ?></em>
 		(<?= count($results) ?>)
 	<? elseif ($date): ?>
 		for <em><?= html($date) ?></em>

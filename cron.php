@@ -13,7 +13,7 @@ if ( php_sapi_name() !== 'cli' ) {
 require 'inc.bootstrap.php';
 
 class DbImporterReader implements ImporterReader {
-	protected $batch;
+	public $batch;
 
 	public $skipped = 0;
 	public $results = 0;
@@ -81,7 +81,7 @@ $skipped = $reader->skipped ? " ({$reader->skipped} skipped)" : '';
 $log  = "";
 $log .= "{$reader->results} results{$skipped}\n";
 $log .= "{$reader->anominals} of which are anominal\n\n";
-$log .= CRONLOG_URI . "results.php?date=" . date('Y-m-d') . "\n\n";
+$log .= CRONLOG_URI . "results.php?batch=" . $reader->batch . "\n\n";
 $log .= "{$reader->triggers} triggers\n";
 $log .= count($db->queries) . " queries\n";
 
