@@ -40,15 +40,6 @@ class DbImporterReader implements ImporterReader {
 		}
 		$insert['type_id'] = $type->id;
 
-		if ( CRONLOG_DELETE_IMPORTS ) {
-			try {
-				$importer->delete();
-			}
-			catch ( Exception $ex ) {
-				return false;
-			}
-		}
-
 		$insert['batch'] = $this->batch;
 		$insert['output_size'] = strlen($output);
 
@@ -62,6 +53,15 @@ class DbImporterReader implements ImporterReader {
 			$this->anominals++;
 		}
 		$this->triggers += $triggers;
+
+		if ( CRONLOG_DELETE_IMPORTS ) {
+			try {
+				$importer->delete();
+			}
+			catch ( Exception $ex ) {
+				return false;
+			}
+		}
 
 		return true;
 	}

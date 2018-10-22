@@ -66,8 +66,12 @@ class Type extends Model {
 		return Result::all("nominal = '0' AND type_id = ? ORDER BY sent DESC", [$this->id]);
 	}
 
+	protected function relate_trigger_ids() {
+		return $this->to_many_scalar('trigger_id', Trigger::TYPES_TABLE, 'type_id');
+	}
+
 	protected function relate_triggers() {
-		return $this->to_many_through(Trigger::class, Trigger::TYPES_TABLE, 'type_id', 'trigger_id')->order('o, trigger');
+		return $this->to_many_through(Trigger::class, 'trigger_ids')->order('o, trigger');
 	}
 
 	public function __toString() {
