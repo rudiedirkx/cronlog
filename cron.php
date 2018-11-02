@@ -82,11 +82,11 @@ $yesterday = $db->select_one('results', 'count(1)', 'batch < ? group by batch or
 $ydiff = $reader->results - $yesterday;
 
 $log  = "";
-$log .= "{$reader->results} results{$skipped}\n";
-$log .= "{$reader->anominals} anominal\n\n";
-$log .= ($ydiff == 0 ? 'same as' : ($ydiff > 0 ? '+' : '-') . abs($ydiff) . ' from') . " yesterday\n";
+$log .= "{$reader->results} results{$skipped},\n";
+$log .= "{$reader->anominals} anominal,\n";
+$log .= ($ydiff == 0 ? 'same as' : ($ydiff > 0 ? '+' : '-') . abs($ydiff) . ' from') . " yesterday\n\n";
 $log .= CRONLOG_URI . "results.php?batch=" . $reader->batch . "\n\n";
-$log .= "{$reader->triggers} triggers\n";
+$log .= "{$reader->triggers} triggers,\n";
 $log .= count($db->queries) . " queries\n";
 
 if ( CRONLOG_EMAIL_RESULTS ) {
