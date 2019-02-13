@@ -10,54 +10,50 @@ $type = Type::find(@$_GET['type']);
 $server = Server::find(@$_GET['server']);
 $date = @$_GET['date'];
 $batch = @$_GET['batch'];
-
 $anominal = !empty($_GET['anominal']);
-$resultsProp = $anominal ? 'anominal_results' : 'results';
-$resultsSql = ($batch ? $db->replaceholders("batch = ?", [$batch]) : '1') . ' AND ' . ($anominal ? "nominal = '0'" : '1') . ' AND ' . ($date ? $db->replaceholders("date(sent) = ?", [$date]) : '1');
 
-$results = $type ? $type->$resultsProp : ($server ? $server->$resultsProp : Result::all("$resultsSql ORDER BY sent DESC LIMIT 1000"));
+$conditions = [];
+$type and $conditions['type_id'] = $type->id;
+$server and $conditions['server_id'] = $server->id;
+$date and $conditions['date'] = $date;
+$batch and $conditions['batch'] = $batch;
+$anominal and $conditions['nominal'] = '0';
+$conditionsSql = count($conditions) ? $db->stringifyConditions($conditions) : '1';
 
-if ( isset($_GET['recollate']) ) {
-	foreach ( $results as $result ) {
-		$result->retype() && $result->collate();
-	}
-
-	$query = $type ? "?type={$type->id}" : ($server ? "?server={$server->id}" : '');
-	return do_redirect('results.php' . $query);
-}
+$results = Result::all("$conditionsSql ORDER BY sent DESC LIMIT 1000");
+$totalResults = Result::count($conditionsSql);
 
 include 'tpl.header.php';
 
-Result::eager('type', $results);
-Result::eager('server', $results);
+// Result::eager('type', $results);
+// Result::eager('server', $results);
 Result::eager('triggers', $results);
 
 $ids = array_flip(array_values($db->select_fields(Result::$_table, 'id', '1 ORDER BY sent DESC')));
 
+$typesOptions = Type::all('1 ORDER BY description');
+$serversOptions = Server::all('1 ORDER BY name');
+$datesOptions = $db->select_fields('results', 'date(sent)', '1 GROUP BY date(sent) ORDER BY date(sent) DESC');
+$batchesOptions = array_map(function($utc) {
+	return date('Y-m-d H:i', $utc);
+}, $db->select_fields('results', 'batch', 'batch IS NOT NULL GROUP BY batch ORDER BY batch DESC'));
+
 ?>
 
 <h2>
-	<?= $anominal ? 'Anominal results' : 'Results' ?>
-	<? if ($type): ?>
-		for <em><?= html($type) ?></em>
-		(<?= count($results) ?>)
-	<? elseif ($server): ?>
-		for <em><?= html($server) ?></em>
-		(<?= count($results) ?>)
-	<? elseif ($batch): ?>
-		on <em><?= date('Y-m-d H:i', $batch) ?></em>
-		(<?= count($results) ?>)
-	<? elseif ($date): ?>
-		for <em><?= html($date) ?></em>
-		(<?= count($results) ?>)
-	<? else: ?>
-		(<?= count($results) ?> / <?= count($ids) ?>)
-	<? endif ?>
+	Results
+	(<?= count($results) ?> / <?= $totalResults != count($results) && $totalResults != count($ids) ? "$totalResults / " : '' ?> <?= count($ids) ?>)
 </h2>
 
-<p>
-	<a href="?type=<?= @$type->id ?>&server=<?= @$server->id ?>&anominal=<?= (int) !$anominal ?>"><?= $anominal ? 'All' : 'Only anominal' ?></a>
-</p>
+<form action onchange="this.submit()">
+	<p>
+		<select name="type"><?= html_options($typesOptions, $_GET['type'] ?? null, '-- Type') ?></select>
+		<select name="server"><?= html_options($serversOptions, $_GET['server'] ?? null, '-- Server') ?></select>
+		<select name="batch"><?= html_options($batchesOptions, $_GET['batch'] ?? null, '-- Batch') ?></select>
+		<select name="date"><?= html_options($datesOptions, $_GET['date'] ?? null, '-- Date') ?></select>
+		<select name="anominal"><?= html_options(['1' => 'Only anominal'], $anominal, '-- Nominality') ?></select>
+	</p>
+</form>
 
 <table>
 	<thead>
@@ -75,10 +71,12 @@ $ids = array_flip(array_values($db->select_fields(Result::$_table, 'id', '1 ORDE
 			<th>Size</th>
 			<? if ($type): ?>
 				<? foreach ($type->triggers as $trigger): ?>
-					<th style="color: <?= html($trigger->color) ?>" title="<?= html($trigger->regex) ?>"><?= html($trigger->description) ?></th>
+					<th style="color: <?= html($trigger->color) ?>" title="<?= html($trigger->regex) ?><?= strlen($trigger->expect) ? " - $trigger->expect" : '' ?>">
+						<?= html($trigger->description) ?>
+					</th>
 				<? endforeach ?>
 			<? endif ?>
-			<th><a href="?type=<?= @$type->id ?>&server=<?= @$server->id ?>&recollate">Recollate</a></th>
+			<th>Recollate</th>
 			<th>/day</th>
 		</tr>
 	</thead>
@@ -121,7 +119,7 @@ $ids = array_flip(array_values($db->select_fields(Result::$_table, 'id', '1 ORDE
 						</td>
 					<? endforeach ?>
 				<? endif ?>
-				<td><a href="result.php?id=<?= $result->id ?>&recollate&goto=results.php%3Ftype=<?= @$type->id ?>%26server=<?= @$server->id ?>">recollate</a></td>
+				<td><a href="result.php?id=<?= $result->id ?>&recollate&goto=result.php?id=<?= $result->id ?>">recollate</a></td>
 			</tr>
 		<? endforeach ?>
 	</tbody>
