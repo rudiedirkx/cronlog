@@ -15,7 +15,7 @@ $anominal = !empty($_GET['anominal']);
 $conditions = [];
 $type and $conditions['type_id'] = $type->id;
 $server and $conditions['server_id'] = $server->id;
-$date and $conditions['date'] = $date;
+$date and $conditions[] = $db->replaceholders('date(sent) = ?', $date);
 $batch and $conditions['batch'] = $batch;
 $anominal and $conditions['nominal'] = '0';
 $conditionsSql = count($conditions) ? $db->stringifyConditions($conditions) : '1';
