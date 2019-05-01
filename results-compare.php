@@ -23,7 +23,7 @@ foreach ( $date1 as $result ) {
 }
 foreach ( $date2 as $result ) {
 	foreach ( $groups[$result->type_id][$result->relevant_subject] ?? [] as $n => $group ) {
-		if ( count($group) == 1 && $result->sentTimeAlmostMatches($group[0]) ) {
+		if ( array_keys($group) === [0] && $result->sentTimeAlmostMatches($group[0]) ) {
 			$groups[$result->type_id][$result->relevant_subject][$n][1] = $result;
 			continue 2;
 		}

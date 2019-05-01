@@ -3,6 +3,8 @@
 namespace rdx\cronlog;
 
 class Result extends Model {
+	const RESULT_TIMING_MARGIN_MINS = 3;
+
 	public static $_table = 'results';
 
 	public function init() {
@@ -53,11 +55,9 @@ class Result extends Model {
 	}
 
 	public function sentTimeAlmostMatches( self $result ) {
-		return in_array($result->sent_time, [
-			date('H:i', strtotime('-1 minute', $this->sent_utc)),
-			$this->sent_time,
-			date('H:i', strtotime('+1 minute', $this->sent_utc)),
-		]);
+		$min = date('H:i', strtotime('-' . self::RESULT_TIMING_MARGIN_MINS . ' minute', $this->sent_utc));
+		$max = date('H:i', strtotime('+' . self::RESULT_TIMING_MARGIN_MINS . ' minute', $this->sent_utc));
+		return $result->sent_time >= $min && $result->sent_time <= $max;
 	}
 
 	public function delete() {
