@@ -18,6 +18,7 @@ class DbImporterReader implements ImporterReader {
 	public $skipped = 0;
 	public $results = 0;
 	public $anominals = 0;
+	public $notifications = 0;
 	public $triggers = 0;
 
 	public function __construct() {
@@ -51,6 +52,10 @@ class DbImporterReader implements ImporterReader {
 		$this->results++;
 		if ( $anominals > 0 ) {
 			$this->anominals++;
+
+			if ( $type->handling_notify ) {
+				$this->notifications++;
+			}
 		}
 		$this->triggers += $triggers;
 
@@ -83,14 +88,14 @@ $ydiff = $reader->results - $yesterday;
 
 $log  = "";
 $log .= "{$reader->results} results{$skipped},\n";
-$log .= "{$reader->anominals} anominal,\n";
+$log .= "{$reader->notifications}/{$reader->anominals} anominal,\n";
 $log .= ($ydiff == 0 ? 'same as' : ($ydiff > 0 ? '+' : '-') . abs($ydiff) . ' from') . " yesterday\n\n";
 $log .= CRONLOG_URI . "/results.php?batch=" . $reader->batch . "\n\n";
 $log .= "{$reader->triggers} triggers,\n";
 $log .= count($db->queries) . " queries\n";
 
 if ( CRONLOG_EMAIL_RESULTS ) {
-	$subject = "{$reader->results} cron results imported, {$reader->anominals} anominal";
+	$subject = "{$reader->results} cron results imported, {$reader->notifications}/{$reader->anominals} anominal";
 	mail(CRONLOG_EMAIL_RESULTS, $subject, $log, "From: Devver <devver@hotblocks.nl>");
 }
 
