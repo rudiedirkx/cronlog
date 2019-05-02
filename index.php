@@ -47,7 +47,7 @@ Server::eager('num_results', $servers);
 				<th></th>
 				<th>Type</th>
 				<th>Description</th>
-				<th><code>To</code> regex</th>
+				<!-- <th><code>To</code> regex</th> -->
 				<th><code>Subject</code> regex</th>
 				<th title="Delete output for nominal results">D</th>
 				<th title="Notify admin for anominal results">N</th>
@@ -67,9 +67,9 @@ Server::eager('num_results', $servers);
 					<td>
 						<input name="type[<?= $id ?>][description]" value="<?= html($type->description) ?>" />
 					</td>
-					<td>
+					<!-- <td>
 						<input name="type[<?= $id ?>][to_regex]" value="<?= html($type->to_regex) ?>" class="regex" />
-					</td>
+					</td> -->
 					<td>
 						<input name="type[<?= $id ?>][subject_regex]" value="<?= html($type->subject_regex) ?>" class="regex" />
 					</td>
