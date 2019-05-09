@@ -49,8 +49,8 @@ Server::eager('num_results', $servers);
 				<th>Description</th>
 				<!-- <th><code>To</code> regex</th> -->
 				<th><code>Subject</code> regex</th>
-				<th title="Delete output for nominal results">D</th>
-				<th title="Notify admin for anominal results">N</th>
+				<th align="center" title="Delete output for nominal results">D</th>
+				<th align="center" title="Notify admin for anominal results">N</th>
 				<th></th>
 			</tr>
 		</thead>
@@ -73,10 +73,10 @@ Server::eager('num_results', $servers);
 					<td>
 						<input name="type[<?= $id ?>][subject_regex]" value="<?= html($type->subject_regex) ?>" class="regex" />
 					</td>
-					<td title="Delete output for nominal results">
+					<td align="center" title="Delete output for nominal results">
 						<input type="checkbox" name="type[<?= $id ?>][handling_delete]" <? if ($type->handling_delete): ?>checked<? endif ?> />
 					</td>
-					<td title="Notify admin for anominal results">
+					<td align="center" title="Notify admin for anominal results">
 						<input type="checkbox" name="type[<?= $id ?>][handling_notify]" <? if ($type->handling_notify): ?>checked<? endif ?> />
 					</td>
 					<td>

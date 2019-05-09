@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "54aa233d2bc1cd235cc0cde00ef98cef",
+    "content-hash": "d5522df4377a4f4cea7d865d9dddce63",
     "packages": [
         {
             "name": "rdx/db",
@@ -43,16 +43,16 @@
         },
         {
             "name": "rdx/imap",
-            "version": "2.4",
+            "version": "2.7",
             "source": {
                 "type": "git",
                 "url": "https://github.com/rudiedirkx/imap-reader.git",
-                "reference": "e8c2d6a5f5e9b52148b550518f35f297856c9a34"
+                "reference": "7f77a3b6e932c0a7bef0b66434ab1b069899abd1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/rudiedirkx/imap-reader/zipball/e8c2d6a5f5e9b52148b550518f35f297856c9a34",
-                "reference": "e8c2d6a5f5e9b52148b550518f35f297856c9a34",
+                "url": "https://api.github.com/repos/rudiedirkx/imap-reader/zipball/7f77a3b6e932c0a7bef0b66434ab1b069899abd1",
+                "reference": "7f77a3b6e932c0a7bef0b66434ab1b069899abd1",
                 "shasum": ""
             },
             "require": {
@@ -75,7 +75,7 @@
                 }
             ],
             "description": "Reads and parses e-mail from an IMAP/POP3 source",
-            "time": "2018-01-18T21:57:52+00:00"
+            "time": "2019-05-09T01:23:00+00:00"
         }
     ],
     "packages-dev": [],

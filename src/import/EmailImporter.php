@@ -16,26 +16,26 @@ class EmailImporter implements Importer {
 	}
 
 	public function getFrom() {
-		if ( $header = $this->message->header('From') ) {
-			return $header[0]->mailbox . '@' . $header[0]->host;
-		}
+		return $this->extractAddress($this->message->header('From'));
 	}
 
 	public function getTo() {
-		if ( $header = $this->message->header('To') ) {
-			return $header[0]->mailbox . '@' . $header[0]->host;
-		}
+		return $this->extractAddress($this->message->header('To'));
 	}
 
 	public function getSubject() {
-		return $this->message->header('Subject');
+		return $this->message->header('Subject')[0];
 	}
 
 	public function getSentUtc() {
-		return strtotime($this->message->header('Date'));
+		return strtotime($this->message->header('Date')[0]);
 	}
 
 	public function getOutput() {
 		return trim($this->message->content());
+	}
+
+	protected function extractAddress($header) {
+		return trim(explode(' ', $header[0])[0], '<>');
 	}
 }
