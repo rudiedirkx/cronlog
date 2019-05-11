@@ -132,7 +132,7 @@ Server::eager('num_results', $servers);
 						<input name="trigger[<?= $id ?>][regex]" value="<?= html($trigger->regex) ?>" class="regex" />
 					</td>
 					<td>
-						<input name="trigger[<?= $id ?>][expect]" value="<?= html($trigger->expect) ?>" class="expect" pattern="[:<>]?-?\d+" title=">0, 2, <9999 etc, or :ID for Trigger comparison" />
+						<input name="trigger[<?= $id ?>][expect]" value="<?= html($trigger->expect) ?>" class="expect" pattern="[!:<>]?-?\d+" title=">0, 2, <9999 etc, or :ID or !ID for Trigger comparison" />
 					</td>
 					<td>
 						<input name="trigger[<?= $id ?>][color]" value="<?= html($trigger->color) ?>" class="color" />

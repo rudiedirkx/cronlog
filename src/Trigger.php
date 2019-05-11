@@ -67,6 +67,9 @@ class Trigger extends Model {
 		elseif ( $expect[0] === ':' ) {
 			return isset($result->triggers[$num]) && $result->triggers[$num]->amount == $matches;
 		}
+		elseif ( $expect[0] === '!' ) {
+			return isset($result->triggers[$num]) && $result->triggers[$num]->amount != $matches;
+		}
 
 		return $matches == $num;
 	}
