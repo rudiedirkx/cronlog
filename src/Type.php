@@ -9,7 +9,7 @@ class Type extends Model {
 
 	static public function validate( array $data ) {
 		self::presave($data);
-		return !empty($data['type']);
+		return !empty($data['description']);
 	}
 
 	static public function presave( array &$data ) {

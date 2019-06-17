@@ -45,9 +45,7 @@ Server::eager('num_results', $servers);
 			<tr>
 				<th>#</th>
 				<th></th>
-				<th>Type</th>
 				<th>Description</th>
-				<!-- <th><code>To</code> regex</th> -->
 				<th><code>Subject</code> regex</th>
 				<th align="center" title="Delete output for nominal results">D</th>
 				<th align="center" title="Notify admin for anominal results">N</th>
@@ -62,14 +60,8 @@ Server::eager('num_results', $servers);
 						<input type="checkbox" name="type[<?= $id ?>][enabled]" <?= $type->enabled ? 'checked' : '' ?> />
 					</td>
 					<td>
-						<input name="type[<?= $id ?>][type]" value="<?= html($type->type) ?>" />
-					</td>
-					<td>
 						<input name="type[<?= $id ?>][description]" value="<?= html($type->description) ?>" />
 					</td>
-					<!-- <td>
-						<input name="type[<?= $id ?>][to_regex]" value="<?= html($type->to_regex) ?>" class="regex" />
-					</td> -->
 					<td>
 						<input name="type[<?= $id ?>][subject_regex]" value="<?= html($type->subject_regex) ?>" class="regex" />
 					</td>
@@ -101,7 +93,6 @@ Server::eager('num_results', $servers);
 				<th>#</th>
 				<th>Types</th>
 				<th>O</th>
-				<th>Trigger</th>
 				<th>Description</th>
 				<th>Regex</th>
 				<th>Nominal</th>
@@ -121,9 +112,6 @@ Server::eager('num_results', $servers);
 					</td>
 					<td>
 						<input name="trigger[<?= $id ?>][o]" value="<?= html($trigger->o) ?>" class="o" />
-					</td>
-					<td>
-						<input name="trigger[<?= $id ?>][trigger]" value="<?= html($trigger->trigger) ?>" />
 					</td>
 					<td>
 						<input name="trigger[<?= $id ?>][description]" value="<?= html($trigger->description) ?>" />

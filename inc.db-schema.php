@@ -6,35 +6,21 @@ return array(
 		'types' => array(
 			'columns' => array(
 				'id' => array('pk' => true),
-				'type',
 				'description',
 				'to_regex',
 				'subject_regex',
 				'handling' => array('type' => 'int', 'default' => 0),
 				'enabled' => array('type' => 'int', 'default' => 1),
 			),
-			'indexes' => array(
-				'type' => array(
-					'unique' => true,
-					'columns' => array('type'),
-				),
-			),
 		),
 		'triggers' => array(
 			'columns' => array(
 				'id' => array('pk' => true),
-				'trigger',
 				'description',
 				'regex',
 				'expect',
 				'color',
 				'o' => array('type' => 'int', 'default' => 0),
-			),
-			'indexes' => array(
-				'trigger' => array(
-					'unique' => true,
-					'columns' => array('trigger'),
-				),
 			),
 		),
 		'triggers_types' => array(

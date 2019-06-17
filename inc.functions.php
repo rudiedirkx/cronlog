@@ -10,8 +10,8 @@ function get_datetime( $datetime ) {
 	if ($date == date('Y-m-d')) {
 		return date('l j') . ' &nbsp; ' . $time;
 	}
-	elseif ($date == date('Y-m-d', $utc = strtotime('yesterday'))) {
-		return date('l j', $utc) . ' &nbsp; ' . $time;
+	elseif ($date >= date('Y-m-d', strtotime('-3 days'))) {
+		return date('l j', strtotime($date)) . ' &nbsp; ' . $time;
 	}
 
 	return "$date &nbsp; $time";

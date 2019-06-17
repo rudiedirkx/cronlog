@@ -19,6 +19,9 @@ class Trigger extends Model {
 		$expect = $this->expect;
 		$num = trim($expect, ':<>');
 
+		if ( $expect === '' ) {
+			return '';
+		}
 		if ( $expect[0] === '<' ) {
 			return "Must be less than $num";
 		}
@@ -39,7 +42,7 @@ class Trigger extends Model {
 
 	static public function validate( array $data ) {
 		self::presave($data);
-		return !empty($data['trigger']);
+		return !empty($data['description']);
 	}
 
 	static public function setTypes( $id, $types ) {

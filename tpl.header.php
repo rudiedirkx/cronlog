@@ -43,7 +43,7 @@ input.o {
 }
 input.regex {
 	font-family: monospace;
-	width: 20em;
+	width: 24em;
 }
 input.expect {
 	width: 2em;
