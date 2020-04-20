@@ -3,7 +3,7 @@
 namespace rdx\cronlog;
 
 class Result extends Model {
-	const RESULT_TIMING_MARGIN_MINS = 3;
+	const RESULT_TIMING_MARGIN_MINS = 30;
 
 	public static $_table = 'results';
 
@@ -55,9 +55,21 @@ class Result extends Model {
 	}
 
 	public function sentTimeAlmostMatches( self $result ) {
-		$min = date('H:i', strtotime('-' . self::RESULT_TIMING_MARGIN_MINS . ' minute', $this->sent_utc));
-		$max = date('H:i', strtotime('+' . self::RESULT_TIMING_MARGIN_MINS . ' minute', $this->sent_utc));
-		return $result->sent_time >= $min && $result->sent_time <= $max;
+		$otherTime = date('H:i', $result->sent_utc);
+		$thisTime = date('H:i', $this->sent_utc);
+		if ($otherTime == $thisTime) {
+			return true;
+		}
+
+		for ($diff = 1; $diff <= self::RESULT_TIMING_MARGIN_MINS; $diff++) {
+			$thisTime1 = date('H:i', strtotime("-$diff minutes", $this->sent_utc));
+			$thisTime2 = date('H:i', strtotime("+$diff minutes", $this->sent_utc));
+			if ($otherTime == $thisTime1 || $otherTime == $thisTime2) {
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	public function delete() {
