@@ -5,7 +5,7 @@
     "require": {
         "php": ">=7.1.4",
         "rdx/db": "^1.11",
-        "rdx/imap": "^2.7"
+        "rdx/imap": "^2.8"
     },
     "autoload": {
         "files": ["inc.functions.php"],
