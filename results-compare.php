@@ -7,12 +7,25 @@ require 'inc.bootstrap.php';
 
 include 'tpl.header.php';
 
-$dates = $db->select_fields('results', "date(sent) day, concat(date(sent), ' (', count(1), ')') num", '1 GROUP BY day ORDER BY day DESC');
+$source = $_GET['source'] ?? 'batch';
+if ( $source == 'date' ) {
+	$options = $db->select_fields('results', "date(sent) day, concat(date(sent), ' (', count(1), ')') num", '1 GROUP BY day ORDER BY day DESC LIMIT 100');
+}
+else {
+	$options = $db->select_fields('results', "batch day, concat(from_unixtime(batch), ' (', count(1), ')') num", '1 GROUP BY day ORDER BY day DESC LIMIT 100');
+	$source = 'batch';
+}
 
 $date1 = $date2 = [];
 if ( @$_GET['date1'] && @$_GET['date2'] ) {
-	$date1 = Result::all('date(sent) = ? ORDER BY type_id, server_id', [$_GET['date1']]);
-	$date2 = Result::all('date(sent) = ? ORDER BY type_id, server_id', [$_GET['date2']]);
+	if ( $source == 'date' ) {
+		$date1 = Result::all('date(sent) = ? ORDER BY type_id, server_id', [$_GET['date1']]);
+		$date2 = Result::all('date(sent) = ? ORDER BY type_id, server_id', [$_GET['date2']]);
+	}
+	else {
+		$date1 = Result::all('batch = ? ORDER BY type_id, server_id', [$_GET['date1']]);
+		$date2 = Result::all('batch = ? ORDER BY type_id, server_id', [$_GET['date2']]);
+	}
 }
 
 $types = Type::all('1 ORDER BY description');
@@ -80,11 +93,12 @@ tbody tr.different {
 </style>
 
 <form method="get" action>
+	<input type="hidden" name="source" value="<?= html($source) ?>" />
 	<p>
 		Compare
-		<select name="date1"><?= html_options($dates, @$_GET['date1']) ?></select>
+		<select name="date1"><?= html_options($options, @$_GET['date1']) ?></select>
 		vs
-		<select name="date2"><?= html_options($dates, @$_GET['date2']) ?></select>
+		<select name="date2"><?= html_options($options, @$_GET['date2']) ?></select>
 		&nbsp;
 		<button>Compare</button>
 		<button id="prev-date">&lt;</button>
@@ -97,12 +111,14 @@ tbody tr.different {
 		<thead>
 			<tr>
 				<th>
-					<a href="results.php?date=<?= html($_GET['date1']) ?>"><?= html($_GET['date1']) ?></a>
-					(<?= count($date1) ?>)
+					<a href="results.php?<?= $source ?>=<?= html($_GET['date1']) ?>">
+						<?= html($options[$_GET['date1']]) ?>
+					</a>
 				</th>
 				<th>
-					<a href="results.php?date=<?= html($_GET['date2']) ?>"><?= html($_GET['date2']) ?></a>
-					(<?= count($date2) ?>)
+					<a href="results.php?<?= $source ?>=<?= html($_GET['date2']) ?>">
+						<?= html($options[$_GET['date2']]) ?>
+					</a>
 				</th>
 			</tr>
 		</thead>
