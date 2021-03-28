@@ -83,14 +83,16 @@ foreach ( $importers as $importer ) {
 
 $skipped = $reader->skipped ? " ({$reader->skipped} skipped)" : '';
 
-$yesterday = $db->select_one('results', 'count(1)', 'batch < ? group by batch order by batch desc', $reader->batch);
-$ydiff = $reader->results - $yesterday;
+$yesterday = $db->select_fields('results', 'batch, count(1)', 'batch < ? group by batch order by batch desc limit 1', $reader->batch);
+[$yesterdayBatch, $yesterdayNum] = [key($yesterday), current($yesterday)];
+$ydiff = $reader->results - $yesterdayNum;
 
 $log  = "";
 $log .= "{$reader->results} results{$skipped},\n";
 $log .= "{$reader->notifications}/{$reader->anominals} anominal,\n";
 $log .= ($ydiff == 0 ? 'same as' : ($ydiff > 0 ? '+' : '-') . abs($ydiff) . ' from') . " yesterday\n\n";
 $log .= CRONLOG_URI . "/results.php?batch=" . $reader->batch . ($reader->anominals ? '&anominal=1' : '') . "\n\n";
+$log .= CRONLOG_URI . "/results-compare.php?source=batch&date1=" . $reader->batch . '&date2=' . $yesterdayBatch . "\n\n";
 $log .= "{$reader->triggers} triggers,\n";
 $log .= count($db->queries) . " queries\n";
 
