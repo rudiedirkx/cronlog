@@ -5,7 +5,8 @@
     "require": {
         "php": ">=7.1.4",
         "rdx/db": "^1.11",
-        "rdx/imap": "^2.8"
+        "rdx/imap": "^2.8",
+        "symfony/var-dumper": "^5.2"
     },
     "autoload": {
         "files": ["inc.functions.php"],

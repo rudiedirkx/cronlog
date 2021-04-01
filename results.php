@@ -23,6 +23,14 @@ $conditionsSql = count($conditions) ? $db->stringifyConditions($conditions) : '1
 $results = Result::all("$conditionsSql ORDER BY sent DESC LIMIT 1000");
 $totalResults = Result::count($conditionsSql);
 
+if ( ($_GET['recollate'] ?? '') === 'all' ) {
+	foreach ( $results as $result ) {
+		$result->retype() && $result->collate();
+	}
+
+	return do_redirect('?' . http_build_query(array_diff_key($_GET, ['recollate' => 1])));
+}
+
 include 'tpl.header.php';
 
 // Result::eager('type', $results);
@@ -62,9 +70,9 @@ $batchesOptions = array_map(function($utc) {
 			<? if (!$type): ?>
 				<th>Type</th>
 			<? endif ?>
-			<th>Subject</th>
+			<th nowrap>Subject</th>
 			<? if (!$server): ?>
-				<th>Server</th>
+				<th nowrap>Server</th>
 			<? endif ?>
 			<th nowrap>Date/time</th>
 			<th align="center">?</th>
@@ -76,7 +84,7 @@ $batchesOptions = array_map(function($utc) {
 					</th>
 				<? endforeach ?>
 			<? endif ?>
-			<th>Recollate</th>
+			<th><a href="?<?= http_build_query($_GET) ?>&recollate=all">Recollate</a></th>
 			<th>/day</th>
 		</tr>
 	</thead>
@@ -95,9 +103,9 @@ $batchesOptions = array_map(function($utc) {
 				<? if (!$type): ?>
 					<td><a href="?type=<?= $result->type_id ?>"><?= html($result->type->description) ?></a></td>
 				<? endif ?>
-				<td><code><?= html($result->relevant_subject) ?></code></td>
+				<td nowrap><code><?= html($result->relevant_subject) ?></code></td>
 				<? if (!$server): ?>
-					<td><a href="?server=<?= $result->server_id ?>"><?= html($result->server ?: '?') ?></a></td>
+					<td nowrap><a href="?server=<?= $result->server_id ?>"><?= html($result->server ?: '?') ?></a></td>
 				<? endif ?>
 				<td nowrap><a title="Batch: <?= date('Y-m-d H:i:s', $result->batch) ?>" href="result.php?id=<?= $result->id ?>"><?= get_datetime($result->sent) ?></a></td>
 				<td align="center">

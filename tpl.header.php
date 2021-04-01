@@ -20,6 +20,7 @@ table {
 }
 th, td {
 	padding: 6px 9px;
+	vertical-align: top;
 	border: solid 1px #ddd;
 }
 th:not([align]) {
