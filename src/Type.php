@@ -29,21 +29,14 @@ class Type extends Model {
 		}
 
 		foreach ( self::$_all as $type ) {
-			if ( $type->matchesToAndSubject($address, $subject) ) {
+			if ( $type->matchesSubject($address, $subject) ) {
 				return $type;
 			}
 		}
 	}
 
-	public function matchesToAndSubject( $to, $subject ) {
-		if ( !$this->to_regex && !$this->subject_regex ) {
-			return  false;
-		}
-
-		$to = !$this->to_regex || preg_match($this->to_regex, $to);
-		$subject = !$this->subject_regex || preg_match($this->subject_regex, $subject);
-
-		return $to &&  $subject;
+	public function matchesSubject( $to, $subject ) {
+		return !$this->subject_regex || preg_match($this->subject_regex, $subject);
 	}
 
 	protected function get_handling_delete() {

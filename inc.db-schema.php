@@ -7,7 +7,6 @@ return array(
 			'columns' => array(
 				'id' => array('pk' => true),
 				'description',
-				'to_regex',
 				'subject_regex',
 				'handling' => array('type' => 'int', 'default' => 0),
 				'enabled' => array('type' => 'int', 'default' => 1),
