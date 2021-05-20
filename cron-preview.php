@@ -1,5 +1,6 @@
 <?php
 
+use rdx\cronlog\Server;
 use rdx\cronlog\Type;
 use rdx\cronlog\import\Importer;
 use rdx\cronlog\import\ImporterReader;
@@ -26,12 +27,15 @@ class PreviewImporterReader implements ImporterReader {
 			return;
 		}
 
+		$server = Server::findByFrom($from);
+
 		$this->results[] = [
 			'type' => $type->description,
 			'when' => $sent,
 			'from' => $from,
 			'to' => $to,
 			'subject' => $subject,
+			'server' => (string) $server,
 		];
 	}
 
