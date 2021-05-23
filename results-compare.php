@@ -16,6 +16,8 @@ else {
 	$source = 'batch';
 }
 
+$sources = ['batch', 'date'];
+
 $date1 = $date2 = [];
 if ( @$_GET['date1'] && @$_GET['date2'] ) {
 	if ( $source == 'date' ) {
@@ -92,7 +94,15 @@ tbody tr.different {
 }
 </style>
 
-<form method="get" action>
+<form method="get" action style="display: inline-block">
+	<p>
+		<select name="source"><?= html_options(array_combine($sources, $sources), $source) ?></select>
+		<button>Select</button>
+		&nbsp; |&nbsp;
+	</p>
+</form>
+
+<form method="get" action style="display: inline-block">
 	<input type="hidden" name="source" value="<?= html($source) ?>" />
 	<p>
 		Compare
@@ -101,7 +111,9 @@ tbody tr.different {
 		<select name="date2"><?= html_options($options, @$_GET['date2']) ?></select>
 		&nbsp;
 		<button>Compare</button>
-		<button id="prev-date">&lt;</button>
+		&nbsp;
+		<button type="button" data-delta-date="-1">&lt;</button>
+		<button type="button" data-delta-date="+1">&gt;</button>
 	</p>
 </form>
 
@@ -147,9 +159,11 @@ tbody tr.different {
 <? endif ?>
 
 <script>
-document.querySelector('#prev-date').addEventListener('click', function(e) {
+document.querySelectorAll('[data-delta-date]').forEach(el => el.addEventListener('click', function(e) {
+	const diff = parseInt(this.dataset.deltaDate);
 	const selects = this.form.querySelectorAll('select');
-	selects[0].selectedIndex++;
-	selects[1].selectedIndex++;
-});
+	selects[0].selectedIndex += diff;
+	selects[1].selectedIndex += diff;
+	this.form.submit();
+}));
 </script>
