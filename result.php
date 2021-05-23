@@ -31,7 +31,7 @@ include 'tpl.header.php';
 		</tr>
 		<tr>
 			<th>Subject</th>
-			<td colspan="2"><code><?= html($result->relevant_subject) ?></code></td>
+			<td colspan="2" title="<?= html($result->subject) ?>"><code><?= html($result->relevant_subject) ?></code></td>
 		</tr>
 		<tr>
 			<th>Server</th>

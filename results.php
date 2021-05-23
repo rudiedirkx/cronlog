@@ -103,9 +103,9 @@ $batchesOptions = array_map(function($utc) {
 				<? if (!$type): ?>
 					<td><a href="?type=<?= $result->type_id ?>"><?= html($result->type->description) ?></a></td>
 				<? endif ?>
-				<td nowrap><code><?= html($result->relevant_subject) ?></code></td>
+				<td nowrap title="<?= html($result->subject) ?>"><code><?= html($result->relevant_subject) ?></code></td>
 				<? if (!$server): ?>
-					<td nowrap><a href="?server=<?= $result->server_id ?>"><?= html($result->server ?: '?') ?></a></td>
+					<td nowrap title="<?= html($result->from) ?>"><a href="?server=<?= $result->server_id ?>"><?= html($result->server ?: '?') ?></a></td>
 				<? endif ?>
 				<td nowrap><a title="Batch: <?= date('Y-m-d H:i:s', $result->batch) ?>" href="result.php?id=<?= $result->id ?>"><?= get_datetime($result->sent) ?></a></td>
 				<td align="center">
