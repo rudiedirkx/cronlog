@@ -112,8 +112,8 @@ tbody tr.different {
 		&nbsp;
 		<button>Compare</button>
 		&nbsp;
-		<button type="button" data-delta-date="-1">&lt;</button>
-		<button type="button" data-delta-date="+1">&gt;</button>
+		<button type="button" data-delta-date="+1">&lt;</button>
+		<button type="button" data-delta-date="-1">&gt;</button>
 	</p>
 </form>
 
