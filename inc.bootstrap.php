@@ -18,7 +18,6 @@ $db->ensureSchema(require 'inc.db-schema.php');
 db_generic_model::$_db = $db;
 
 /** @var ImporterCollector[] $importers */
-$importers = array(
-	// new FileImporterCollector(__DIR__ . '/input', 'y-*.eml'),
-	new EmailImporterCollector(CRONLOG_MAIL_SERVER, CRONLOG_MAIL_USER, CRONLOG_MAIL_PASS),
-);
+$importers = array_map(function(array $args) {
+	return new EmailImporterCollector(...$args);
+}, CRONLOG_MAIL_IMPORTERS);

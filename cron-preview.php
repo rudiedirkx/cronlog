@@ -18,16 +18,18 @@ class PreviewImporterReader implements ImporterReader {
 		$subject = $importer->getSubject();
 		$sent = date('Y-m-d H:i:s', $importer->getSentUtc());
 
+		$server = Server::findByFrom($from);
+
 		$type = Type::findByToAndSubject($to, $subject);
 		if ( !$type ) {
 			$this->ignored[] = [
+				'from' => $from,
 				'to' => $to,
 				'subject' => $subject,
+				'server' => (string) $server,
 			];
 			return;
 		}
-
-		$server = Server::findByFrom($from);
 
 		$this->results[] = [
 			'type' => $type->description,
