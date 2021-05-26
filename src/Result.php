@@ -91,7 +91,7 @@ class Result extends Model {
 	public function collate() {
 		$none = [0, 0, 0];
 		if ( !$this->type ) return $none;
-		if ( !$this->type->triggers ) return $none;
+		// if ( !$this->type->triggers ) return $none;
 		if ( !$this->output ) return $none;
 
 		self::$_db->begin();
@@ -128,7 +128,7 @@ class Result extends Model {
 			$update['server_id'] = $server->id;
 		}
 
-		if ( $nominal === 1 && $this->type->handling_delete ) {
+		if ( count($this->type->triggers) && $nominal === 1 && $this->type->handling_delete ) {
 			$update['output'] = '';
 		}
 
