@@ -69,5 +69,6 @@ input.color {
 <p class="main-menu">
 	<a href="index.php">Config</a> |
 	<a href="cron-preview.php">Preview</a> |
-	<a href="results.php">All results</a>
+	<a href="results.php">All results</a> |
+	<a href="results-compare.php">Compare</a>
 </p>
