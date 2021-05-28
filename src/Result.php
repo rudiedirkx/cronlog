@@ -2,8 +2,11 @@
 
 namespace rdx\cronlog;
 
+use DateTime;
+
 class Result extends Model {
-	const RESULT_TIMING_MARGIN_MINS = 30;
+
+	const RESULT_TIMING_MARGIN_MINS = 55;
 
 	public static $_table = 'results';
 
@@ -55,21 +58,15 @@ class Result extends Model {
 	}
 
 	public function sentTimeAlmostMatches( self $result ) {
-		$otherTime = date('H:i', $result->sent_utc);
-		$thisTime = date('H:i', $this->sent_utc);
-		if ($otherTime == $thisTime) {
+		$a = date('H:i', strtotime('+12 hours', $this->sent_utc));
+		$b = date('H:i', strtotime('+12 hours', $result->sent_utc));
+		if ($a == $b) {
 			return true;
 		}
 
-		for ($diff = 1; $diff <= self::RESULT_TIMING_MARGIN_MINS; $diff++) {
-			$thisTime1 = date('H:i', strtotime("-$diff minutes", $this->sent_utc));
-			$thisTime2 = date('H:i', strtotime("+$diff minutes", $this->sent_utc));
-			if ($otherTime == $thisTime1 || $otherTime == $thisTime2) {
-				return true;
-			}
-		}
-
-		return false;
+		$diff = (new DateTime($a))->diff(new DateTime($b), true);
+		$mins = $diff->h * 60 + $diff->i;
+		return $mins <= self::RESULT_TIMING_MARGIN_MINS;
 	}
 
 	public function delete() {
