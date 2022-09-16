@@ -36,6 +36,9 @@ class EmailImporter implements Importer {
 	}
 
 	protected function extractAddress($header) {
+		if (preg_match('#<([^<@]+@[^<@]+)>$#', $header[0], $match)) {
+			return $match[1];
+		}
 		return trim(explode(' ', $header[0])[0], '<>');
 	}
 }
