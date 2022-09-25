@@ -14,7 +14,7 @@ class EmailImporterCollector implements ImporterCollector {
 
 	protected function connect() {
 		if ( !$this->mbox ) {
-			$this->mbox = new IMAPMailbox($this->creds[0], $this->creds[1], $this->creds[2], null, ['norsh']);
+			$this->mbox = new IMAPMailbox($this->creds[0], $this->creds[1], $this->creds[2]);
 		}
 
 		return $this->mbox;
