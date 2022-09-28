@@ -20,7 +20,7 @@ $batch and $conditions['batch'] = $batch;
 $anominal and $conditions['nominal'] = '0';
 $conditionsSql = count($conditions) ? $db->stringifyConditions($conditions) : '1';
 
-$results = Result::all("$conditionsSql ORDER BY sent DESC LIMIT 1000");
+$results = Result::all("$conditionsSql ORDER BY sent DESC LIMIT 500");
 $totalResults = Result::count($conditionsSql);
 
 if ( ($_GET['recollate'] ?? '') === 'all' ) {
