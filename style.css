@@ -1,0 +1,80 @@
+body {
+	font-family: sans-serif;
+	background-color: #fff;
+	color: #000;
+}
+a {
+	color: blue;
+}
+table {
+	border-collapse: collapse;
+	--even-section-odd: hsl(39, 100%, 90%);
+	--even-section-even: hsl(60, 100%, 90%);
+}
+th, td {
+	padding: 6px 9px;
+	vertical-align: top;
+	border: solid 1px #ddd;
+}
+th:not([align]) {
+	text-align: left;
+}
+tbody tr:nth-child(odd) {
+	background-color: #eee;
+}
+tbody tr.even-section:nth-child(odd) {
+	background-color: var(--even-section-odd);
+}
+tbody tr.even-section:nth-child(even) {
+	background-color: var(--even-section-even);
+}
+tr.next-section > * {
+	border-top: solid 3px black;
+}
+input.o {
+	width: 2em;
+	text-align: center;
+}
+input.regex {
+	font-family: monospace;
+	width: 24em;
+}
+input.expect {
+	width: 2em;
+	text-align: center;
+}
+input.color {
+	width: 4em;
+}
+
+.output {
+	font-family: monospace;
+	white-space: pre-wrap;
+}
+.output strong {
+	background: #eee;
+}
+
+@media (prefers-color-scheme: dark) {
+	body {
+		background-color: #000;
+		color: #888;
+	}
+	input, select, textarea, button {
+		background-color: #111;
+		color: #888;
+	}
+	button {
+		border: solid 1px #555;
+	}
+	a {
+		color: lightblue;
+	}
+	tbody tr:nth-child(odd) {
+		background-color: #222;
+	}
+	table {
+		--even-section-odd: hsl(39, 100%, 10%);
+		--even-section-even: hsl(60, 100%, 10%);
+	}
+}
