@@ -1,7 +1,7 @@
 <?php
 
 return array(
-	'version' => 23,
+	'version' => 24,
 	'tables' => array(
 		'types' => array(
 			'columns' => array(
@@ -72,6 +72,15 @@ return array(
 					'unique' => true,
 					'columns' => array('trigger_id', 'result_id'),
 				),
+			),
+		),
+		'uploaded_logs' => array(
+			'columns' => array(
+				'id' => array('pk' => true),
+				'created_on' => array('type' => 'datetime'),
+				'from',
+				'subject',
+				'body',
 			),
 		),
 	),

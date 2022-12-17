@@ -23,20 +23,20 @@ class Type extends Model {
 		$data['enabled'] = (int) !empty($data['enabled']);
 	}
 
-	static public function findByToAndSubject( $address, $subject ) {
+	static public function findBySubject( string $subject ) {
 		if ( self::$_all === null ) {
 			self::$_all = self::all(['enabled' => 1]);
 		}
 
 		foreach ( self::$_all as $type ) {
-			if ( $type->matchesSubject($address, $subject) ) {
+			if ( $type->matchesSubject($subject) ) {
 				return $type;
 			}
 		}
 	}
 
-	public function matchesSubject( $to, $subject ) {
-		return !$this->subject_regex || preg_match($this->subject_regex, $subject);
+	public function matchesSubject( string $subject ) {
+		return preg_match($this->subject_regex, $subject);
 	}
 
 	protected function get_handling_delete() {

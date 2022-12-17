@@ -75,7 +75,7 @@ class Result extends Model {
 	}
 
 	public function retype() {
-		$type = Type::findByToAndSubject($this->to, $this->subject);
+		$type = Type::findBySubject($this->subject);
 		if ( $type ) {
 			$this->update(['type_id' => $type->id]);
 			$this->type = $type;

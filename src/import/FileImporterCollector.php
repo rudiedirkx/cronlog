@@ -14,12 +14,7 @@ class FileImporterCollector implements ImporterCollector {
 	public function collect( ImporterReader $reader ) {
 		$files = glob("{$this->dir}/{$this->mask}");
 		foreach ( $files as $file ) {
-			$importer = $this->createImporter($file);
-			$reader->read($importer);
+			$reader->read(new FileImporter($file));
 		}
-	}
-
-	public function createImporter( $file ) {
-		return new FileImporter($file);
 	}
 }

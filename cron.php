@@ -35,7 +35,7 @@ class DbImporterReader implements ImporterReader {
 
 		$insert = compact('from', 'to', 'subject', 'sent', 'output');
 
-		$type = Type::findByToAndSubject($to, $subject);
+		$type = Type::findBySubject($subject);
 		if ( !$type ) {
 			$this->skipped[] = $subject;
 			return false;

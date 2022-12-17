@@ -23,12 +23,7 @@ class EmailImporterCollector implements ImporterCollector {
 	public function collect( ImporterReader $reader ) {
 		$messages = $this->connect()->messages(array('seen' => false));
 		foreach ( $messages as $message ) {
-			$importer = $this->createImporter($message);
-			$reader->read($importer);
+			$reader->read(new EmailImporter($message));
 		}
-	}
-
-	public function createImporter( $message ) {
-		return new EmailImporter($message);
 	}
 }

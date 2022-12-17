@@ -3,7 +3,8 @@ cronlog
 
 Server
 
-* Cron `MAILTO=cronlog+type@server`
+* Cron `MAILTO=logs@your-cronlog.com`, or
+* `cronlog_upload.sh your_cron_command`
 
 App
 
@@ -20,3 +21,7 @@ App
 | I-Res  | Today 05:00     | 632  | 0         | 0       |
 | Devver | Yesterday 05:00 | 632  | 11        | 0       |
 | I-Res  | Yesterday 05:00 | 632  | 0         | 0       |
+
+* Read incoming cronlogs from
+    *  email: `CRONLOG_MAIL_IMPORTERS` in `env.php`, or
+    * uploaded logs: `UploadedImporterCollector` in `inv.bootstrap.php`

@@ -20,7 +20,7 @@ class PreviewImporterReader implements ImporterReader {
 
 		$server = Server::findByFrom($from);
 
-		$type = Type::findByToAndSubject($to, $subject);
+		$type = Type::findBySubject($subject);
 		if ( !$type ) {
 			$this->ignored[] = [
 				'when' => $sent,

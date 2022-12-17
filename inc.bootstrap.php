@@ -3,6 +3,7 @@
 use rdx\cronlog\import\EmailImporterCollector;
 use rdx\cronlog\import\FileImporterCollector;
 use rdx\cronlog\import\ImporterCollector;
+use rdx\cronlog\import\UploadedImporterCollector;
 
 chdir(__DIR__);
 
@@ -21,3 +22,4 @@ db_generic_model::$_db = $db;
 $importers = array_map(function(array $args) {
 	return new EmailImporterCollector(...$args);
 }, CRONLOG_MAIL_IMPORTERS);
+$importers[] = new UploadedImporterCollector();
