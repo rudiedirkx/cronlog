@@ -35,7 +35,10 @@ include 'tpl.header.php';
 		</tr>
 		<tr>
 			<th>Server</th>
-			<td colspan="2"><?= html($result->server ?: '?') ?> (<?= html($result->from) ?>)</td>
+			<td colspan="2">
+				<?= html($result->server ?: '?') ?>
+				(<span title="To: <?= html($result->to) ?>"><?= html($result->from) ?></span>)
+			</td>
 		</tr>
 		<tr>
 			<th>Date/time</th>
