@@ -20,5 +20,6 @@ header('Content-type: text/html; charset=utf-8');
 	<a href="index.php">Config</a> |
 	<a href="cron-preview.php">Preview</a> |
 	<a href="results.php">All results</a> |
+	<a href="queue.php">Queue</a> |
 	<a href="results-compare.php">Compare</a>
 </p>

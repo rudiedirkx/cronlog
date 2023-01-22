@@ -71,7 +71,7 @@ Server::eager('num_results', $servers);
 					<td align="center" title="Notify admin for anominal results">
 						<input type="checkbox" name="type[<?= $id ?>][handling_notify]" <? if ($type->handling_notify): ?>checked<? endif ?> />
 					</td>
-					<td>
+					<td nowrap>
 						<? if ($id): ?>
 							<a href="results.php?type=<?= $id ?>"><?= $type->num_results ?> results</a>
 						<? endif ?>
