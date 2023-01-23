@@ -36,7 +36,11 @@ include 'tpl.header.php';
 		<tr>
 			<th>Server</th>
 			<td colspan="2">
-				<?= html($result->server ?: '?') ?>
+				<? if ($result->server): ?>
+					<a href="results.php?server=<?= $result->server_id ?>"><?= html($result->server) ?></a>
+				<? else: ?>
+					?
+				<? endif ?>
 				(<span title="To: <?= html($result->to) ?>"><?= html($result->from) ?></span>)
 			</td>
 		</tr>
@@ -47,6 +51,9 @@ include 'tpl.header.php';
 					<img src="warning.png" title="Does not meet the expected values" />
 				<? endif ?>
 				<?= html($result->sent) ?>
+				<? if ($result->timing): ?>
+					(<?= $result->timing ?>s)
+				<? endif ?>
 				<a href="?id=<?= $result->id ?>&recollate">recollate</a>
 			</td>
 		</tr>

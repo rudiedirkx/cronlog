@@ -7,6 +7,7 @@ use DateTime;
 class Result extends Model {
 
 	const RESULT_TIMING_MARGIN_MINS = 55;
+	const OUTPUT_DATE_REGEX = '(\w+ \w+ \d+ \d\d+:\d\d+:\d\d+ \w+ \d{4}|\w+ \d+ \w+ \d{4} \d\d:\d\d:\d\d (AM|PM) \w+)';
 
 	public static $_table = 'results';
 
@@ -93,6 +94,13 @@ class Result extends Model {
 
 		self::$_db->begin();
 
+		$timing = 0;
+		if ($utc1 = self::parseStartDate($this->output)) {
+			if ($utc2 = self::parseEndDate($this->output)) {
+				$timing = max(1, $utc2 - $utc1);
+			}
+		}
+
 		ResultTrigger::deleteAll(array('result_id' => $this->id));
 		$this->triggers = [];
 
@@ -119,6 +127,7 @@ class Result extends Model {
 
 		$update = [
 			'nominal' => $nominal,
+			'timing' => $timing,
 		];
 
 		if ( $server = Server::findByFrom($this->from) ) {
@@ -145,4 +154,24 @@ class Result extends Model {
 
 		return ['?', false];
 	}
+
+	static protected function parseStartDate(string $output) : int {
+		return self::parseTimingDate($output, '^' . self::OUTPUT_DATE_REGEX);
+	}
+
+	static protected function parseEndDate(string $output) : int {
+		return self::parseTimingDate($output, self::OUTPUT_DATE_REGEX . '$');
+	}
+
+	static protected function parseTimingDate(string $output, string $regex) : int {
+		if (preg_match("#$regex#", $output, $match)) {
+			$utc = strtotime($match[1]);
+			if ($utc && $utc > strtotime('2001-01-01')) {
+				return $utc;
+			}
+		}
+
+		return 0;
+	}
+
 }

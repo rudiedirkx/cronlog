@@ -38,7 +38,7 @@ include 'tpl.header.php';
 					</td>
 				</tr>
 				<tr hidden>
-					<td colspan="3" class="output"><?= html($log->body) ?></td>
+					<td colspan="4" class="output"><?= html($log->body) ?></td>
 				</tr>
 			</tbody>
 		<? endforeach ?>

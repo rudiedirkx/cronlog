@@ -1,7 +1,7 @@
 <?php
 
 return array(
-	'version' => 24,
+	'version' => 25,
 	'tables' => array(
 		'types' => array(
 			'columns' => array(
@@ -54,6 +54,7 @@ return array(
 				'output_size' => array('type' => 'int'),
 				'nominal' => array('type' => 'int', 'default' => null),
 				'batch' => array('type' => 'int'),
+				'timing' => array('type' => 'int', 'default' => 0),
 			),
 			'indexes' => array(
 				'sent' => ['sent'],

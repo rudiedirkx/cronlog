@@ -31,7 +31,7 @@ class DbImporterReader implements ImporterReader {
 		$subject = $importer->getSubject();
 		$sent = date('Y-m-d H:i:s', $importer->getSentUtc());
 // echo "[$sent] $subject\n";
-		$output = $importer->getOutput();
+		$output = trim($importer->getOutput());
 
 		$insert = compact('from', 'to', 'subject', 'sent', 'output');
 

@@ -75,6 +75,7 @@ $batchesOptions = array_map(function($utc) {
 				<th nowrap>Server</th>
 			<? endif ?>
 			<th nowrap>Date/time</th>
+			<th></th>
 			<th align="center">?</th>
 			<th>Size</th>
 			<? if ($type): ?>
@@ -108,6 +109,7 @@ $batchesOptions = array_map(function($utc) {
 					<td nowrap title="<?= html($result->from) ?>"><a href="?server=<?= $result->server_id ?>"><?= html($result->server ?: '?') ?></a></td>
 				<? endif ?>
 				<td nowrap><a title="Batch: <?= date('Y-m-d H:i:s', $result->batch) ?>" href="result.php?id=<?= $result->id ?>"><?= get_datetime($result->sent) ?></a></td>
+				<td><?= $result->timing ? $result->timing . 's' : '' ?></td>
 				<td align="center">
 					<? if ($result->nominal === true): ?>
 						<img src="yes.gif" title="Meets all the expected values" />
