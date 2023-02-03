@@ -94,10 +94,12 @@ class Result extends Model {
 
 		self::$_db->begin();
 
-		$timing = 0;
+		$update = [];
+
 		if ($utc1 = self::parseStartDate($this->output)) {
+			$update['sent'] = date('Y-m-d H:i:s', $utc1);
 			if ($utc2 = self::parseEndDate($this->output)) {
-				$timing = max(1, $utc2 - $utc1);
+				$update['timing'] = max(1, $utc2 - $utc1);
 			}
 		}
 
@@ -124,11 +126,7 @@ class Result extends Model {
 		ResultTrigger::insertAll($inserts);
 
 		$nominal = !$nominals[0] && !$nominals[1] ? null : (int) ($nominals[0] == 0);
-
-		$update = [
-			'nominal' => $nominal,
-			'timing' => $timing,
-		];
+		$update['nominal'] = $nominal;
 
 		if ( $server = Server::findByFrom($this->from) ) {
 			$update['server_id'] = $server->id;
