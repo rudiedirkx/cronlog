@@ -7,7 +7,7 @@ use DateTime;
 class Result extends Model {
 
 	const RESULT_TIMING_MARGIN_MINS = 55;
-	const OUTPUT_DATE_REGEX = '(\w+ \w+ \d+ \d\d+:\d\d+:\d\d+ \w+ \d{4}|\w+ \d+ \w+ \d{4} \d\d:\d\d:\d\d (AM|PM) \w+)';
+	const OUTPUT_DATE_REGEX = '(\w+ \w+ +\d+ \d\d+:\d\d+:\d\d+ \w+ \d{4}|\w+ +\d+ \w+ \d{4} \d\d:\d\d:\d\d (AM|PM) \w+)';
 
 	public static $_table = 'results';
 
