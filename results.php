@@ -11,6 +11,7 @@ $server = Server::find(@$_GET['server']);
 $date = @$_GET['date'];
 $batch = @$_GET['batch'];
 $anominal = !empty($_GET['anominal']);
+$search = @$_GET['search'];
 
 $conditions = [];
 $type and $conditions['type_id'] = $type->id;
@@ -18,6 +19,7 @@ $server and $conditions['server_id'] = $server->id;
 $date and $conditions[] = $db->replaceholders('date(sent) = ?', $date);
 $batch and $conditions['batch'] = $batch;
 $anominal and $conditions['nominal'] = '0';
+$search and $conditions[] = $db->replaceholders('output LIKE ?', "%$search%");
 $conditionsSql = count($conditions) ? $db->stringifyConditions($conditions) : '1';
 
 $results = Result::all("$conditionsSql ORDER BY sent DESC LIMIT 500");
@@ -60,6 +62,7 @@ $batchesOptions = array_map(function($utc) {
 		<select name="batch"><?= html_options($batchesOptions, $_GET['batch'] ?? null, '-- Batch') ?></select>
 		<select name="date"><?= html_options($datesOptions, $_GET['date'] ?? null, '-- Date') ?></select>
 		<select name="anominal"><?= html_options(['1' => 'Only anominal'], $anominal, '-- Nominality') ?></select>
+		<input name="search" type="search" placeholder="Search result..." value="<?= html($search) ?>" />
 	</p>
 </form>
 
