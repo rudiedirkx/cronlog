@@ -12,6 +12,8 @@ $date = @$_GET['date'];
 $batch = @$_GET['batch'];
 $anominal = !empty($_GET['anominal']);
 $search = @$_GET['search'];
+$regex = $type && preg_match('#^/.+/[a-z]*$#', $search ?? '') ? $search : null;
+if ($regex) $search = null;
 
 $conditions = [];
 $type and $conditions['type_id'] = $type->id;
@@ -52,7 +54,9 @@ $batchesOptions = array_map(function($utc) {
 
 <h2>
 	Results
-	(<?= count($results) ?> / <?= $totalResults != count($results) && $totalResults != count($ids) ? "$totalResults / " : '' ?> <?= count($ids) ?>)
+	(<?= html_number(count($results)) ?> /
+	<?= $totalResults != count($results) && $totalResults != count($ids) ? html_number($totalResults) . ' / ' : '' ?>
+	<?= html_number(count($ids)) ?>)
 </h2>
 
 <form action onchange="this.submit()">
@@ -62,7 +66,7 @@ $batchesOptions = array_map(function($utc) {
 		<select name="batch"><?= html_options($batchesOptions, $_GET['batch'] ?? null, '-- Batch') ?></select>
 		<select name="date"><?= html_options($datesOptions, $_GET['date'] ?? null, '-- Date') ?></select>
 		<select name="anominal"><?= html_options(['1' => 'Only anominal'], $anominal, '-- Nominality') ?></select>
-		<input name="search" type="search" placeholder="Search result..." value="<?= html($search) ?>" />
+		<input name="search" type="search" placeholder="Search result..." value="<?= html($search ?: $regex) ?>" />
 	</p>
 </form>
 
@@ -89,7 +93,9 @@ $batchesOptions = array_map(function($utc) {
 				<? endforeach ?>
 			<? endif ?>
 			<th><a href="?<?= http_build_query($_GET) ?>&recollate=all">Recollate</a></th>
-			<th>/day</th>
+			<?if (!$regex): ?>
+				<th>/day</th>
+			<? endif ?>
 		</tr>
 	</thead>
 	<tbody>
@@ -101,8 +107,9 @@ $batchesOptions = array_map(function($utc) {
 			$newBatch = $prevBatch && $result->batch != $prevBatch;
 			$prevBatch = $result->batch;
 			$batch += $newBatch;
+			$sectionClasses = ($newSection ? 'next-section' : '') . ' ' . ($batch % 2 == 0 ? 'even-section' : 'odd-section');
 			?>
-			<tr class="<?= $newSection ? 'next-section' : '' ?> <?= $batch % 2 == 0 ? 'even-section' : 'odd-section' ?>" data-date="<?= $prevDate ?>">
+			<tr class="<?= $regex ? '' : $sectionClasses ?>" data-date="<?= $prevDate ?>">
 				<th align="right"><?= $ids[$result->id]+1 ?></th>
 				<? if (!$type): ?>
 					<td><a href="?type=<?= $result->type_id ?>"><?= html($result->type->description) ?></a></td>
@@ -134,12 +141,33 @@ $batchesOptions = array_map(function($utc) {
 				<? endif ?>
 				<td><a href="result.php?id=<?= $result->id ?>&recollate&goto=result.php?id=<?= $result->id ?>">recollate</a></td>
 			</tr>
+			<?if ($regex):
+				preg_match_all($regex, $result->output, $matches);
+				if (count($matches) == 2 && count($matches[1]) == 1) {
+					$match = trim($matches[1][0]);
+				}
+				elseif (count($matches[0]) == 0) {
+					$match = '-';
+				}
+				else {
+					if (count($matches) > 1) {
+						array_shift($matches);
+					}
+					$match = trim(print_r($matches, true));
+				}
+				?>
+				<tr>
+					<td colspan="3"></td>
+					<td colspan="7" style="white-space: pre-wrap"><?= html($match) ?></td>
+				</tr>
+			<? endif ?>
 		<? endforeach ?>
 	</tbody>
 </table>
 
 <script>
 (function() {
+	<?= $regex ? "return;\n" : '' ?>
 	function markSection(firstRow, i, arr) {
 		var lastRow = arr[i+1] && arr[i+1].previousElementSibling || firstRow.parentNode.lastElementChild;
 		var size = lastRow.rowIndex - firstRow.rowIndex + 1;

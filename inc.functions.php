@@ -41,3 +41,7 @@ function html_options( $options, $selected = null, $empty = '' ) {
 	}
 	return $html;
 }
+
+function html_number( $number ) {
+	return number_format($number, 0, '.', '_');
+}
