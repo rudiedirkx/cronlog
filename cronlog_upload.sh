@@ -10,6 +10,8 @@ OS_FROM="`whoami`@`hostname`"
 date >$OUTFILE
 echo >>$OUTFILE
 "$@" &>>$OUTFILE
+echo >>$OUTFILE
+date >>$OUTFILE
 #{ date; echo; time $FULL_CMD ; } &>$OUTFILE
 
 curl -s -o /dev/null --form "subject=$FULL_CMD" --form "from=$OS_FROM" --form "body=@$OUTFILE" $CRONLOG_URL
