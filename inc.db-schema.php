@@ -1,7 +1,7 @@
 <?php
 
 return array(
-	'version' => 25,
+	'version' => 27,
 	'tables' => array(
 		'types' => array(
 			'columns' => array(
@@ -57,6 +57,8 @@ return array(
 				'timing' => array('type' => 'int', 'default' => 0),
 			),
 			'indexes' => array(
+				'type_id' => ['type_id'],
+				'server_id' => ['server_id'],
 				'sent' => ['sent'],
 				'batch' => ['batch'],
 			),
@@ -69,6 +71,7 @@ return array(
 				'nominal' => array('type' => 'int', 'default' => null),
 			),
 			'indexes' => array(
+				'result_id' => ['result_id'],
 				'trigger_result' => array(
 					'unique' => true,
 					'columns' => array('trigger_id', 'result_id'),
