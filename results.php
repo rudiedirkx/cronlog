@@ -1,5 +1,6 @@
 <?php
 
+use rdx\cronlog\RegexDisplay\RegexDisplay;
 use rdx\cronlog\Result;
 use rdx\cronlog\Server;
 use rdx\cronlog\Type;
@@ -11,9 +12,12 @@ $server = Server::find(@$_GET['server']);
 $date = @$_GET['date'];
 $batch = @$_GET['batch'];
 $anominal = !empty($_GET['anominal']);
-$search = @$_GET['search'];
-$regex = $type && preg_match('#^/.+/[a-z]*$#', $search ?? '') ? $search : null;
-if ($regex) $search = null;
+$searchInput = $search = @$_GET['search'];
+[$regex, $regexDisplay] = $type && preg_match('#^(sum)?(/.+/[a-z]*)$#', $search ?? '', $match) ? [$match[2], RegexDisplay::make($match[1])] : [null, null];
+if ($regex) {
+	$search = null;
+	$regexDisplay or $regexDisplay = RegexDisplay::make('default');
+}
 
 $conditions = [];
 $type and $conditions['type_id'] = $type->id;
@@ -66,7 +70,7 @@ $batchesOptions = array_map(function($utc) {
 		<select name="batch"><?= html_options($batchesOptions, $_GET['batch'] ?? null, '-- Batch') ?></select>
 		<select name="date"><?= html_options($datesOptions, $_GET['date'] ?? null, '-- Date') ?></select>
 		<select name="anominal"><?= html_options(['1' => 'Only anominal'], $anominal, '-- Nominality') ?></select>
-		<input name="search" type="search" placeholder="Search result..." value="<?= html($search ?: $regex) ?>" />
+		<input name="search" type="search" placeholder="Search result..." value="<?= html($searchInput) ?>" />
 	</p>
 </form>
 
@@ -143,22 +147,10 @@ $batchesOptions = array_map(function($utc) {
 			</tr>
 			<?if ($regex):
 				preg_match_all($regex, $result->output, $matches);
-				if (count($matches) == 2 && count($matches[1]) == 1) {
-					$match = trim($matches[1][0]);
-				}
-				elseif (count($matches[0]) == 0) {
-					$match = '-';
-				}
-				else {
-					if (count($matches) > 1) {
-						array_shift($matches);
-					}
-					$match = trim(print_r($matches, true));
-				}
 				?>
 				<tr>
 					<td colspan="3"></td>
-					<td colspan="7" style="white-space: pre-wrap"><?= html($match) ?></td>
+					<td colspan="7" style="white-space: pre-wrap"><?= html(trim($regexDisplay->format($matches))) ?></td>
 				</tr>
 			<? endif ?>
 		<? endforeach ?>
