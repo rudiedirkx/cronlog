@@ -111,7 +111,7 @@ Server::eager('num_results', $servers);
 						(<span><?= !$id ? 0 : count($trigger->type_ids) ?></span>)
 					</td>
 					<td>
-						<input name="trigger[<?= $id ?>][o]" value="<?= html($trigger->o) ?>" class="o" />
+						<input name="trigger[<?= $id ?>][o]" value="<?= html($trigger->o) ?>" type="number" step="1" min="0" class="o" />
 					</td>
 					<td>
 						<input name="trigger[<?= $id ?>][description]" value="<?= html($trigger->description) ?>" />

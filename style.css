@@ -50,6 +50,15 @@ input.color {
 	width: 4em;
 }
 
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+	-webkit-appearance: none;
+}
+input[type="number"] {
+	-moz-appearance: textfield;
+}
+
+
 .output {
 	font-family: monospace;
 	white-space: pre-wrap;
