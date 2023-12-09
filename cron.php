@@ -106,7 +106,10 @@ if ( count($reader->skipped) ) {
 
 if ( CRONLOG_EMAIL_RESULTS ) {
 	$subject = "{$reader->results} cron results imported, {$reader->notifications}/{$reader->anominals} anominal";
-	mail(CRONLOG_EMAIL_RESULTS, $subject, $log, "From: Devver <devver@hotblocks.nl>");
+	mail(CRONLOG_EMAIL_RESULTS, $subject, $log, implode("\r\n", [
+		"From: Cronlog <cronlog@hotblocks.nl>",
+		"Return-path: cronlog@hotblocks.nl",
+	]));
 }
 
 // echo "\n";
