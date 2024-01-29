@@ -1,5 +1,6 @@
 <?php
 
+use rdx\cronlog\DbImporterReader;
 use rdx\cronlog\Server;
 use rdx\cronlog\Trigger;
 use rdx\cronlog\Type;
@@ -18,6 +19,11 @@ if ( isset($_POST['server']) ) {
 
 if ( isset($_POST['trigger']) ) {
 	Trigger::_updates($_POST['trigger']);
+	return do_redirect();
+}
+
+if ( isset($_POST['test_mail']) ) {
+	DbImporterReader::sendMail($_POST['test_mail'], "Test mail\n\nMet enters\n\nMaar zonder HTML\n");
 	return do_redirect();
 }
 
@@ -167,6 +173,16 @@ Server::eager('num_results', $servers);
 
 	<p><button>Save</button></p>
 </form>
+
+<? if ( CRONLOG_EMAIL_RESULTS ): ?>
+	<h2 id="email">Test email</h2>
+
+	<form method="post" action="#email">
+		<p>Subject: <input name="test_mail" value="test 1" /></p>
+
+		<p><button>Send</button></p>
+	</form>
+<? endif ?>
 
 <script>
 (function() {

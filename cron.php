@@ -1,9 +1,6 @@
 <?php
 
-use rdx\cronlog\Result;
-use rdx\cronlog\Type;
-use rdx\cronlog\import\Importer;
-use rdx\cronlog\import\ImporterReader;
+use rdx\cronlog\DbImporterReader;
 
 if ( php_sapi_name() !== 'cli' ) {
 	echo "Must be run on CLI.\n";
@@ -11,67 +8,6 @@ if ( php_sapi_name() !== 'cli' ) {
 }
 
 require 'inc.bootstrap.php';
-
-class DbImporterReader implements ImporterReader {
-	public $batch;
-
-	public $skipped = [];
-	public $results = 0;
-	public $anominals = 0;
-	public $notifications = 0;
-	public $triggers = 0;
-
-	public function __construct() {
-		$this->batch = time();
-	}
-
-	public function read( Importer $importer ) {
-		$from = $importer->getFrom();
-		$to = $importer->getTo();
-		$subject = $importer->getSubject();
-		$sent = date('Y-m-d H:i:s', $importer->getSentUtc());
-// echo "[$sent] $subject\n";
-		$output = trim($importer->getOutput());
-
-		$insert = compact('from', 'to', 'subject', 'sent', 'output');
-
-		$type = Type::findBySubject($subject);
-		if ( !$type ) {
-			$this->skipped[] = $subject;
-			return false;
-		}
-		$insert['type_id'] = $type->id;
-
-		$insert['batch'] = $this->batch;
-		$insert['output_size'] = strlen($output);
-
-		$id = Result::insert($insert);
-		$result = Result::find($id);
-
-		list($triggers, , $anominals) = $result->collate();
-
-		$this->results++;
-		if ( $anominals > 0 ) {
-			$this->anominals++;
-
-			if ( $type->handling_notify ) {
-				$this->notifications++;
-			}
-		}
-		$this->triggers += $triggers;
-
-		if ( CRONLOG_DELETE_IMPORTS ) {
-			try {
-				$importer->delete();
-			}
-			catch ( Exception $ex ) {
-				return false;
-			}
-		}
-
-		return true;
-	}
-}
 
 header('Content-type: text/plain; charset=utf-8');
 
@@ -106,10 +42,7 @@ if ( count($reader->skipped) ) {
 
 if ( CRONLOG_EMAIL_RESULTS ) {
 	$subject = "{$reader->results} cron results imported, {$reader->anominals} anominal";
-	mail(CRONLOG_EMAIL_RESULTS, $subject, $log, implode("\r\n", [
-		"From: Cronlog <cronlog@hotblocks.nl>",
-		"Return-path: cronlog@hotblocks.nl",
-	]));
+	DbImporterReader::sendMail($subject, $log);
 }
 
 // echo "\n";
