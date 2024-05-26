@@ -22,6 +22,8 @@ class EmailImporterCollector implements ImporterCollector {
 
 	public function collect( ImporterReader $reader ) {
 		$messages = $this->connect()->messages(array('seen' => false));
+		$ignore = imap_errors();
+		$ignore = imap_alerts();
 		foreach ( $messages as $message ) {
 			$reader->read(new EmailImporter($message));
 		}
