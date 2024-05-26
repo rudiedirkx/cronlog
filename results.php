@@ -74,6 +74,10 @@ $batchesOptions = array_map(function($utc) {
 	</p>
 </form>
 
+<? if ($showGraph = ($regexDisplay && $regexDisplay->isSingleCapture($regex))): ?>
+	<div hidden id="chart"></div>
+<? endif ?>
+
 <table>
 	<thead>
 		<tr>
@@ -103,10 +107,13 @@ $batchesOptions = array_map(function($utc) {
 		</tr>
 	</thead>
 	<tbody>
-		<? $prevDate = $prevBatch = null;
+		<?php
+		$prevDate = $prevBatch = null;
 		$batch = 1;
+		$graphData = [];
 		foreach ($results as $result):
-			$newSection = $prevDate && substr($result->sent, 0, 10) != $prevDate;
+			$date = substr($result->sent, 0, 10);
+			$newSection = $prevDate && $date != $prevDate;
 			$prevDate = substr($result->sent, 0, 10);
 			$newBatch = $prevBatch && $result->batch != $prevBatch;
 			$prevBatch = $result->batch;
@@ -147,6 +154,7 @@ $batchesOptions = array_map(function($utc) {
 			</tr>
 			<?if ($regex):
 				preg_match_all($regex, $result->output, $matches);
+				if (($num = $regexDisplay->getGraphable($matches)) !== null) $graphData[$date] = $num;
 				?>
 				<tr>
 					<td colspan="3"></td>
@@ -156,6 +164,49 @@ $batchesOptions = array_map(function($utc) {
 		<? endforeach ?>
 	</tbody>
 </table>
+
+<? if ($showGraph && count($graphData)): ?>
+	<script src="canvasjs.min.js"></script>
+	<script>
+	(function() {
+		const canvas = document.querySelector('#chart');
+		canvas.hidden = false;
+		const chart = new CanvasJS.Chart(canvas, {
+			animationEnabled: false,
+			axisX: {
+				valueFormatString: "DD MMM",
+			},
+			axisY: {
+				title: "N",
+			},
+			toolTip: {
+				enabled: true,
+			},
+			data: [
+				{
+					name: "Match",
+					// yValueFormatString: "#,### 'MB'",
+					// axisYType: "secondary",
+					type: "line",
+					markerSize: 0,
+					color: "green",
+					showInLegend: false,
+					dataPoints: [
+						<? foreach ($graphData as $date => $num): ?>
+							{
+								x: new Date('<?= $date ?>'),
+								y: <?= $num ?>,
+							},
+						<? endforeach ?>
+					],
+				},
+			],
+		});
+		console.log(chart);
+		chart.render();
+	})();
+	</script>
+<? endif ?>
 
 <script>
 (function() {

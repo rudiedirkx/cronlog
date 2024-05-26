@@ -35,4 +35,19 @@ class RegexDisplay {
 		return print_r($matches, true);
 	}
 
+	public function isSingleCapture(string $pattern) : bool {
+		preg_match_all($pattern, 'xxxx', $matches);
+		return count($matches) === 2;
+	}
+
+	public function getGraphable(array $matches) : ?int {
+		if (count($matches) == 2 && count($matches[1]) == 1) {
+			if (is_numeric($matches[1][0])) {
+				return $matches[1][0];
+			}
+		}
+
+		return null;
+	}
+
 }
