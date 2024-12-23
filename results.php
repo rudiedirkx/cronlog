@@ -75,7 +75,7 @@ $batchesOptions = array_map(function($utc) {
 </form>
 
 <? if ($showGraph = ($regexDisplay && $regexDisplay->isSingleCapture($regex))): ?>
-	<div hidden id="chart"></div>
+	<div hidden id="chart" style="width: 100%; aspect-ratio: 3/1"></div>
 <? endif ?>
 
 <table>
