@@ -11,3 +11,9 @@ const CRONLOG_EMAIL_SMTP = null; // ['mail.example.com', 'user@example.com', 'Pa
 const CRONLOG_MAIL_IMPORTERS = [
 	['imap.server.com/ssl', 'username', 'password'],
 ];
+
+const SEARCH_SNIPPETS = [
+	14 => [ // type id
+		'/snippet/',
+	],
+];

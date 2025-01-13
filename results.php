@@ -70,7 +70,14 @@ $batchesOptions = array_map(function($utc) {
 		<select name="batch"><?= html_options($batchesOptions, $_GET['batch'] ?? null, '-- Batch') ?></select>
 		<select name="date"><?= html_options($datesOptions, $_GET['date'] ?? null, '-- Date') ?></select>
 		<select name="anominal"><?= html_options(['1' => 'Only anominal'], $anominal, '-- Nominality') ?></select>
-		<input name="search" type="search" placeholder="Search result..." value="<?= html($searchInput) ?>" />
+		<input name="search" type="search" list="search-data" placeholder="Search result..." value="<?= html($searchInput) ?>" />
+		<datalist id="search-data">
+			<? if (defined('SEARCH_SNIPPETS')): ?>
+				<? foreach (SEARCH_SNIPPETS[$_GET['type'] ?? 0] ?? [] as $snippet): ?>
+					<option value="<?= html($snippet) ?>"></option>
+				<? endforeach ?>
+			<? endif ?>
+		</datalist>
 	</p>
 </form>
 
