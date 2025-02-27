@@ -19,7 +19,8 @@ class Result extends Model {
 
 	protected function get_compare_info() {
 		$subject = $this->relevant_subject ? " ({$this->relevant_subject})" : '';
-		return "{$this->sent_time}{$subject}";
+		$anominal = $this->nominal ? '' : ' ⚠️';
+		return "{$this->sent_time}{$subject}{$anominal}";
 	}
 
 	protected function get_sent_utc() {
