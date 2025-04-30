@@ -3,11 +3,11 @@
 namespace rdx\cronlog;
 
 class Trigger extends Model {
-	const TYPES_TABLE = 'triggers_types';
+	public const TYPES_TABLE = 'triggers_types';
 
 	public static $_table = 'triggers';
 
-	protected function get_js_regex() {
+	protected function get_js_regex() : bool {
 		return $this->regex[0] === '/';
 	}
 
@@ -15,7 +15,7 @@ class Trigger extends Model {
 		return $this->to_many_scalar('type_id', Trigger::TYPES_TABLE, 'trigger_id');
 	}
 
-	protected function get_pretty_expect() {
+	protected function get_pretty_expect() : string {
 		$expect = $this->expect;
 		$num = trim($expect, ':<>');
 
@@ -40,12 +40,15 @@ class Trigger extends Model {
 		parent::presave($data);
 	}
 
-	static public function validate( array $data ) {
+	static public function validate( array $data ) : bool {
 		self::presave($data);
 		return !empty($data['description']);
 	}
 
-	static public function setTypes( $id, $types ) {
+	/**
+	 * @param ?list<int> $types
+	 */
+	static public function setTypes( int $id, ?array $types ) : ?bool {
 		if ( $types !== null ) {
 			self::$_db->delete(Trigger::TYPES_TABLE, array('trigger_id' => $id));
 			$inserts = array_map(function($type) use ($id) {
@@ -53,9 +56,10 @@ class Trigger extends Model {
 			}, array_filter((array) $types));
 			return self::$_db->inserts(Trigger::TYPES_TABLE, $inserts);
 		}
+		return null;
 	}
 
-	public function evalNominality( $matches, Result $result ) {
+	public function evalNominality( int $matches, Result $result ) : ?bool {
 		if ( trim($this->expect) === '' ) return null;
 
 		$expect = $this->expect;
@@ -80,7 +84,7 @@ class Trigger extends Model {
 	public function update( $data ) {
 		$types = null;
 		if ( is_array($data) ) {
-			$types = @$data['type_ids'];
+			$types = $data['type_ids'] ?? null;
 			unset($data['type_ids']);
 		}
 
@@ -91,7 +95,7 @@ class Trigger extends Model {
 	}
 
 	static public function insert( array $data ) {
-		$types = @$data['type_ids'];
+		$types = $data['type_ids'] ?? null;
 		unset($data['type_ids']);
 
 		$id = parent::insert($data);

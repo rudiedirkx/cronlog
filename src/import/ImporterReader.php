@@ -3,5 +3,7 @@
 namespace rdx\cronlog\import;
 
 interface ImporterReader {
-	public function read( Importer $importer );
+
+	public function read( Importer $importer ) : void;
+
 }

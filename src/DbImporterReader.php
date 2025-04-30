@@ -13,19 +13,20 @@ use rdx\cronlog\import\Importer;
 use rdx\cronlog\import\ImporterReader;
 
 class DbImporterReader implements ImporterReader {
-	public $batch;
+	public int $batch;
 
-	public $skipped = [];
-	public $results = 0;
-	public $anominals = 0;
-	public $notifications = 0;
-	public $triggers = 0;
+	/** @var list<string> */
+	public array $skipped = [];
+	public int $results = 0;
+	public int $anominals = 0;
+	public int $notifications = 0;
+	public int $triggers = 0;
 
 	public function __construct() {
 		$this->batch = time();
 	}
 
-	public function read( Importer $importer ) {
+	public function read( Importer $importer ) : void {
 		$from = $importer->getFrom();
 		$to = $importer->getTo();
 		$subject = $importer->getSubject();
@@ -38,7 +39,7 @@ class DbImporterReader implements ImporterReader {
 		$type = Type::findBySubject($subject);
 		if ( !$type ) {
 			$this->skipped[] = $subject;
-			return false;
+			return;
 		}
 		$insert['type_id'] = $type->id;
 
@@ -65,15 +66,15 @@ class DbImporterReader implements ImporterReader {
 				$importer->delete();
 			}
 			catch ( Exception $ex ) {
-				return false;
+				return;
 			}
 		}
 
-		return true;
+		return;
 	}
 
 	static public function sendMail(string $subject, string $body) : void {
-		if ( CRONLOG_EMAIL_SMTP ) {
+		if ( CRONLOG_EMAIL_SMTP ) { // @phpstan-ignore if.alwaysTrue
 			$dsn = sprintf('smtp://%s:%s@%s', CRONLOG_EMAIL_SMTP[1], CRONLOG_EMAIL_SMTP[2], CRONLOG_EMAIL_SMTP[0]);
 			$transport = Transport::fromDsn($dsn);
 			$mailer = new Mailer($transport);

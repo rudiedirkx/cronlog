@@ -6,7 +6,8 @@ use rdx\cronlog\Result;
 
 class RegexDisplay {
 
-	static public $types = [
+	/** @var list<class-string<self>> */
+	static public array $types = [
 		self::class,
 		RegexDisplaySum::class,
 		RegexDisplayTrigger::class,
@@ -45,7 +46,7 @@ class RegexDisplay {
 		preg_match_all($this->pattern, $result->output, $matches);
 		if (count($matches) == 2 && count($matches[1]) == 1) {
 			if (is_numeric($matches[1][0])) {
-				return $matches[1][0];
+				return (int) $matches[1][0];
 			}
 		}
 

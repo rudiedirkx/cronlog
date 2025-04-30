@@ -6,6 +6,10 @@ use db_generic_model;
 
 class Model extends db_generic_model {
 
+	/**
+	 * @param list<AssocArray> $datas
+	 * @return void
+	 */
 	static public function _updates( array $datas ) {
 		foreach ( $datas as $id => $data ) {
 			if ( static::validate($data) ) {
@@ -18,13 +22,16 @@ class Model extends db_generic_model {
 			}
 			else {
 				if ( $id ) {
-					static::find($id)->delete($data);
+					static::find($id)->delete();
 				}
 			}
 		}
 	}
 
-	static public function validate( array $data ) {
+	/**
+	 * @param AssocArray $data
+	 */
+	static public function validate( array $data ) : bool {
 		return true;
 	}
 

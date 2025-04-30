@@ -6,8 +6,8 @@ use DateTime;
 
 class Result extends Model {
 
-	const RESULT_TIMING_MARGIN_MINS = 55;
-	const OUTPUT_DATE_REGEX = '(\w+ \w+ +\d+ \d\d+:\d\d+:\d\d+ \w+ \d{4}|\w+ +\d+ \w+ \d{4} \d\d:\d\d:\d\d (AM|PM) \w+)';
+	private const RESULT_TIMING_MARGIN_MINS = 55;
+	private const OUTPUT_DATE_REGEX = '(\w+ \w+ +\d+ \d\d+:\d\d+:\d\d+ \w+ \d{4}|\w+ +\d+ \w+ \d{4} \d\d:\d\d:\d\d (AM|PM) \w+)';
 
 	public static $_table = 'results';
 
@@ -17,33 +17,34 @@ class Result extends Model {
 		}
 	}
 
-	protected function get_compare_info() {
+	protected function get_compare_info() : string {
 		$subject = $this->relevant_subject ? " ({$this->relevant_subject})" : '';
 		$anominal = $this->nominal ? '' : ' ⚠️';
 		return "{$this->sent_time}{$subject}{$anominal}";
 	}
 
-	protected function get_sent_utc() {
+	protected function get_sent_utc() : int {
 		return strtotime($this->sent);
 	}
 
-	protected function get_sent_time() {
+	protected function get_sent_time() : string {
 		return date('H:i', $this->sent_utc);
 	}
 
-	protected function get_relevant_subject() {
+	protected function get_relevant_subject() : ?string {
 		return $this->subject_subject;
 	}
 
-	protected function get_subject_subject() {
+	protected function get_subject_subject() : ?string {
 		if ( $this->type->subject_regex && preg_match($this->type->subject_regex, $this->subject, $match) ) {
 			if ( isset($match[1]) ) {
 				return $match[1];
 			}
 		}
+		return null;
 	}
 
-	protected function get_generic_subject() {
+	protected function get_generic_subject() : string {
 		return trim(preg_replace('#^Cron\s+<.+?>\s+#i', '', $this->subject));
 	}
 
@@ -59,7 +60,7 @@ class Result extends Model {
 		return $this->to_many(ResultTrigger::class, 'result_id')->key('trigger_id');
 	}
 
-	public function sentTimeAlmostMatches( self $result ) {
+	public function sentTimeAlmostMatches( self $result ) : bool {
 		$a = date('H:i', strtotime('+12 hours', $this->sent_utc));
 		$b = date('H:i', strtotime('+12 hours', $result->sent_utc));
 		if ($a == $b) {
@@ -76,7 +77,7 @@ class Result extends Model {
 		return parent::delete();
 	}
 
-	public function retype() {
+	public function retype() : bool {
 		$type = Type::findBySubject($this->subject);
 		if ( $type ) {
 			$this->update(['type_id' => $type->id]);
@@ -87,7 +88,10 @@ class Result extends Model {
 		return false;
 	}
 
-	public function collate() {
+	/**
+	 * @return array{int, int, int}
+	 */
+	public function collate() : array {
 		$none = [0, 0, 0];
 		if ( !$this->type ) return $none;
 		// if ( !$this->type->triggers ) return $none;
@@ -144,7 +148,10 @@ class Result extends Model {
 		return [count($inserts), $nominals[1], $nominals[0]];
 	}
 
-	public function triggered( $triggerId ) {
+	/**
+	 * @return array{int|string, bool}
+	 */
+	public function triggered( int $triggerId ) : array {
 		$triggers = $this->triggers;
 		if ( isset($triggers[$triggerId]) )  {
 			$trigger = $triggers[$triggerId];

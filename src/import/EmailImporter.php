@@ -5,37 +5,41 @@ namespace rdx\cronlog\import;
 use rdx\imap\IMAPMessage;
 
 class EmailImporter implements Importer {
-	public $message;
+
+	public IMAPMessage $message;
 
 	public function __construct( IMAPMessage $message ) {
 		$this->message = $message;
 	}
 
-	public function delete() {
+	public function delete() : void {
 		$this->message->flag('seen');
 	}
 
-	public function getFrom() {
+	public function getFrom() : ?string {
 		return $this->extractAddress($this->message->header('From'));
 	}
 
-	public function getTo() {
+	public function getTo() : ?string {
 		return $this->extractAddress($this->message->header('To'));
 	}
 
-	public function getSubject() {
+	public function getSubject() : ?string {
 		return $this->message->header('Subject')[0];
 	}
 
-	public function getSentUtc() {
+	public function getSentUtc() : ?int {
 		return strtotime($this->message->header('Date')[0]);
 	}
 
-	public function getOutput() {
+	public function getOutput() : ?string {
 		return trim($this->message->content());
 	}
 
-	protected function extractAddress($header) {
+	/**
+	 * @param list<string> $header
+	 */
+	protected function extractAddress( array $header ) : string {
 		if (preg_match('#<([^<@]+@[^<@]+)>$#', $header[0], $match)) {
 			return $match[1];
 		}

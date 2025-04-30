@@ -12,7 +12,7 @@ class PreviewImporterReader implements ImporterReader {
 	public $results = [];
 	public $ignored = [];
 
-	public function read( Importer $importer ) {
+	public function read( Importer $importer ) : void {
 		$from = $importer->getFrom();
 		$to = $importer->getTo();
 		$subject = $importer->getSubject();

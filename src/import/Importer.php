@@ -3,11 +3,13 @@
 namespace rdx\cronlog\import;
 
 interface Importer {
-	public function delete();
 
-	public function getFrom();
-	public function getTo();
-	public function getSubject();
-	public function getSentUtc();
-	public function getOutput();
+	public function delete() : void;
+
+	public function getFrom() : ?string;
+	public function getTo() : ?string;
+	public function getSubject() : ?string;
+	public function getSentUtc() : ?int;
+	public function getOutput() : ?string;
+
 }

@@ -1,0 +1,31 @@
+includes:
+	- vendor/rdx/phpstan-extra/extension-php.neon
+	- vendor/rdx/phpstan-extra/extension-dbfw.neon
+	# - phpstan-baseline.neon
+parameters:
+	level: 6
+	bootstrapFiles:
+		- phpstan.php
+	paths:
+		- src/
+		# - vendor/rdx/phpstan-extra/src/DbFw/
+	# excludePaths:
+	# 	- src/PhpStan/
+	typeAliases:
+		AssocArray: 'array<string, mixed>'
+	dynamicConstantNames:
+		- CRONLOG_DELETE_IMPORTS
+		- CRONLOG_EMAIL_RESULTS
+		- CRONLOG_EMAIL_SMTP
+	rdx_dbfw:
+		# sqlite3 db/cronlog.sqlite3 .schema > db/structure.sql
+		# aroPropertiesSchemaDumpFile: 'db/structure.sql'
+		aroPropertiesSchemaFile: 'inc.db-schema.php'
+	checkExplicitMixed: true
+	checkImplicitMixed: true
+	reportMaybes: true
+	treatPhpDocTypesAsCertain: false
+	reportUnmatchedIgnoredErrors: true
+	ignoreErrors:
+		# - identifier: property.notFound
+		- "#^Method rdx\\\\cronlog\\\\\\w+::relate_\\w+\\(\\) has no return type specified#"
