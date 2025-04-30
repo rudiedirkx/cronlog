@@ -13,11 +13,8 @@ $date = @$_GET['date'];
 $batch = @$_GET['batch'];
 $anominal = !empty($_GET['anominal']);
 $searchInput = $search = @$_GET['search'];
-[$regex, $regexDisplay] = $type && preg_match('#^(sum)?(/.+/[a-z]*)$#', $search ?? '', $match) ? [$match[2], RegexDisplay::make($match[1])] : [null, null];
-if ($regex) {
-	$search = null;
-	$regexDisplay or $regexDisplay = RegexDisplay::make('default');
-}
+$regexDisplay = $searchInput ? RegexDisplay::fromSearchInput($searchInput) : null;
+if ($regexDisplay) $search = null;
 
 $conditions = [];
 $type and $conditions['type_id'] = $type->id;
@@ -81,7 +78,7 @@ $batchesOptions = array_map(function($utc) {
 	</p>
 </form>
 
-<? if ($showGraph = ($regexDisplay && $regexDisplay->isSingleCapture($regex))): ?>
+<? if ($showGraph = ($regexDisplay && $regexDisplay->isSingleCapture())): ?>
 	<div hidden id="chart" style="width: 100%; aspect-ratio: 3/1"></div>
 <? endif ?>
 
@@ -102,13 +99,13 @@ $batchesOptions = array_map(function($utc) {
 			<th>Size</th>
 			<? if ($type): ?>
 				<? foreach ($type->triggers as $trigger): ?>
-					<th style="color: <?= html($trigger->color) ?>" title="<?= html($trigger->regex) ?><?= strlen($trigger->expect) ? " - $trigger->expect" : '' ?>">
+					<th style="color: <?= html($trigger->color) ?>" title="<?= $trigger->id ?> | <?= html($trigger->regex) ?><?= strlen($trigger->expect) ? " - $trigger->expect" : '' ?>">
 						<?= html($trigger->description) ?>
 					</th>
 				<? endforeach ?>
 			<? endif ?>
 			<th><a href="?<?= http_build_query($_GET) ?>&recollate=all">Recollate</a></th>
-			<?if (!$regex): ?>
+			<? if (!$regexDisplay): ?>
 				<th>/day</th>
 			<? endif ?>
 		</tr>
@@ -127,7 +124,7 @@ $batchesOptions = array_map(function($utc) {
 			$batch += $newBatch;
 			$sectionClasses = ($newSection ? 'next-section' : '') . ' ' . ($batch % 2 == 0 ? 'even-section' : 'odd-section');
 			?>
-			<tr class="<?= $regex ? '' : $sectionClasses ?>" data-date="<?= $prevDate ?>">
+			<tr class="<?= $regexDisplay ? '' : $sectionClasses ?>" data-date="<?= $prevDate ?>">
 				<th align="right"><?= $ids[$result->id]+1 ?></th>
 				<? if (!$type): ?>
 					<td><a href="?type=<?= $result->type_id ?>"><?= html($result->type->description) ?></a></td>
@@ -159,14 +156,16 @@ $batchesOptions = array_map(function($utc) {
 				<? endif ?>
 				<td><a href="result.php?id=<?= $result->id ?>&recollate&goto=result.php?id=<?= $result->id ?>">recollate</a></td>
 			</tr>
-			<?if ($regex):
-				preg_match_all($regex, $result->output, $matches);
-				if (($num = $regexDisplay->getGraphable($matches)) !== null) $graphData[$date] = $num;
-				?>
-				<tr>
-					<td colspan="3"></td>
-					<td colspan="7" style="white-space: pre-wrap"><?= html(trim($regexDisplay->format($matches))) ?></td>
-				</tr>
+			<? if ($regexDisplay):
+				if (($num = $regexDisplay->getGraphable($result)) !== null) {
+					$graphData[$date] = $num;
+				}
+				if (($match = $regexDisplay->format($result)) !== null): ?>
+					<tr>
+						<td colspan="3"></td>
+						<td colspan="7" style="white-space: pre-wrap"><?= html($match) ?></td>
+					</tr>
+				<? endif ?>
 			<? endif ?>
 		<? endforeach ?>
 	</tbody>
@@ -209,7 +208,6 @@ $batchesOptions = array_map(function($utc) {
 				},
 			],
 		});
-		console.log(chart);
 		chart.render();
 	})();
 	</script>
@@ -217,7 +215,7 @@ $batchesOptions = array_map(function($utc) {
 
 <script>
 (function() {
-	<?= $regex ? "return;\n" : '' ?>
+	<?= $regexDisplay ? "return;\n" : '' ?>
 	function markSection(firstRow, i, arr) {
 		var lastRow = arr[i+1] && arr[i+1].previousElementSibling || firstRow.parentNode.lastElementChild;
 		var size = lastRow.rowIndex - firstRow.rowIndex + 1;
@@ -233,6 +231,19 @@ $batchesOptions = array_map(function($utc) {
 
 	var firstRows = document.querySelectorAll('thead + tbody > tr:first-child, tr.next-section');
 	[].forEach.call(firstRows, markSection);
+})();
+
+(function() {
+	window.addEventListener('pageshow', e => {
+		document.querySelector('form').reset();
+	});
+
+	document.addEventListener('keydown', function(e) {
+		if (e.target.matches('body, a, button, input[type="checkbox"]') && e.code == 'Slash') {
+			e.preventDefault();
+			document.querySelector('input[name="search"]').focus();
+		}
+	});
 })();
 </script>
 

@@ -2,21 +2,22 @@
 
 namespace rdx\cronlog\RegexDisplay;
 
+use rdx\cronlog\Result;
+
 class RegexDisplay {
 
 	static public $types = [
-		'default' => self::class,
-		'sum' => RegexDisplaySum::class,
+		self::class,
+		RegexDisplaySum::class,
+		RegexDisplayTrigger::class,
 	];
 
-	static public function make(string $type) : ?self {
-		if (!isset(self::$types[$type])) return null;
+	public function __construct(
+		public string $pattern,
+	) {}
 
-		$class = self::$types[$type];
-		return new $class();
-	}
-
-	public function format(array $matches) : string {
+	public function format(Result $result) : ?string {
+		preg_match_all($this->pattern, $result->output, $matches);
 		if (count($matches) == 2 && count($matches[1]) == 1) {
 			return trim($matches[1][0]);
 		}
@@ -32,21 +33,38 @@ class RegexDisplay {
 			array_shift($matches);
 		}
 
-		return print_r($matches, true);
+		return trim(print_r($matches, true));
 	}
 
-	public function isSingleCapture(string $pattern) : bool {
-		preg_match_all($pattern, 'xxxx', $matches);
+	public function isSingleCapture() : bool {
+		preg_match_all($this->pattern, 'xxxx', $matches);
 		return count($matches) === 2;
 	}
 
-	public function getGraphable(array $matches) : ?int {
+	public function getGraphable(Result $result) : ?int {
+		preg_match_all($this->pattern, $result->output, $matches);
 		if (count($matches) == 2 && count($matches[1]) == 1) {
 			if (is_numeric($matches[1][0])) {
 				return $matches[1][0];
 			}
 		}
 
+		return null;
+	}
+
+	static public function fromSearchInput(string $search) : ?self {
+		foreach (self::$types as $class) {
+			if ($pattern = $class::matchesSearchInput($search)) {
+				return new $class($pattern);
+			}
+		}
+		return null;
+	}
+
+	static public function matchesSearchInput(string $search) : ?string {
+		if (preg_match('#^(/.+/[a-z]*)$#', $search, $match)) {
+			return $search;
+		}
 		return null;
 	}
 

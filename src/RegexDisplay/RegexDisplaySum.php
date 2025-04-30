@@ -2,15 +2,33 @@
 
 namespace rdx\cronlog\RegexDisplay;
 
+use rdx\cronlog\Result;
+
 class RegexDisplaySum extends RegexDisplay {
 
-	public function format(array $matches) : string {
+	static public function matchesSearchInput(string $search) : ?string {
+		if (preg_match('#^sum(/.+/[a-z]*)$#', $search, $match)) {
+			return $match[1];
+		}
+		return null;
+	}
+
+	public function format(Result $result) : ?string {
+		preg_match_all($this->pattern, $result->output, $matches);
 		if (count($matches) > 1) {
 			$sums = array_map(array_sum(...), array_slice($matches, 1));
 			return count($sums) == 1 ? $sums[0] : print_r($sums, true);
 		}
 
-		return print_r($matches, true);
+		return trim(print_r($matches, true));
+	}
+
+	public function getGraphable(Result $result) : ?int {
+		preg_match_all($this->pattern, $result->output, $matches);
+		if (count($matches) == 2 && is_numeric($matches[1][0] ?? '')) {
+			return array_sum($matches[1]);
+		}
+		return null;
 	}
 
 }
