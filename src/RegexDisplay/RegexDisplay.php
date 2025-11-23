@@ -12,6 +12,7 @@ class RegexDisplay {
 		RegexDisplayCount::class,
 		RegexDisplaySum::class,
 		RegexDisplayTrigger::class,
+		RegexDisplayProperty::class,
 	];
 
 	public function __construct(
