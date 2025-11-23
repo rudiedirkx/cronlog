@@ -10,6 +10,9 @@ OS_FROM="`whoami`@`hostname`"
 date >$OUTFILE
 echo >>$OUTFILE
 "$@" &>>$OUTFILE
+EXITCODE="$?"
+echo >>$OUTFILE
+echo "EXIT CODE = $EXITCODE" >>$OUTFILE
 echo >>$OUTFILE
 date >>$OUTFILE
 #{ date; echo; time $FULL_CMD ; } &>$OUTFILE
