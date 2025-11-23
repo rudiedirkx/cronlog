@@ -78,7 +78,7 @@ $batchesOptions = array_map(function($utc) {
 	</p>
 </form>
 
-<? if ($showGraph = ($regexDisplay && $regexDisplay->isSingleCapture())): ?>
+<? if ($showGraph = ($regexDisplay && $regexDisplay->isGraphable())): ?>
 	<div hidden id="chart" style="width: 100%; aspect-ratio: 3/1"></div>
 <? endif ?>
 
@@ -157,8 +157,8 @@ $batchesOptions = array_map(function($utc) {
 				<td><a href="result.php?id=<?= $result->id ?>&recollate&goto=result.php?id=<?= $result->id ?>">recollate</a></td>
 			</tr>
 			<? if ($regexDisplay):
-				if (($num = $regexDisplay->getGraphable($result)) !== null) {
-					$graphData[$date] = $num;
+				if (($nums = $regexDisplay->getGraphable($result)) !== null) {
+					$graphData[$date] = $nums;
 				}
 				if (($match = $regexDisplay->format($result)) !== null): ?>
 					<tr>
@@ -175,6 +175,8 @@ $batchesOptions = array_map(function($utc) {
 	<script src="canvasjs.min.js"></script>
 	<script>
 	(function() {
+		const COLORS = ['green', 'red', 'orange', 'blue', 'fuchsia', 'lightblue'];
+
 		const canvas = document.querySelector('#chart');
 		canvas.hidden = false;
 		const chart = new CanvasJS.Chart(canvas, {
@@ -183,29 +185,31 @@ $batchesOptions = array_map(function($utc) {
 				valueFormatString: "DD MMM",
 			},
 			axisY: {
-				title: "N",
+				title: null,
 			},
 			toolTip: {
 				enabled: true,
 			},
 			data: [
-				{
-					name: "Match",
-					// yValueFormatString: "#,### 'MB'",
-					// axisYType: "secondary",
-					type: "line",
-					markerSize: 0,
-					color: "green",
-					showInLegend: false,
-					dataPoints: [
-						<? foreach ($graphData as $date => $num): ?>
-							{
-								x: new Date('<?= $date ?>'),
-								y: <?= $num ?>,
-							},
-						<? endforeach ?>
-					],
-				},
+				<? foreach ($regexDisplay->getGraphs($graphData) as $index => $nums): ?>
+					{
+						name: "Match <?= $index ?>",
+						// yValueFormatString: "#,### 'MB'",
+						// axisYType: "secondary",
+						type: "line",
+						markerSize: 0,
+						color: COLORS[<?= $index ?> % COLORS.length],
+						showInLegend: false,
+						dataPoints: [
+							<? foreach ($nums as $date => $num): ?>
+								{
+									x: new Date('<?= $date ?>'),
+									y: <?= $num ?>,
+								},
+							<? endforeach ?>
+						],
+					},
+				<? endforeach ?>
 			],
 		});
 		chart.render();

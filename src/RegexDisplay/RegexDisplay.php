@@ -9,6 +9,7 @@ class RegexDisplay {
 	/** @var list<class-string<self>> */
 	static public array $types = [
 		self::class,
+		RegexDisplayCount::class,
 		RegexDisplaySum::class,
 		RegexDisplayTrigger::class,
 	];
@@ -37,20 +38,49 @@ class RegexDisplay {
 		return trim(print_r($matches, true));
 	}
 
-	public function isSingleCapture() : bool {
+	public function isGraphable() : bool {
 		preg_match_all($this->pattern, 'xxxx', $matches);
-		return count($matches) === 2;
+		return count($matches) > 1;
 	}
 
-	public function getGraphable(Result $result) : ?int {
-		preg_match_all($this->pattern, $result->output, $matches);
-		if (count($matches) == 2 && count($matches[1]) == 1) {
-			if (is_numeric($matches[1][0])) {
-				return (int) $matches[1][0];
+	/**
+	 * @return ?list<int>
+	 */
+	public function getGraphable(Result $result) : ?array {
+		preg_match_all($this->pattern, $result->output, $matches, PREG_SET_ORDER);
+		if (count($matches) == 1 && count($matches[0]) == 2) {
+			if (is_numeric($matches[0][1])) {
+				return [(int) $matches[0][1]];
 			}
 		}
 
+		if (count($matches) == 1 && count($matches[0]) > 1) {
+			return array_map(function(string $value) : ?int {
+				return is_numeric($value) ? (int) $value : null;
+			}, array_slice($matches[0], 1));
+		}
+
+		if (count($matches) > 1 && count($matches[0]) == 2) {
+			return array_map(function(string $value) : ?int {
+				return is_numeric($value) ? (int) $value : null;
+			}, array_column($matches, 1));
+		}
+
 		return null;
+	}
+
+	/**
+	 * @param array<string, list<num>> $graphData
+	 * @return list<array<string, int>>
+	 */
+	public function getGraphs(array $graphData) : array {
+		$graphs = [];
+		foreach ($graphData as $date => $nums) {
+			foreach (array_values($nums) as $i => $num) {
+				$graphs[$i][$date] = $num;
+			}
+		}
+		return $graphs;
 	}
 
 	static public function fromSearchInput(string $search) : ?self {

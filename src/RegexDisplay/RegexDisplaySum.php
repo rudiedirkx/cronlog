@@ -23,10 +23,10 @@ class RegexDisplaySum extends RegexDisplay {
 		return trim(print_r($matches, true));
 	}
 
-	public function getGraphable(Result $result) : ?int {
+	public function getGraphable(Result $result) : ?array {
 		preg_match_all($this->pattern, $result->output, $matches);
 		if (count($matches) == 2 && is_numeric($matches[1][0] ?? '')) {
-			return array_sum($matches[1]);
+			return [(int) array_sum($matches[1])];
 		}
 		return null;
 	}
