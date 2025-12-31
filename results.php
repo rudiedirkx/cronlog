@@ -69,6 +69,8 @@ $batchesOptions = array_map(function($utc) {
 		<select name="anominal"><?= html_options(['1' => 'Only anominal'], $anominal, '-- Nominality') ?></select>
 		<input name="search" type="search" list="search-data" placeholder="Search result..." value="<?= html($searchInput) ?>" />
 		<datalist id="search-data">
+			<option value="trigger:N"></option>
+			<option value="graph:timing"></option>
 			<? if (defined('SEARCH_SNIPPETS')): ?>
 				<? foreach (SEARCH_SNIPPETS[$_GET['type'] ?? 0] ?? [] as $snippet): ?>
 					<option value="<?= html($snippet) ?>"></option>
