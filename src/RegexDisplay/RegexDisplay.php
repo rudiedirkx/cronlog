@@ -45,25 +45,25 @@ class RegexDisplay {
 	}
 
 	/**
-	 * @return ?list<int>
+	 * @return ?list<float>
 	 */
 	public function getGraphable(Result $result) : ?array {
 		preg_match_all($this->pattern, $result->output, $matches, PREG_SET_ORDER);
 		if (count($matches) == 1 && count($matches[0]) == 2) {
 			if (is_numeric($matches[0][1])) {
-				return [(int) $matches[0][1]];
+				return [(float) $matches[0][1]];
 			}
 		}
 
 		if (count($matches) == 1 && count($matches[0]) > 1) {
-			return array_map(function(string $value) : ?int {
-				return is_numeric($value) ? (int) $value : null;
+			return array_map(function(string $value) : ?float {
+				return is_numeric($value) ? (float) $value : null;
 			}, array_slice($matches[0], 1));
 		}
 
 		if (count($matches) > 1 && count($matches[0]) == 2) {
-			return array_map(function(string $value) : ?int {
-				return is_numeric($value) ? (int) $value : null;
+			return array_map(function(string $value) : ?float {
+				return is_numeric($value) ? (float) $value : null;
 			}, array_column($matches, 1));
 		}
 
@@ -71,8 +71,8 @@ class RegexDisplay {
 	}
 
 	/**
-	 * @param array<string, list<num>> $graphData
-	 * @return list<array<string, int>>
+	 * @param array<string, list<float>> $graphData
+	 * @return list<array<string, float>>
 	 */
 	public function getGraphs(array $graphData) : array {
 		$graphs = [];
@@ -81,7 +81,7 @@ class RegexDisplay {
 				$graphs[$i][$date] = $num;
 			}
 		}
-		return $graphs;
+		return array_values($graphs);
 	}
 
 	static public function fromSearchInput(string $search) : ?self {

@@ -14,7 +14,7 @@ class RegexDisplayCount extends RegexDisplay {
 	}
 
 	public function format(Result $result) : ?string {
-		return preg_match_all($this->pattern, $result->output, $matches);
+		return (string) preg_match_all($this->pattern, $result->output);
 	}
 
 	public function getGraphable(Result $result) : ?array {
