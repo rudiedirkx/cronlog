@@ -19,7 +19,7 @@ class Result extends Model {
 
 	protected function get_compare_info() : string {
 		$subject = $this->relevant_subject ? " ({$this->relevant_subject})" : '';
-		$anominal = $this->nominal ? '' : ' ⚠️';
+		$anominal = $this->nominal === false ? ' ⚠️' : '';
 		return "{$this->sent_time}{$subject}{$anominal}";
 	}
 
