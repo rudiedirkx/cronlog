@@ -58,7 +58,7 @@ foreach ( $groups as $typeId => $typeGroup ) {
 	usort($regroup, function($a, $b) {
 		$a = reset($a);
 		$b = reset($b);
-		return strcmp($a->sent_time, $b->sent_time) ?: strcasecmp($a->relevant_subject, $b->relevant_subject);
+		return strcmp($a->sent_time, $b->sent_time) ?: strcasecmp($a->relevant_subject ?? '', $b->relevant_subject ?? '');
 	});
 	$groups[$typeId] = $regroup;
 }
