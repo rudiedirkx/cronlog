@@ -12,7 +12,7 @@ if ( $source == 'date' ) {
 	$options = $db->select_fields('results', "date(sent) day, concat(date(sent), ' (', count(1), ')') num", '1 GROUP BY day ORDER BY day DESC LIMIT 100');
 }
 else {
-	$options = $db->select_fields('results', "batch day, concat(from_unixtime(batch), ' (', count(1), ')') num", '1 GROUP BY day ORDER BY day DESC LIMIT 100');
+	$options = $db->select_fields('results', "batch day, concat(date(from_unixtime(batch)), ' (', count(1), ')') num", '1 GROUP BY day ORDER BY day DESC LIMIT 100');
 	$source = 'batch';
 }
 
@@ -81,7 +81,11 @@ table a {
 	color: inherit;
 	text-decoration: none;
 }
-
+table thead {
+	position: sticky;
+	top: 0;
+	background-color: yellow;
+}
 table.identical > thead,
 tbody.identical > tr:first-child,
 tbody tr.identical {
