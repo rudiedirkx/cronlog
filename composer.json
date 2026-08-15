@@ -3,8 +3,8 @@
     "description": "Statistics from cron logs",
     "type": "project",
     "require": {
-        "php": ">=7.1.4",
-        "rdx/db": "dev-master",
+        "php": ">=8.3",
+        "rdx/db": "^1.28",
         "rdx/imap": "^2.8",
         "symfony/mailer": "^6.4",
         "symfony/var-dumper": "^5.2"
@@ -25,7 +25,7 @@
     "config": {
         "sort-packages": true,
         "platform": {
-            "php": "8.1.17"
+            "php": "8.3.0"
         }
     },
     "require-dev": {

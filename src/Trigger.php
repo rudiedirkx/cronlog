@@ -51,7 +51,7 @@ class Trigger extends Model {
 	static public function setTypes( int $id, ?array $types ) : ?bool {
 		if ( $types !== null ) {
 			self::$_db->delete(Trigger::TYPES_TABLE, array('trigger_id' => $id));
-			$inserts = array_map(function($type) use ($id) {
+			$inserts = array_map(function(int $type) use ($id) {
 				return array('trigger_id' => $id, 'type_id' => $type);
 			}, array_filter((array) $types));
 			return self::$_db->inserts(Trigger::TYPES_TABLE, $inserts);
