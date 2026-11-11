@@ -8,9 +8,8 @@ class Model extends db_generic_model {
 
 	/**
 	 * @param list<AssocArray> $datas
-	 * @return void
 	 */
-	static public function _updates( array $datas ) {
+	static public function _updates( array $datas ) : void {
 		foreach ( $datas as $id => $data ) {
 			if ( static::validate($data) ) {
 				if ( $id ) {

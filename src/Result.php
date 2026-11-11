@@ -11,7 +11,7 @@ class Result extends Model {
 
 	public static $_table = 'results';
 
-	public function init() {
+	public function init() : void {
 		if ( $this->nominal !== null ) {
 			$this->nominal = (bool) $this->nominal;
 		}
@@ -72,7 +72,7 @@ class Result extends Model {
 		return $mins <= self::RESULT_TIMING_MARGIN_MINS;
 	}
 
-	public function delete() {
+	public function delete() : true {
 		ResultTrigger::deleteAll(array('result_id' => $this->id));
 		return parent::delete();
 	}

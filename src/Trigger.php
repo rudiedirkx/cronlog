@@ -29,14 +29,14 @@ class Trigger extends Model {
 			return "Must be greater than $num";
 		}
 		elseif ( $expect[0] === ':' ) {
-			$other = Trigger::find($num);
+			$other = Trigger::find((int) $num);
 			return "Must equal '{$other->description}'";
 		}
 
 		return "Must equal $num";
 	}
 
-	static public function presave( array &$data ) {
+	static public function presave( array &$data ) : void {
 		parent::presave($data);
 	}
 
@@ -51,7 +51,7 @@ class Trigger extends Model {
 	static public function setTypes( int $id, ?array $types ) : ?bool {
 		if ( $types !== null ) {
 			self::$_db->delete(Trigger::TYPES_TABLE, array('trigger_id' => $id));
-			$inserts = array_map(function(int $type) use ($id) {
+			$inserts = array_map(function(int $type) use ($id) : array {
 				return array('trigger_id' => $id, 'type_id' => $type);
 			}, array_filter((array) $types));
 			return self::$_db->inserts(Trigger::TYPES_TABLE, $inserts);
@@ -81,26 +81,23 @@ class Trigger extends Model {
 		return $matches == $num;
 	}
 
-	public function update( $data ) {
-		$types = null;
-		if ( is_array($data) ) {
-			$types = $data['type_ids'] ?? null;
-			unset($data['type_ids']);
-		}
-
-		$ok = parent::update($data);
-		self::setTypes($this->id, $types);
-
-		return $ok;
-	}
-
-	static public function insert( array $data ) {
+	public function update( array $data ) : true {
 		$types = $data['type_ids'] ?? null;
 		unset($data['type_ids']);
 
-		$id = parent::insert($data);
-		self::setTypes($id, $types);
+		parent::update($data);
+		self::setTypes($this->id, $types);
 
-		return $id;
+		return true;
+	}
+
+	static public function insert( array $data ) : true {
+		$types = $data['type_ids'] ?? null;
+		unset($data['type_ids']);
+
+		parent::insert($data);
+		self::setTypes(self::$_db->insert_id(), $types);
+
+		return true;
 	}
 }

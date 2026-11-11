@@ -14,13 +14,13 @@ header('Content-type: text/plain; charset=utf-8');
 set_time_limit(0);
 
 $reader = new DbImporterReader;
-foreach ( $importers as $importer ) {
+foreach ( importers() as $importer ) {
 	$importer->collect($reader);
 }
 
 $skipped = count($reader->skipped) ? " (" . count($reader->skipped) . " skipped)" : '';
 
-$yesterday = $db->select_fields('results', 'batch, count(1)', 'batch < ? group by batch order by batch desc limit 1', $reader->batch);
+$yesterday = db()->select_fields('results', 'batch, count(1)', 'batch < ? group by batch order by batch desc limit 1', [$reader->batch]);
 [$yesterdayBatch, $yesterdayNum] = [key($yesterday), current($yesterday)];
 $ydiff = $reader->results - $yesterdayNum;
 
@@ -31,7 +31,7 @@ $log .= ($ydiff == 0 ? 'same as' : ($ydiff > 0 ? '+' : '-') . abs($ydiff) . ' fr
 $log .= CRONLOG_URI . "/results.php?batch=" . $reader->batch . ($reader->anominals ? '&anominal=1' : '') . "\n\n";
 $log .= CRONLOG_URI . "/results-compare.php?source=batch&date1=" . $reader->batch . '&date2=' . $yesterdayBatch . "\n\n";
 $log .= "{$reader->triggers} triggers,\n";
-$log .= count($db->queries) . " queries\n";
+$log .= count(db()->queries) . " queries\n";
 
 if ( count($reader->skipped) ) {
 	$log .= "\n";

@@ -9,8 +9,10 @@ require 'inc.bootstrap.php';
 
 class PreviewImporterReader implements ImporterReader {
 
-	public $results = [];
-	public $ignored = [];
+	/** @var list<array<string, ?string>> */
+	public array $results = [];
+	/** @var list<array<string, ?string>> */
+	public array $ignored = [];
 
 	public function read( Importer $importer ) : void {
 		$from = $importer->getFrom();
@@ -47,7 +49,7 @@ class PreviewImporterReader implements ImporterReader {
 header('Content-type: text/plain; charset=utf-8');
 
 $reader = new PreviewImporterReader;
-foreach ( $importers as $importer ) {
+foreach ( importers() as $importer ) {
 	$importer->collect($reader);
 }
 

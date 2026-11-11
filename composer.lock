@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "2055ccba66ac8800d54cae101315b609",
+    "content-hash": "6d61cd05bfb8a320d38ad9d3fb344967",
     "packages": [
         {
             "name": "doctrine/lexer",
@@ -305,25 +305,33 @@
         },
         {
             "name": "rdx/db",
-            "version": "1.28",
+            "version": "2.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/rudiedirkx/db_generic.git",
-                "reference": "666bec8a65f954007bb0011fb2cf25e4060dbab9"
+                "reference": "73c81e594515afc364df92d14c14897ffe50b05a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/rudiedirkx/db_generic/zipball/666bec8a65f954007bb0011fb2cf25e4060dbab9",
-                "reference": "666bec8a65f954007bb0011fb2cf25e4060dbab9",
+                "url": "https://api.github.com/repos/rudiedirkx/db_generic/zipball/73c81e594515afc364df92d14c14897ffe50b05a",
+                "reference": "73c81e594515afc364df92d14c14897ffe50b05a",
                 "shasum": ""
+            },
+            "require": {
+                "php": ">=8.3"
+            },
+            "require-dev": {
+                "phpstan/phpstan": "^2.1",
+                "phpunit/phpunit": "^13.3",
+                "symfony/var-dumper": "^7.2"
             },
             "type": "library",
             "autoload": {
+                "psr-4": {
+                    "rdx\\db\\PhpStan\\": "src/phpstan/"
+                },
                 "classmap": [
-                    "./"
-                ],
-                "exclude-from-classmap": [
-                    "/test/"
+                    "src/"
                 ]
             },
             "notification-url": "https://packagist.org/downloads/",
@@ -339,9 +347,9 @@
             "description": "Simple MySQL/SQLite wrapper",
             "support": {
                 "issues": "https://github.com/rudiedirkx/db_generic/issues",
-                "source": "https://github.com/rudiedirkx/db_generic/tree/1.28"
+                "source": "https://github.com/rudiedirkx/db_generic/tree/2.1"
             },
-            "time": "2025-04-30T15:58:59+00:00"
+            "time": "2026-10-30T21:11:16+00:00"
         },
         {
             "name": "rdx/imap",
@@ -1381,12 +1389,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/rudiedirkx/phpstan-extra.git",
-                "reference": "642ae05c0082d2d30c9076ab0bcdd556c34cfd44"
+                "reference": "48614e249a95a384c5a129fc0a453b37f97b3675"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/rudiedirkx/phpstan-extra/zipball/642ae05c0082d2d30c9076ab0bcdd556c34cfd44",
-                "reference": "642ae05c0082d2d30c9076ab0bcdd556c34cfd44",
+                "url": "https://api.github.com/repos/rudiedirkx/phpstan-extra/zipball/48614e249a95a384c5a129fc0a453b37f97b3675",
+                "reference": "48614e249a95a384c5a129fc0a453b37f97b3675",
                 "shasum": ""
             },
             "require": {
@@ -1417,7 +1425,7 @@
                 "issues": "https://github.com/rudiedirkx/phpstan-extra/issues",
                 "source": "https://github.com/rudiedirkx/phpstan-extra/tree/master"
             },
-            "time": "2026-05-02T23:09:43+00:00"
+            "time": "2026-10-27T15:11:53+00:00"
         }
     ],
     "aliases": [],
@@ -1434,5 +1442,5 @@
     "platform-overrides": {
         "php": "8.3.0"
     },
-    "plugin-api-version": "2.6.0"
+    "plugin-api-version": "2.9.0"
 }

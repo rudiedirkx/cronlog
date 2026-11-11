@@ -9,17 +9,17 @@ include 'tpl.header.php';
 
 $source = $_GET['source'] ?? 'batch';
 if ( $source == 'date' ) {
-	$options = $db->select_fields('results', "date(sent) day, concat(date(sent), ' (', count(1), ')') num", '1 GROUP BY day ORDER BY day DESC LIMIT 100');
+	$options = db()->select_fields('results', "date(sent) day, concat(date(sent), ' (', count(1), ')') num", '1 GROUP BY day ORDER BY day DESC LIMIT 100');
 }
 else {
-	$options = $db->select_fields('results', "batch day, concat(date(from_unixtime(batch)), ' (', count(1), ')') num", '1 GROUP BY day ORDER BY day DESC LIMIT 100');
+	$options = db()->select_fields('results', "batch day, concat(date(from_unixtime(batch)), ' (', count(1), ')') num", '1 GROUP BY day ORDER BY day DESC LIMIT 100');
 	$source = 'batch';
 }
 
 $sources = ['batch', 'date'];
 
 $date1 = $date2 = [];
-if ( @$_GET['date1'] && @$_GET['date2'] ) {
+if ( !empty($_GET['date1']) && !empty($_GET['date2']) ) {
 	if ( $source == 'date' ) {
 		$date1 = Result::all('date(sent) = ? ORDER BY type_id, server_id', [$_GET['date1']]);
 		$date2 = Result::all('date(sent) = ? ORDER BY type_id, server_id', [$_GET['date2']]);
@@ -34,28 +34,30 @@ $types = Type::all('1 ORDER BY description');
 
 $groups = [];
 foreach ( $date1 as $result ) {
-	$groups[$result->type_id][$result->relevant_subject][] = [$result];
+	$subject = $result->relevant_subject ?? '';
+	$groups[$result->type_id][$subject][] = [$result];
 }
 foreach ( $date2 as $result ) {
-	foreach ( $groups[$result->type_id][$result->relevant_subject] ?? [] as $n => $group ) {
-		if ( array_keys($group) === [0] && $result->sentTimeAlmostMatches($group[0]) ) {
-			$groups[$result->type_id][$result->relevant_subject][$n][1] = $result;
+	$subject = $result->relevant_subject ?? '';
+	foreach ( $groups[$result->type_id][$subject] ?? [] as $n => $group ) {
+		if ( isset($group[0]) && !isset($group[1]) && $result->sentTimeAlmostMatches($group[0]) ) {
+			$groups[$result->type_id][$subject][$n][1] = $result;
 			continue 2;
 		}
 	}
 
-	$groups[$result->type_id][$result->relevant_subject][] = [1 => $result];
+	$groups[$result->type_id][$subject][] = [1 => $result];
 }
 
-uksort($groups, function($a, $b) use ($types) {
+uksort($groups, function(int $a, int $b) use ($types) : int {
 	return array_search($a, array_keys($types)) - array_search($b, array_keys($types));
 });
 foreach ( $groups as $typeId => $typeGroup ) {
 	$regroup = [];
 	foreach ( $typeGroup as $subject => $subjectGroup ) {
-		$regroup = array_merge($regroup, array_values($subjectGroup));
+		$regroup = array_merge($regroup, $subjectGroup);
 	}
-	usort($regroup, function($a, $b) {
+	usort($regroup, function(array $a, array $b) : int {
 		$a = reset($a);
 		$b = reset($b);
 		return strcmp($a->sent_time, $b->sent_time) ?: strcasecmp($a->relevant_subject ?? '', $b->relevant_subject ?? '');
@@ -63,15 +65,15 @@ foreach ( $groups as $typeId => $typeGroup ) {
 	$groups[$typeId] = $regroup;
 }
 
-$timeGroupIdentical = function(array $timeGroup) {
+$timeGroupIdentical = function(array $timeGroup) : bool {
 	return count($timeGroup) == 2;
 };
 
-$typeGroupIdentical = function(array $typeGroup) use ($timeGroupIdentical) {
+$typeGroupIdentical = function(array $typeGroup) use ($timeGroupIdentical) : bool {
 	return count($typeGroup) == count(array_filter($typeGroup, $timeGroupIdentical));
 };
 
-$allGroupsIdentical = function(array $groups) use ($typeGroupIdentical) {
+$allGroupsIdentical = function(array $groups) use ($typeGroupIdentical) : bool {
 	return count($groups) == count(array_filter($groups, $typeGroupIdentical));
 };
 
@@ -110,9 +112,9 @@ tbody tr.different {
 	<input type="hidden" name="source" value="<?= html($source) ?>" />
 	<p>
 		Compare
-		<select name="date1"><?= html_options($options, @$_GET['date1']) ?></select>
+		<select name="date1"><?= html_options($options, $_GET['date1'] ?? null) ?></select>
 		vs
-		<select name="date2"><?= html_options($options, @$_GET['date2']) ?></select>
+		<select name="date2"><?= html_options($options, $_GET['date2'] ?? null) ?></select>
 		&nbsp;
 		<button>Compare</button>
 		&nbsp;

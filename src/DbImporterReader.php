@@ -46,8 +46,7 @@ class DbImporterReader implements ImporterReader {
 		$insert['batch'] = $this->batch;
 		$insert['output_size'] = strlen($output);
 
-		$id = Result::insert($insert);
-		$result = Result::find($id);
+		$result = Result::create($insert);
 
 		list($triggers, , $anominals) = $result->collate();
 

@@ -4,7 +4,7 @@ use rdx\cronlog\Result;
 
 require 'inc.bootstrap.php';
 
-if ( !($result = Result::find(@$_GET['id'])) ) {
+if ( !($result = Result::find($_GET['id'] ?? null)) ) {
 	include 'tpl.header.php';
 	echo '<p class="error">Need ?id</p>';
 	exit;
@@ -13,7 +13,7 @@ if ( !($result = Result::find(@$_GET['id'])) ) {
 if ( isset($_GET['recollate']) ) {
 	$result->retype() && $result->collate();
 
-	$goto = @$_GET['goto'] ?: 'result.php?id=' . $result->id;
+	$goto = ($_GET['goto'] ?? '') ?: 'result.php?id=' . $result->id;
 	return do_redirect($goto);
 }
 

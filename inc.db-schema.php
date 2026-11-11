@@ -1,7 +1,7 @@
 <?php
 
 return array(
-	'version' => 28,
+	'version' => 29,
 	'tables' => array(
 		'types' => array(
 			'columns' => array(
@@ -62,6 +62,7 @@ return array(
 				'sent' => ['sent'],
 				'batch' => ['batch'],
 				'type_sent' => ['type_id', 'sent'],
+				'server_sent' => ['server_id', 'sent'],
 			),
 		),
 		'results_triggers' => array(

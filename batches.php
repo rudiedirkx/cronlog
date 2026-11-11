@@ -4,7 +4,7 @@ use rdx\cronlog\Result;
 
 require 'inc.bootstrap.php';
 
-$batches = $db->select_fields(Result::$_table, 'batch, count(1)', "batch <> '' GROUP BY batch ORDER BY batch DESC");
+$batches = db()->select_fields(Result::$_table, 'batch, count(1)', "batch <> '' GROUP BY batch ORDER BY batch DESC");
 
 include 'tpl.header.php';
 

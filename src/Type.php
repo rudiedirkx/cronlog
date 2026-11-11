@@ -13,7 +13,7 @@ class Type extends Model {
 		return !empty($data['description']);
 	}
 
-	static public function presave( array &$data ) {
+	static public function presave( array &$data ) : void {
 		parent::presave($data);
 
 		$data['handling'] = 0;
@@ -73,7 +73,7 @@ class Type extends Model {
 		return $this->to_many_through(Trigger::class, 'trigger_ids')->order('o, trigger');
 	}
 
-	public function __toString() {
+	public function __toString() : string {
 		return (string) $this->description;
 	}
 }

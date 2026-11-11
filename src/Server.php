@@ -31,18 +31,18 @@ class Server extends Model {
 	/**
 	 * @return Result[]
 	 */
-	protected function get_results() {
+	protected function get_results() : array {
 		return Result::all('server_id = ? ORDER BY sent DESC', [$this->id]);
 	}
 
 	/**
 	 * @return Result[]
 	 */
-	protected function get_anominal_results() {
+	protected function get_anominal_results() : array {
 		return Result::all("nominal = '0' AND server_id = ? ORDER BY sent DESC", [$this->id]);
 	}
 
-	public function __toString() {
+	public function __toString() : string {
 		return $this->name;
 	}
 }

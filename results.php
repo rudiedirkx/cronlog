@@ -7,23 +7,35 @@ use rdx\cronlog\Type;
 
 require 'inc.bootstrap.php';
 
-$type = Type::find(@$_GET['type']);
-$server = Server::find(@$_GET['server']);
-$date = @$_GET['date'];
-$batch = @$_GET['batch'];
+$type = Type::find($_GET['type'] ?? null);
+$server = Server::find($_GET['server'] ?? null);
+$date = $_GET['date'] ?? null;
+$batch = $_GET['batch'] ?? null;
 $anominal = !empty($_GET['anominal']);
-$searchInput = $search = @$_GET['search'];
+$searchInput = $search = $_GET['search'] ?? null;
 $regexDisplay = $searchInput ? RegexDisplay::fromSearchInput($searchInput) : null;
 if ($regexDisplay) $search = null;
 
 $conditions = [];
-$type and $conditions['type_id'] = $type->id;
-$server and $conditions['server_id'] = $server->id;
-$date and $conditions[] = $db->replaceholders('date(sent) = ?', $date);
-$batch and $conditions['batch'] = $batch;
-$anominal and $conditions['nominal'] = '0';
-$search and $conditions[] = $db->replaceholders('output LIKE ?', "%$search%");
-$conditionsSql = count($conditions) ? $db->stringifyConditions($conditions) : '1';
+if ( $type ) {
+	$conditions['type_id'] = $type->id;
+}
+if ( $server ) {
+	$conditions['server_id'] = $server->id;
+}
+if ( $date ) {
+	$conditions[] = db()->replaceholders('date(sent) = ?', $date);
+}
+if ( $batch ) {
+	$conditions['batch'] = $batch;
+}
+if ( $anominal ) {
+	$conditions['nominal'] = '0';
+}
+if ( $search ) {
+	$conditions[] = db()->replaceholders('output LIKE ?', "%$search%");
+}
+$conditionsSql = count($conditions) ? db()->stringifyConditions($conditions) : '1';
 
 $results = Result::all("$conditionsSql ORDER BY sent DESC LIMIT 500");
 $totalResults = Result::count($conditionsSql);
@@ -42,14 +54,14 @@ include 'tpl.header.php';
 // Result::eager('server', $results);
 Result::eager('triggers', $results);
 
-$ids = array_flip(array_values($db->select_fields(Result::$_table, 'id', '1 ORDER BY sent DESC')));
+$ids = array_flip(array_values(db()->select_fields(Result::$_table, 'id', '1 ORDER BY sent DESC')));
 
 $typesOptions = Type::all('1 ORDER BY description');
 $serversOptions = Server::all('1 ORDER BY name');
-$datesOptions = $db->select_fields('results', 'date(sent)', '1 GROUP BY date(sent) ORDER BY date(sent) DESC');
-$batchesOptions = array_map(function($utc) {
+$datesOptions = db()->select_fields('results', 'date(sent)', '1 GROUP BY date(sent) ORDER BY date(sent) DESC');
+$batchesOptions = array_map(function(int $utc) : string {
 	return date('Y-m-d H:i', $utc);
-}, $db->select_fields('results', 'batch', 'batch IS NOT NULL GROUP BY batch ORDER BY batch DESC'));
+}, db()->select_fields('results', 'batch', 'batch IS NOT NULL GROUP BY batch ORDER BY batch DESC'));
 
 ?>
 
