@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "2a146b0a49c31bb292a57610912caea0",
+    "content-hash": "c834269aa5a6683d174a2bb006b424ea",
     "packages": [
         {
             "name": "doctrine/lexer",
@@ -303,16 +303,16 @@
         },
         {
             "name": "rdx/db",
-            "version": "2.2",
+            "version": "2.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/rudiedirkx/db_generic.git",
-                "reference": "8b3353e6efa0c3f9269df251a124f47fe17dccc1"
+                "reference": "22ca9771655d825630095c9920ca2255017b8475"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/rudiedirkx/db_generic/zipball/8b3353e6efa0c3f9269df251a124f47fe17dccc1",
-                "reference": "8b3353e6efa0c3f9269df251a124f47fe17dccc1",
+                "url": "https://api.github.com/repos/rudiedirkx/db_generic/zipball/22ca9771655d825630095c9920ca2255017b8475",
+                "reference": "22ca9771655d825630095c9920ca2255017b8475",
                 "shasum": ""
             },
             "require": {
@@ -325,9 +325,6 @@
             },
             "type": "library",
             "autoload": {
-                "psr-4": {
-                    "rdx\\db\\PhpStan\\": "src/phpstan/"
-                },
                 "classmap": [
                     "src/"
                 ]
@@ -345,9 +342,9 @@
             "description": "Simple MySQL/SQLite wrapper",
             "support": {
                 "issues": "https://github.com/rudiedirkx/db_generic/issues",
-                "source": "https://github.com/rudiedirkx/db_generic/tree/2.2"
+                "source": "https://github.com/rudiedirkx/db_generic/tree/2.3"
             },
-            "time": "2026-11-12T09:33:10+00:00"
+            "time": "2026-11-12T11:46:50+00:00"
         },
         {
             "name": "rdx/imap",

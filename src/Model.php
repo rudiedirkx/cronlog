@@ -4,7 +4,7 @@ namespace rdx\cronlog;
 
 use db_generic_model;
 
-class Model extends db_generic_model {
+abstract class Model extends db_generic_model {
 
 	/**
 	 * @param list<AssocArray> $datas

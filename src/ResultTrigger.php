@@ -2,7 +2,9 @@
 
 namespace rdx\cronlog;
 
-class ResultTrigger extends Model {
+use db_generic_keyless_model;
+
+class ResultTrigger extends db_generic_keyless_model {
 	public static $_table = 'results_triggers';
 
 	public function init() : void {
